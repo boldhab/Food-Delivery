@@ -1,31 +1,43 @@
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 const errorMiddleware = require('./middleware/error.middleware');
+const sanitizeRequest = require('./middleware/sanitize.middleware');
 
 const authRoutes = require('./routes/auth.routes');
-const foodRoutes = require('./routes/food.routes');
-const orderRoutes = require('./routes/order.routes');
-const cartRoutes = require('./routes/cart.routes');
-const paymentRoutes = require('./routes/payment.routes');
-const reviewRoutes = require('./routes/review.routes');
+const foodRoutes = require('./routes/food.routes'); // ADD THIS
 
 const app = express();
 
+// Security middleware
+app.use(helmet());
+
+// Body parser
 app.use(cors());
 app.use(express.json());
 
-// ✅ TEST ROUTE
-app.get('/api/test', (req, res) => {
-  res.json({ message: 'Server & MongoDB connected!' });
+// Sanitize request payload/query/params after body parsing
+app.use(sanitizeRequest);
+
+// Rate limiting for auth routes
+const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 5,
+    message: {
+        success: false,
+        message: 'Too many attempts, please try again later'
+    }
 });
 
-// Your actual routes
-app.use('/api/auth', authRoutes);
-app.use('/api/food', foodRoutes);
-app.use('/api/order', orderRoutes);
-app.use('/api/cart', cartRoutes);
-app.use('/api/payment', paymentRoutes);
-app.use('/api/review', reviewRoutes);
+// Test route
+app.get('/api/test', (req, res) => {
+    res.json({ message: 'Server & MongoDB connected!' });
+});
+
+// Routes
+app.use('/api/auth', authLimiter, authRoutes);
+app.use('/api/foods', foodRoutes); // ADD THIS LINE
 
 // Error handler
 app.use(errorMiddleware);
