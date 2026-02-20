@@ -6,7 +6,8 @@ const errorMiddleware = require('./middleware/error.middleware');
 const sanitizeRequest = require('./middleware/sanitize.middleware');
 
 const authRoutes = require('./routes/auth.routes');
-const foodRoutes = require('./routes/food.routes'); // ADD THIS
+const foodRoutes = require('./routes/food.routes');
+const cartRoutes = require('./routes/cart.routes'); // ADD THIS LINE
 
 const app = express();
 
@@ -37,7 +38,8 @@ app.get('/api/test', (req, res) => {
 
 // Routes
 app.use('/api/auth', authLimiter, authRoutes);
-app.use('/api/foods', foodRoutes); // ADD THIS LINE
+app.use('/api/foods', foodRoutes);
+app.use('/api/cart', cartRoutes); // ADD THIS LINE
 
 // Error handler
 app.use(errorMiddleware);
