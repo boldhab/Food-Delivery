@@ -1,5 +1,5 @@
-const Cart = require('../models/cart.model');
-const Food = require('../models/food.model');
+const Cart = require('../models/Cart');
+const Food = require('../models/Food');
 
 // ==================== HELPER FUNCTIONS ====================
 
