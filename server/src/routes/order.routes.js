@@ -1,30 +1,32 @@
 const express = require('express');
 const router = express.Router();
+const {
+    // User
+    createOrder,
+    getMyOrders,
+    getOrderById,
+    cancelOrder,
+    
+    // Admin
+    getAllOrders,
+    updateOrderStatus
+} = require('../controllers/order.controller');
+const { protect, admin } = require('../middleware/auth.middleware');
 
-// To be implemented
-router.post('/', (req, res) => {
-    res.json({ message: 'Create order - To be implemented' });
-});
+// All routes require authentication
+router.use(protect);
 
-router.get('/my-orders', (req, res) => {
-    res.json({ message: 'Get my orders - To be implemented' });
-});
+// ==================== USER ROUTES ====================
 
-router.get('/:id', (req, res) => {
-    res.json({ message: 'Get single order - To be implemented' });
-});
+router.post('/', createOrder);
+router.get('/my-orders', getMyOrders);
+router.get('/:id', getOrderById);
+router.put('/:id/cancel', cancelOrder);
 
-router.put('/:id/cancel', (req, res) => {
-    res.json({ message: 'Cancel order - To be implemented' });
-});
+// ==================== ADMIN ROUTES ====================
+// Admin routes are protected by admin middleware
 
-// Admin only
-router.get('/admin/all', (req, res) => {
-    res.json({ message: 'Admin get all orders - To be implemented' });
-});
-
-router.put('/admin/:id/status', (req, res) => {
-    res.json({ message: 'Admin update status - To be implemented' });
-});
+router.get('/admin/all', admin, getAllOrders);
+router.put('/admin/:id/status', admin, updateOrderStatus);
 
 module.exports = router;
