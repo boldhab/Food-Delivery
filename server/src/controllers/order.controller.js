@@ -1,7 +1,8 @@
-const Order = require('../models/order.model');
-const Cart = require('../models/cart.model');
-const Food = require('../models/food.model');
-const User = require('../models/user.model');
+const mongoose = require('mongoose');
+const Order = require('../models/Order');
+const Cart = require('../models/Cart');
+const Food = require('../models/Food');
+const User = require('../models/User');
 const {
     calculateOrderTotals,
     isValidStatusTransition,

@@ -1,5 +1,5 @@
-const Food = require('../models/food.model');
-const Order = require('../models/order.model');
+const Food = require('../models/Food');
+const Order = require('../models/Order');
 
 /**
  * @desc    Get all foods with sales stats (Admin)

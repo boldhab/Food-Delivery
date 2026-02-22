@@ -1,5 +1,5 @@
-const User = require('../models/user.model');
-const Order = require('../models/order.model');
+const User = require('../models/User');
+const Order = require('../models/Order');
 
 /**
  * @desc    Get all users with order stats (Admin)
