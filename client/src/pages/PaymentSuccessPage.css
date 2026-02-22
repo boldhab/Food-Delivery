@@ -1,0 +1,41 @@
+.payment-success-page {
+    min-height: 70vh;
+    display: grid;
+    place-items: center;
+    padding: 16px;
+}
+
+.success-card {
+    max-width: 520px;
+    width: 100%;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 24px;
+    text-align: center;
+    background: #fff;
+}
+
+.success-icon {
+    font-size: 52px;
+    color: #16a34a;
+}
+
+.order-number {
+    font-weight: 700;
+    margin-top: 8px;
+}
+
+.action-buttons {
+    margin-top: 16px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.action-buttons button {
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 8px 12px;
+    cursor: pointer;
+    background: #fff;
+}

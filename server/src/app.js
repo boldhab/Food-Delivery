@@ -9,7 +9,8 @@ const authRoutes = require('./routes/auth.routes');
 const foodRoutes = require('./routes/food.routes');
 const cartRoutes = require('./routes/cart.routes');
 const orderRoutes = require('./routes/order.routes');
-const adminRoutes = require('./routes/admin.routes'); // ADD THIS
+const paymentRoutes = require('./routes/payment.routes');
+const adminRoutes = require('./routes/admin.routes');
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use(helmet());
 
 // Body parser
 app.use(cors());
+app.use('/api/payments/webhook', express.raw({ type: 'application/json' }));
 app.use(express.json());
 
 // Sanitize request
@@ -43,7 +45,8 @@ app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/foods', foodRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
-app.use('/api/admin', adminRoutes); // ADD THIS LINE
+app.use('/api/payments', paymentRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Error handler
 app.use(errorMiddleware);

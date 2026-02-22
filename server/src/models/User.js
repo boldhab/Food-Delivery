@@ -44,6 +44,11 @@ const userSchema = new mongoose.Schema({
         state: String,
         zipCode: String
     },
+
+    stripeCustomerId: {
+        type: String,
+        select: false
+    },
     
     isActive: {
         type: Boolean,

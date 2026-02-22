@@ -1,0 +1,63 @@
+.payment-form-container {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 16px;
+    background: #fff;
+}
+
+.payment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.payment-methods {
+    display: flex;
+    gap: 8px;
+}
+
+.method-btn,
+.pay-btn,
+.place-order-btn {
+    border: 1px solid #d1d5db;
+    background: #fff;
+    border-radius: 6px;
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.method-btn.active {
+    background: #111827;
+    color: #fff;
+}
+
+.card-element-wrapper {
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 10px;
+    margin-top: 6px;
+}
+
+.payment-summary {
+    margin: 12px 0;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.secure-badge {
+    margin-top: 8px;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.error-message {
+    margin: 10px 0;
+    color: #b91c1c;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
