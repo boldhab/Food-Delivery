@@ -1,0 +1,14 @@
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.search-bar input {
+    min-width: 220px;
+    padding: 8px;
+}
+
+.search-bar button {
+    padding: 8px;
+}

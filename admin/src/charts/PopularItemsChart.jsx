@@ -1,7 +1,7 @@
 import React from 'react';
 import {
-    LineChart,
-    Line,
+    BarChart,
+    Bar,
     XAxis,
     YAxis,
     CartesianGrid,
@@ -11,20 +11,20 @@ import {
 } from 'recharts';
 import './Charts.css';
 
-const RevenueChart = ({ data = [] }) => {
+const PopularItemsChart = ({ data = [] }) => {
     return (
         <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={data}>
+            <BarChart data={data}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="_id" />
+                <XAxis dataKey="name" />
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Line type="monotone" dataKey="revenue" stroke="#8884d8" activeDot={{ r: 8 }} name="Revenue" />
-                <Line type="monotone" dataKey="orders" stroke="#82ca9d" name="Orders" />
-            </LineChart>
+                <Bar dataKey="quantity" fill="#8884d8" name="Quantity Sold" />
+                <Bar dataKey="revenue" fill="#82ca9d" name="Revenue" />
+            </BarChart>
         </ResponsiveContainer>
     );
 };
 
-export default RevenueChart;
+export default PopularItemsChart;

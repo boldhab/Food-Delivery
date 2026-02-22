@@ -290,44 +290,101 @@ const cancelOrder = async (req, res, next) => {
         next(error);
     }
 };
-
-// ==================== ADMIN ORDER CONTROLLERS ====================
+// ==================== ENHANCED ADMIN CONTROLLERS ====================
 
 /**
- * @desc    Get all orders (Admin only)
+ * @desc    Get all orders with advanced filters (Admin)
  * @route   GET /api/orders/admin/all
  * @access  Private/Admin
  */
 const getAllOrders = async (req, res, next) => {
     try {
-        const { page = 1, limit = 10, status, startDate, endDate } = req.query;
+        const {
+            page = 1,
+            limit = 10,
+            status,
+            paymentStatus,
+            startDate,
+            endDate,
+            search,
+            sortBy = 'createdAt',
+            sortOrder = 'desc'
+        } = req.query;
 
+        // Build filter query
         const query = {};
-        if (status) query.orderStatus = status;
         
+        if (status) query.orderStatus = status;
+        if (paymentStatus) query.paymentStatus = paymentStatus;
+        
+        // Date range filter
         if (startDate || endDate) {
             query.createdAt = {};
             if (startDate) query.createdAt.$gte = new Date(startDate);
-            if (endDate) query.createdAt.$lte = new Date(endDate);
+            if (endDate) {
+                const end = new Date(endDate);
+                end.setHours(23, 59, 59, 999);
+                query.createdAt.$lte = end;
+            }
         }
 
-        const skip = (parseInt(page) - 1) * parseInt(limit);
+        // Search by order number or user name/email
+        if (search) {
+            query.$or = [
+                { orderNumber: { $regex: search, $options: 'i' } },
+                { 'userDetails.name': { $regex: search, $options: 'i' } },
+                { 'userDetails.email': { $regex: search, $options: 'i' } }
+            ];
+        }
 
+        // Pagination
+        const skip = (parseInt(page) - 1) * parseInt(limit);
+        
+        // Sorting
+        const sort = {};
+        sort[sortBy] = sortOrder === 'desc' ? -1 : 1;
+
+        // Execute query with population
         const orders = await Order.find(query)
             .populate('user', 'name email phone')
-            .sort({ createdAt: -1 })
+            .sort(sort)
             .skip(skip)
             .limit(parseInt(limit));
 
+        // Get total count for pagination
         const totalOrders = await Order.countDocuments(query);
+
+        // Get summary statistics for filtered results
+        const summary = await Order.aggregate([
+            { $match: query },
+            {
+                $group: {
+                    _id: null,
+                    totalRevenue: { $sum: '$totalAmount' },
+                    averageOrderValue: { $avg: '$totalAmount' },
+                    minOrderValue: { $min: '$totalAmount' },
+                    maxOrderValue: { $max: '$totalAmount' },
+                    orderCount: { $sum: 1 }
+                }
+            }
+        ]);
 
         res.json({
             success: true,
-            count: orders.length,
-            total: totalOrders,
-            page: parseInt(page),
-            totalPages: Math.ceil(totalOrders / parseInt(limit)),
-            data: orders
+            data: {
+                orders,
+                pagination: {
+                    page: parseInt(page),
+                    limit: parseInt(limit),
+                    total: totalOrders,
+                    pages: Math.ceil(totalOrders / parseInt(limit))
+                },
+                summary: summary[0] || {
+                    totalRevenue: 0,
+                    averageOrderValue: 0,
+                    orderCount: 0
+                }
+            }
         });
 
     } catch (error) {
@@ -336,62 +393,238 @@ const getAllOrders = async (req, res, next) => {
 };
 
 /**
- * @desc    Update order status (Admin only)
- * @route   PUT /api/orders/admin/:id/status
+ * @desc    Get dashboard statistics (Admin)
+ * @route   GET /api/orders/admin/stats
  * @access  Private/Admin
  */
-const updateOrderStatus = async (req, res, next) => {
+const getDashboardStats = async (req, res, next) => {
     try {
-        const { id } = req.params;
-        const { status, note, estimatedDeliveryTime } = req.body;
+        const now = new Date();
+        const startOfDay = new Date(now.setHours(0, 0, 0, 0));
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        const startOfYear = new Date(now.getFullYear(), 0, 1);
 
-        const order = await Order.findById(id);
+        // Run multiple aggregations in parallel
+        const [
+            overallStats,
+            todayStats,
+            monthStats,
+            statusStats,
+            paymentStats,
+            topSellingFoods,
+            recentOrders
+        ] = await Promise.all([
+            // Overall statistics
+            Order.aggregate([
+                {
+                    $group: {
+                        _id: null,
+                        totalRevenue: { $sum: '$totalAmount' },
+                        totalOrders: { $sum: 1 },
+                        averageOrderValue: { $avg: '$totalAmount' },
+                        cancelledOrders: {
+                            $sum: { $cond: [{ $eq: ['$orderStatus', 'cancelled'] }, 1, 0] }
+                        },
+                        completedOrders: {
+                            $sum: { $cond: [{ $eq: ['$orderStatus', 'delivered'] }, 1, 0] }
+                        }
+                    }
+                }
+            ]),
 
-        if (!order) {
-            return res.status(404).json({
-                success: false,
-                message: 'Order not found'
-            });
-        }
+            // Today's statistics
+            Order.aggregate([
+                { $match: { createdAt: { $gte: startOfDay } } },
+                {
+                    $group: {
+                        _id: null,
+                        revenue: { $sum: '$totalAmount' },
+                        orders: { $sum: 1 }
+                    }
+                }
+            ]),
 
-        // Validate status transition
-        if (!isValidStatusTransition(order.orderStatus, status)) {
-            return res.status(400).json({
-                success: false,
-                message: `Cannot transition from ${order.orderStatus} to ${status}`
-            });
-        }
+            // This month's statistics
+            Order.aggregate([
+                { $match: { createdAt: { $gte: startOfMonth } } },
+                {
+                    $group: {
+                        _id: null,
+                        revenue: { $sum: '$totalAmount' },
+                        orders: { $sum: 1 }
+                    }
+                }
+            ]),
 
-        // Update order
-        order.orderStatus = status;
-        
-        if (estimatedDeliveryTime) {
-            order.estimatedDeliveryTime = new Date(estimatedDeliveryTime);
-        }
+            // Orders by status
+            Order.aggregate([
+                {
+                    $group: {
+                        _id: '$orderStatus',
+                        count: { $sum: 1 },
+                        revenue: { $sum: '$totalAmount' }
+                    }
+                },
+                { $sort: { count: -1 } }
+            ]),
 
-        if (status === 'delivered') {
-            order.actualDeliveryTime = new Date();
-        }
+            // Orders by payment method
+            Order.aggregate([
+                {
+                    $group: {
+                        _id: '$paymentMethod',
+                        count: { $sum: 1 },
+                        total: { $sum: '$totalAmount' }
+                    }
+                }
+            ]),
 
-        // Add to status history (avoid duplicates)
-        const lastStatus = order.statusHistory[order.statusHistory.length - 1];
-        if (!lastStatus || lastStatus.status !== status) {
-            order.statusHistory.push({
-                status,
-                note: note || `Order status updated to ${status}`,
-                updatedBy: req.user._id
-            });
-        }
+            // Top selling foods
+            Order.aggregate([
+                { $unwind: '$items' },
+                {
+                    $group: {
+                        _id: '$items.foodId',
+                        name: { $first: '$items.name' },
+                        quantity: { $sum: '$items.quantity' },
+                        revenue: { $sum: '$items.totalPrice' },
+                        orderCount: { $sum: 1 }
+                    }
+                },
+                { $sort: { quantity: -1 } },
+                { $limit: 5 },
+                {
+                    $lookup: {
+                        from: 'foods',
+                        localField: '_id',
+                        foreignField: '_id',
+                        as: 'foodDetails'
+                    }
+                },
+                { $unwind: { path: '$foodDetails', preserveNullAndEmptyArrays: true } }
+            ]),
 
-        await order.save();
+            // Recent orders for activity feed
+            Order.find()
+                .sort({ createdAt: -1 })
+                .limit(5)
+                .select('orderNumber totalAmount orderStatus userDetails createdAt')
+        ]);
 
         res.json({
             success: true,
-            message: `Order status updated to ${status}`,
             data: {
-                orderNumber: order.orderNumber,
-                orderStatus: order.orderStatus,
-                statusHistory: order.statusHistory
+                overview: {
+                    totalRevenue: overallStats[0]?.totalRevenue || 0,
+                    totalOrders: overallStats[0]?.totalOrders || 0,
+                    averageOrderValue: overallStats[0]?.averageOrderValue || 0,
+                    completedOrders: overallStats[0]?.completedOrders || 0,
+                    cancelledOrders: overallStats[0]?.cancelledOrders || 0
+                },
+                today: {
+                    revenue: todayStats[0]?.revenue || 0,
+                    orders: todayStats[0]?.orders || 0
+                },
+                thisMonth: {
+                    revenue: monthStats[0]?.revenue || 0,
+                    orders: monthStats[0]?.orders || 0
+                },
+                ordersByStatus: statusStats,
+                paymentMethods: paymentStats,
+                topSellingFoods: topSellingFoods.map(food => ({
+                    id: food._id,
+                    name: food.name,
+                    quantity: food.quantity,
+                    revenue: food.revenue,
+                    image: food.foodDetails?.image
+                })),
+                recentOrders
+            }
+        });
+
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * @desc    Get sales report with charts data (Admin)
+ * @route   GET /api/orders/admin/sales-report
+ * @access  Private/Admin
+ */
+const getSalesReport = async (req, res, next) => {
+    try {
+        const { period = 'daily', days = 7 } = req.query;
+        
+        let groupFormat;
+        let dateRange = new Date();
+        dateRange.setDate(dateRange.getDate() - days);
+
+        // Set grouping based on period
+        switch(period) {
+            case 'hourly':
+                groupFormat = { $dateToString: { format: '%Y-%m-%d %H:00', date: '$createdAt' } };
+                break;
+            case 'daily':
+                groupFormat = { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } };
+                break;
+            case 'weekly':
+                groupFormat = { $week: '$createdAt' };
+                break;
+            case 'monthly':
+                groupFormat = { $month: '$createdAt' };
+                break;
+            default:
+                groupFormat = { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } };
+        }
+
+        const salesData = await Order.aggregate([
+            {
+                $match: {
+                    createdAt: { $gte: dateRange },
+                    orderStatus: { $ne: 'cancelled' }
+                }
+            },
+            {
+                $group: {
+                    _id: groupFormat,
+                    orders: { $sum: 1 },
+                    revenue: { $sum: '$totalAmount' },
+                    avgOrderValue: { $avg: '$totalAmount' }
+                }
+            },
+            { $sort: { _id: 1 } }
+        ]);
+
+        // Get category-wise sales
+        const categorySales = await Order.aggregate([
+            { $match: { createdAt: { $gte: dateRange } } },
+            { $unwind: '$items' },
+            {
+                $lookup: {
+                    from: 'foods',
+                    localField: 'items.foodId',
+                    foreignField: '_id',
+                    as: 'food'
+                }
+            },
+            { $unwind: '$food' },
+            {
+                $group: {
+                    _id: '$food.category',
+                    quantity: { $sum: '$items.quantity' },
+                    revenue: { $sum: '$items.totalPrice' }
+                }
+            },
+            { $sort: { revenue: -1 } }
+        ]);
+
+        res.json({
+            success: true,
+            data: {
+                period,
+                salesData,
+                categorySales
             }
         });
 
@@ -401,14 +634,9 @@ const updateOrderStatus = async (req, res, next) => {
 };
 
 module.exports = {
-    // User
-    createOrder,
-    getMyOrders,
-    getOrderById,
-    cancelOrder,
-    
-    // Admin
+    // ... existing exports
     getAllOrders,
-    updateOrderStatus
-   
+    updateOrderStatus,
+    getDashboardStats,
+    getSalesReport
 };

@@ -7,7 +7,9 @@ const sanitizeRequest = require('./middleware/sanitize.middleware');
 
 const authRoutes = require('./routes/auth.routes');
 const foodRoutes = require('./routes/food.routes');
-const cartRoutes = require('./routes/cart.routes'); // ADD THIS LINE
+const cartRoutes = require('./routes/cart.routes');
+const orderRoutes = require('./routes/order.routes');
+const adminRoutes = require('./routes/admin.routes'); // ADD THIS
 
 const app = express();
 
@@ -18,7 +20,7 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
-// Sanitize request payload/query/params after body parsing
+// Sanitize request
 app.use(sanitizeRequest);
 
 // Rate limiting for auth routes
@@ -39,7 +41,9 @@ app.get('/api/test', (req, res) => {
 // Routes
 app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/foods', foodRoutes);
-app.use('/api/cart', cartRoutes); // ADD THIS LINE
+app.use('/api/cart', cartRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/admin', adminRoutes); // ADD THIS LINE
 
 // Error handler
 app.use(errorMiddleware);
