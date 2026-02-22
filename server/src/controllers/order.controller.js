@@ -294,6 +294,74 @@ const cancelOrder = async (req, res, next) => {
 // ==================== ENHANCED ADMIN CONTROLLERS ====================
 
 /**
+ * @desc    Update order status (Admin)
+ * @route   PUT /api/orders/admin/:id/status
+ * @access  Private/Admin
+ */
+const updateOrderStatus = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { status, note } = req.body || {};
+
+        if (!status) {
+            return res.status(400).json({
+                success: false,
+                message: 'status is required'
+            });
+        }
+
+        const order = await Order.findById(id);
+        if (!order) {
+            return res.status(404).json({
+                success: false,
+                message: 'Order not found'
+            });
+        }
+
+        if (!isValidStatusTransition(order.orderStatus, status)) {
+            return res.status(400).json({
+                success: false,
+                message: `Invalid status transition: ${order.orderStatus} -> ${status}`
+            });
+        }
+
+        order.orderStatus = status;
+
+        if (status === 'delivered') {
+            order.actualDeliveryTime = new Date();
+            order.paymentStatus = 'paid';
+        }
+
+        if (status === 'cancelled' || status === 'rejected') {
+            order.cancelledAt = new Date();
+            order.cancellationReason = note || `Order ${status} by admin`;
+            order.cancelledBy = req.user?._id;
+        }
+
+        order.statusHistory.push({
+            status,
+            note: note || `Status updated to ${status}`,
+            updatedBy: req.user?._id
+        });
+
+        await order.save();
+
+        res.json({
+            success: true,
+            message: 'Order status updated successfully',
+            data: {
+                orderId: order._id,
+                orderNumber: order.orderNumber,
+                orderStatus: order.orderStatus,
+                paymentStatus: order.paymentStatus
+            }
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
  * @desc    Get all orders with advanced filters (Admin)
  * @route   GET /api/orders/admin/all
  * @access  Private/Admin
@@ -635,7 +703,12 @@ const getSalesReport = async (req, res, next) => {
 };
 
 module.exports = {
-    // ... existing exports
+    // User
+    createOrder,
+    getMyOrders,
+    getOrderById,
+    cancelOrder,
+    // Admin
     getAllOrders,
     updateOrderStatus,
     getDashboardStats,
