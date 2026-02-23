@@ -16,6 +16,12 @@ const {
     getAllCategories
 } = require('../controllers/food.controller');
 const { protect, admin } = require('../middleware/auth.middleware');
+const upload = require('../middleware/upload.middleware');
+const validate = require('../middleware/validate.middleware');
+const {
+    addFoodRules,
+    updateFoodRules
+} = require('../validations/food.validation');
 
 // ==================== PUBLIC ROUTES ====================
 router.get('/', getAllFoods);
@@ -26,8 +32,8 @@ router.get('/category/:category', getFoodsByCategory);
 router.get('/:id', getFoodById);
 
 // ==================== ADMIN ROUTES ====================
-router.post('/', protect, admin, createFood);
-router.put('/:id', protect, admin, updateFood);
+router.post('/', protect, admin, upload.single('image'), addFoodRules, validate, createFood);
+router.put('/:id', protect, admin, updateFoodRules, validate, updateFood);
 router.delete('/:id', protect, admin, deleteFood);
 router.patch('/:id/toggle-availability', protect, admin, toggleAvailability);
 

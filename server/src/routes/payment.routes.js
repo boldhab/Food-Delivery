@@ -9,15 +9,22 @@ const {
     addPaymentMethod,
     removePaymentMethod
 } = require('../controllers/payment.controller');
+const validate = require('../middleware/validate.middleware');
+const {
+    createPaymentIntentRules,
+    confirmPaymentRules,
+    addPaymentMethodRules,
+    removePaymentMethodRules
+} = require('../validations/payment.validation');
 
 router.post('/webhook', handleWebhook);
 
 router.use(protect);
 
-router.post('/create-payment-intent', createPaymentIntent);
-router.post('/confirm', confirmPayment);
+router.post('/create-payment-intent', createPaymentIntentRules, validate, createPaymentIntent);
+router.post('/confirm', confirmPaymentRules, validate, confirmPayment);
 router.get('/methods', getPaymentMethods);
-router.post('/methods', addPaymentMethod);
-router.delete('/methods/:id', removePaymentMethod);
+router.post('/methods', addPaymentMethodRules, validate, addPaymentMethod);
+router.delete('/methods/:id', removePaymentMethodRules, validate, removePaymentMethod);
 
 module.exports = router;

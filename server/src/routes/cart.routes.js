@@ -10,6 +10,12 @@ const {
     getCartCount
 } = require('../controllers/cart.controller');
 const { protect } = require('../middleware/auth.middleware');
+const validate = require('../middleware/validate.middleware');
+const {
+    addToCartRules,
+    updateCartItemRules,
+    removeCartItemRules
+} = require('../validations/cart.validation');
 
 // All cart routes require authentication
 router.use(protect);
@@ -42,21 +48,21 @@ router.get('/count', getCartCount);
  * @desc    Add item to cart
  * @access  Private
  */
-router.post('/add', addToCart);
+router.post('/add', addToCartRules, validate, addToCart);
 
 /**
  * @route   PUT /api/cart/item/:itemId
  * @desc    Update cart item quantity
  * @access  Private
  */
-router.put('/item/:itemId', updateCartItem);
+router.put('/item/:itemId', updateCartItemRules, validate, updateCartItem);
 
 /**
  * @route   DELETE /api/cart/item/:itemId
  * @desc    Remove item from cart
  * @access  Private
  */
-router.delete('/item/:itemId', removeFromCart);
+router.delete('/item/:itemId', removeCartItemRules, validate, removeFromCart);
 
 /**
  * @route   DELETE /api/cart/clear

@@ -1,5 +1,6 @@
 const Food = require('../models/Food');
 const APIFeatures = require('../utils/apiResponse');
+const { uploadBuffer } = require('../services/cloudinary.service');
 
 // ==================== ADMIN CONTROLLERS ====================
 
@@ -10,6 +11,11 @@ const createFood = async (req, res, next) => {
     try {
         // Add the admin who created this
         req.body.createdBy = req.user._id;
+
+        if (req.file) {
+            const uploaded = await uploadBuffer(req.file, { folder: 'foods' });
+            req.body.image = uploaded.secure_url;
+        }
 
         const food = await Food.create(req.body);
 
