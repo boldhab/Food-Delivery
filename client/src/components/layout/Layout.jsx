@@ -3,13 +3,13 @@ import Navbar from './Navbar';
 import Footer from './Footer';
 
 const Layout = ({ children }) => {
-  return (
-    <div className="layout">
-      <Navbar />
-      <main>{children}</main>
-      <Footer />
-    </div>
-  );
+    return (
+        <div className="layout">
+            <Navbar />
+            <main className="page-container">{children}</main>
+            <Footer />
+        </div>
+    );
 };
 
 export default Layout;

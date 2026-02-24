@@ -2,6 +2,18 @@ const Food = require('../models/Food');
 const APIFeatures = require('../utils/apiResponse');
 const { uploadBuffer, destroyByPublicId } = require('../services/cloudinary.service');
 
+const normalizeImageFields = (body) => {
+    if (!body || typeof body !== 'object') return;
+
+    if (body.image !== undefined && typeof body.image !== 'string') {
+        delete body.image;
+    }
+
+    if (body.imagePublicId !== undefined && typeof body.imagePublicId !== 'string') {
+        delete body.imagePublicId;
+    }
+};
+
 // ==================== ADMIN CONTROLLERS ====================
 
 // @desc    Create new food item
@@ -9,13 +21,22 @@ const { uploadBuffer, destroyByPublicId } = require('../services/cloudinary.serv
 // @access  Private/Admin
 const createFood = async (req, res, next) => {
     try {
+        normalizeImageFields(req.body);
+
         // Add the admin who created this
         req.body.createdBy = req.user._id;
 
         if (req.file) {
-            const uploaded = await uploadBuffer(req.file, { folder: 'foods' });
-            req.body.image = uploaded.secure_url;
-            req.body.imagePublicId = uploaded.public_id;
+            try {
+                const uploaded = await uploadBuffer(req.file, { folder: 'foods' });
+                req.body.image = uploaded.secure_url;
+                req.body.imagePublicId = uploaded.public_id;
+            } catch (uploadError) {
+                return res.status(502).json({
+                    success: false,
+                    message: `Image upload failed: ${uploadError.message || 'Cloudinary upload error'}`
+                });
+            }
         }
 
         const food = await Food.create(req.body);
@@ -42,6 +63,8 @@ const createFood = async (req, res, next) => {
 // @access  Private/Admin
 const updateFood = async (req, res, next) => {
     try {
+        normalizeImageFields(req.body);
+
         let food = await Food.findById(req.params.id);
 
         if (!food) {
@@ -52,12 +75,19 @@ const updateFood = async (req, res, next) => {
         }
 
         if (req.file) {
-            const uploaded = await uploadBuffer(req.file, { folder: 'foods' });
-            req.body.image = uploaded.secure_url;
-            req.body.imagePublicId = uploaded.public_id;
+            try {
+                const uploaded = await uploadBuffer(req.file, { folder: 'foods' });
+                req.body.image = uploaded.secure_url;
+                req.body.imagePublicId = uploaded.public_id;
 
-            if (food.imagePublicId) {
-                await destroyByPublicId(food.imagePublicId);
+                if (food.imagePublicId) {
+                    await destroyByPublicId(food.imagePublicId);
+                }
+            } catch (uploadError) {
+                return res.status(502).json({
+                    success: false,
+                    message: `Image upload failed: ${uploadError.message || 'Cloudinary upload error'}`
+                });
             }
         }
 
@@ -102,7 +132,7 @@ const deleteFood = async (req, res, next) => {
 
         if (food.imagePublicId) {
             await destroyByPublicId(food.imagePublicId);
-            food.image = 'default-food.jpg';
+            food.image = '/assets/default-food.svg';
             food.imagePublicId = undefined;
         }
 

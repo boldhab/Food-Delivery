@@ -12,16 +12,12 @@ class AdminFoodService {
     }
 
     async createFood(data) {
-        const response = await adminApi.post('/foods', data, {
-            headers: { 'Content-Type': 'multipart/form-data' }
-        });
+        const response = await adminApi.post('/foods', data);
         return response.data;
     }
 
     async updateFood(id, data) {
-        const response = await adminApi.put(`/foods/${id}`, data, {
-            headers: { 'Content-Type': 'multipart/form-data' }
-        });
+        const response = await adminApi.put(`/foods/${id}`, data);
         return response.data;
     }
 

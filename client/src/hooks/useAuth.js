@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useAuthContext } from '../context/AuthContext';
 
 const useAuth = () => {
-    const [user, setUser] = useState(null);
-    return { user };
+    return useAuthContext();
 };
 
 export default useAuth;

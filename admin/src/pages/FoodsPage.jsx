@@ -124,15 +124,17 @@ const FoodsPage = ({ initialMode = null, initialFoodId = null }) => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         const formData = new FormData();
-        formData.append('name', formState.name);
-        formData.append('description', formState.description);
-        formData.append('price', formState.price);
+        formData.append('name', formState.name.trim());
+        formData.append('description', formState.description.trim());
+        formData.append('price', String(Number(formState.price)));
         formData.append('category', formState.category);
-        formData.append('isAvailable', formState.isAvailable);
-        formData.append('isVegetarian', formState.isVegetarian);
-        formData.append('isPopular', formState.isPopular);
-        formData.append('preparationTime', formState.preparationTime);
-        if (formState.image) {
+        formData.append('isAvailable', String(Boolean(formState.isAvailable)));
+        formData.append('isVegetarian', String(Boolean(formState.isVegetarian)));
+        formData.append('isPopular', String(Boolean(formState.isPopular)));
+        if (formState.preparationTime !== '' && formState.preparationTime !== null && formState.preparationTime !== undefined) {
+            formData.append('preparationTime', String(Number(formState.preparationTime)));
+        }
+        if (formState.image instanceof File) {
             formData.append('image', formState.image);
         }
 
@@ -151,7 +153,9 @@ const FoodsPage = ({ initialMode = null, initialFoodId = null }) => {
             setModalOpen(false);
             navigate('/admin/foods');
         } catch (error) {
-            toast.error('Failed to save food item');
+            const validationMessage = error?.response?.data?.errors?.[0]?.message;
+            const message = validationMessage || error?.response?.data?.message || 'Failed to save food item';
+            toast.error(message);
         }
     };
 

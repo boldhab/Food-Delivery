@@ -37,7 +37,7 @@ const foodSchema = new mongoose.Schema({
     
     image: {
         type: String,
-        default: 'default-food.jpg'
+        default: '/assets/default-food.svg'
     },
 
     imagePublicId: {

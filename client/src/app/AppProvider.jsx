@@ -1,10 +1,12 @@
 import React from 'react';
+import { AuthProvider } from '../context/AuthContext';
+import { CartProvider } from '../context/CartContext';
 
 const AppProvider = ({ children }) => {
   return (
-    <div>
-      {children}
-    </div>
+    <AuthProvider>
+      <CartProvider>{children}</CartProvider>
+    </AuthProvider>
   );
 };
 

@@ -3,8 +3,17 @@ module.exports = (err, req, res, next) => {
     let statusCode = res.statusCode === 200 ? 500 : res.statusCode;
     let message = err.message || 'Internal Server Error';
 
+    if (err.statusCode && Number.isInteger(err.statusCode)) {
+        statusCode = err.statusCode;
+    }
+
     // Mongoose validation errors (missing/invalid fields)
     if (err.name === 'ValidationError') {
+        statusCode = 400;
+    }
+
+    // Multer upload errors
+    if (err.name === 'MulterError') {
         statusCode = 400;
     }
 

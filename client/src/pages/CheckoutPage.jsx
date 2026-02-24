@@ -1,140 +1,165 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { toast } from 'react-hot-toast';
-import { FiClock } from 'react-icons/fi';
 import PaymentForm from '../components/checkout/PaymentForm';
-import orderService from '../services/order.service';
 import cartService from '../services/cart.service';
+import orderService from '../services/order.service';
 import './CheckoutPage.css';
 
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY || '');
+const STRIPE_PUBLIC_KEY = import.meta.env.VITE_STRIPE_PUBLIC_KEY?.trim();
+const stripePromise = STRIPE_PUBLIC_KEY ? loadStripe(STRIPE_PUBLIC_KEY) : null;
 
 const CheckoutPage = () => {
     const navigate = useNavigate();
-    const [cart, setCart] = useState(null);
-    const [order, setOrder] = useState(null);
+    const [cart, setCart] = useState({ items: [], subtotal: 0, totalItems: 0 });
     const [loading, setLoading] = useState(true);
-    const [step, setStep] = useState(1);
-    const [deliveryDetails, setDeliveryDetails] = useState({
+    const [submitting, setSubmitting] = useState(false);
+    const [step, setStep] = useState('details');
+    const [order, setOrder] = useState(null);
+    const [form, setForm] = useState({
+        paymentMethod: 'cash_on_delivery',
         street: '',
         city: '',
         state: '',
         zipCode: '',
-        phone: '',
-        instructions: ''
+        instructions: '',
     });
 
     useEffect(() => {
-        const fetchCartData = async () => {
-            try {
-                const response = await cartService.getCart();
+        cartService
+            .getCart()
+            .then((response) => {
                 setCart(response.data);
-            } catch (_error) {
+                if (!response.data.items.length) {
+                    navigate('/cart');
+                }
+            })
+            .catch(() => {
                 toast.error('Failed to load cart');
                 navigate('/cart');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchCartData();
+            })
+            .finally(() => setLoading(false));
     }, [navigate]);
 
-    const handleDeliverySubmit = async (e) => {
-        e.preventDefault();
+    const totals = useMemo(() => {
+        const tax = cart.subtotal * 0.08;
+        const delivery = cart.subtotal > 50 ? 0 : 5;
+        return {
+            tax,
+            delivery,
+            total: cart.subtotal + tax + delivery,
+        };
+    }, [cart.subtotal]);
 
+    const createOrder = async (event) => {
+        event.preventDefault();
+        if (form.paymentMethod === 'card' && !stripePromise) {
+            toast.error('Stripe is not configured. Set VITE_STRIPE_PUBLIC_KEY in client/.env');
+            return;
+        }
+        setSubmitting(true);
         try {
-            const orderData = {
-                paymentMethod: 'card',
+            const response = await orderService.createOrder({
+                paymentMethod: form.paymentMethod,
                 deliveryAddress: {
-                    street: deliveryDetails.street,
-                    city: deliveryDetails.city,
-                    state: deliveryDetails.state,
-                    zipCode: deliveryDetails.zipCode,
-                    instructions: deliveryDetails.instructions
+                    street: form.street.trim(),
+                    city: form.city.trim(),
+                    state: form.state.trim(),
+                    zipCode: form.zipCode.trim(),
+                    instructions: form.instructions,
                 },
-                specialInstructions: deliveryDetails.instructions
-            };
+                specialInstructions: form.instructions.trim(),
+            });
 
-            const response = await orderService.createOrder(orderData);
+            if (form.paymentMethod === 'cash_on_delivery') {
+                toast.success('Order placed');
+                navigate('/orders');
+                return;
+            }
+
             setOrder(response.data);
-            setStep(2);
+            setStep('payment');
         } catch (error) {
-            toast.error(error.response?.data?.message || 'Failed to create order');
+            const validationMessage = error?.response?.data?.errors?.[0]?.message;
+            const message = validationMessage || error?.response?.data?.message || 'Failed to create order';
+            toast.error(message);
+        } finally {
+            setSubmitting(false);
         }
     };
 
-    const handlePaymentSuccess = () => {
-        toast.success('Payment successful. Order confirmed.');
-        navigate('/payment-success');
-    };
-
-    const handlePaymentError = (error) => {
-        toast.error(error.message || 'Payment failed');
-    };
-
     if (loading) return <div className="loading">Loading checkout...</div>;
-    if (!cart || cart.items.length === 0) return <div className="loading">Your cart is empty.</div>;
 
     return (
         <div className="checkout-page">
             <h1>Checkout</h1>
-
             <div className="checkout-content">
                 <div className="checkout-form">
-                    {step === 1 ? (
-                        <form onSubmit={handleDeliverySubmit} className="delivery-form">
+                    {step === 'details' ? (
+                        <form onSubmit={createOrder} className="delivery-form">
                             <h2>Delivery Details</h2>
                             <input
                                 placeholder="Street"
-                                value={deliveryDetails.street}
-                                onChange={(e) => setDeliveryDetails({ ...deliveryDetails, street: e.target.value })}
+                                value={form.street}
+                                onChange={(event) => setForm({ ...form, street: event.target.value })}
                                 required
                             />
                             <input
                                 placeholder="City"
-                                value={deliveryDetails.city}
-                                onChange={(e) => setDeliveryDetails({ ...deliveryDetails, city: e.target.value })}
+                                value={form.city}
+                                onChange={(event) => setForm({ ...form, city: event.target.value })}
                                 required
                             />
                             <input
                                 placeholder="State"
-                                value={deliveryDetails.state}
-                                onChange={(e) => setDeliveryDetails({ ...deliveryDetails, state: e.target.value })}
+                                value={form.state}
+                                onChange={(event) => setForm({ ...form, state: event.target.value })}
                                 required
                             />
                             <input
                                 placeholder="ZIP Code"
-                                value={deliveryDetails.zipCode}
-                                onChange={(e) => setDeliveryDetails({ ...deliveryDetails, zipCode: e.target.value })}
-                                required
-                            />
-                            <input
-                                placeholder="Phone"
-                                value={deliveryDetails.phone}
-                                onChange={(e) => setDeliveryDetails({ ...deliveryDetails, phone: e.target.value })}
+                                value={form.zipCode}
+                                onChange={(event) => setForm({ ...form, zipCode: event.target.value })}
                                 required
                             />
                             <textarea
-                                placeholder="Delivery instructions (optional)"
-                                value={deliveryDetails.instructions}
-                                onChange={(e) => setDeliveryDetails({ ...deliveryDetails, instructions: e.target.value })}
+                                placeholder="Delivery instructions"
+                                value={form.instructions}
+                                onChange={(event) => setForm({ ...form, instructions: event.target.value })}
                             />
-                            <button type="submit">Continue to Payment</button>
+                            <select
+                                value={form.paymentMethod}
+                                onChange={(event) => setForm({ ...form, paymentMethod: event.target.value })}
+                            >
+                                <option value="cash_on_delivery">Cash on Delivery</option>
+                                <option value="card">Card</option>
+                            </select>
+                            <button type="submit" disabled={submitting}>
+                                {submitting ? 'Processing...' : form.paymentMethod === 'card' ? 'Continue to payment' : 'Place order'}
+                            </button>
                         </form>
                     ) : null}
 
-                    {step === 2 && order ? (
+                    {step === 'payment' && order && stripePromise ? (
                         <Elements stripe={stripePromise}>
                             <PaymentForm
                                 orderId={order._id}
                                 amount={order.totalAmount}
-                                onSuccess={handlePaymentSuccess}
-                                onError={handlePaymentError}
+                                onSuccess={() => {
+                                    toast.success('Payment successful');
+                                    navigate('/payment-success');
+                                }}
+                                onError={(error) => toast.error(error.message || 'Payment failed')}
                             />
                         </Elements>
+                    ) : null}
+
+                    {step === 'payment' && order && !stripePromise ? (
+                        <div className="payment-missing-key">
+                            Stripe is not configured. Add `VITE_STRIPE_PUBLIC_KEY` in `client/.env`.
+                        </div>
                     ) : null}
                 </div>
 
@@ -148,11 +173,16 @@ const CheckoutPage = () => {
                             <span>${(item.price * item.quantity).toFixed(2)}</span>
                         </div>
                     ))}
-                    <div className="summary-total">
-                        <strong>Total: ${(cart.subtotal + (cart.subtotal > 50 ? 0 : 5) + cart.subtotal * 0.08).toFixed(2)}</strong>
+                    <div className="summary-item">
+                        <span>Tax</span>
+                        <span>${totals.tax.toFixed(2)}</span>
                     </div>
-                    <div className="delivery-estimate">
-                        <FiClock /> Estimated delivery: 30-45 min
+                    <div className="summary-item">
+                        <span>Delivery</span>
+                        <span>{totals.delivery ? `$${totals.delivery.toFixed(2)}` : 'Free'}</span>
+                    </div>
+                    <div className="summary-total">
+                        <strong>Total: ${totals.total.toFixed(2)}</strong>
                     </div>
                 </div>
             </div>

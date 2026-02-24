@@ -1,8 +1,7 @@
-import { useState } from 'react';
+import { useCartContext } from '../context/CartContext';
 
 const useCart = () => {
-    const [cart, setCart] = useState([]);
-    return { cart };
+    return useCartContext();
 };
 
 export default useCart;

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import { FiCreditCard, FiLock, FiAlertCircle } from 'react-icons/fi';
+import { FiLock, FiAlertCircle } from 'react-icons/fi';
 import paymentService from '../../services/payment.service';
 import './PaymentForm.css';
 
@@ -26,7 +26,6 @@ const PaymentForm = ({ orderId, amount, onSuccess, onError }) => {
     const elements = useElements();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [paymentMethod, setPaymentMethod] = useState('card');
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -64,61 +63,35 @@ const PaymentForm = ({ orderId, amount, onSuccess, onError }) => {
         <div className="payment-form-container">
             <div className="payment-header">
                 <h3>Payment Details</h3>
-                <div className="payment-methods">
-                    <button
-                        type="button"
-                        className={`method-btn ${paymentMethod === 'card' ? 'active' : ''}`}
-                        onClick={() => setPaymentMethod('card')}
-                    >
-                        <FiCreditCard /> Card
-                    </button>
-                    <button
-                        type="button"
-                        className={`method-btn ${paymentMethod === 'cod' ? 'active' : ''}`}
-                        onClick={() => setPaymentMethod('cod')}
-                    >
-                        Cash on Delivery
-                    </button>
-                </div>
             </div>
-
-            {paymentMethod === 'card' ? (
-                <form onSubmit={handleSubmit} className="payment-form">
-                    <div className="form-group">
-                        <label>Card Information</label>
-                        <div className="card-element-wrapper">
-                            <CardElement options={CARD_ELEMENT_OPTIONS} />
-                        </div>
+            <form onSubmit={handleSubmit} className="payment-form">
+                <div className="form-group">
+                    <label>Card Information</label>
+                    <div className="card-element-wrapper">
+                        <CardElement options={CARD_ELEMENT_OPTIONS} />
                     </div>
-
-                    <div className="payment-summary">
-                        <div className="summary-row">
-                            <span>Amount to pay:</span>
-                            <span className="amount">${amount?.toFixed(2)}</span>
-                        </div>
-                        <div className="secure-badge">
-                            <FiLock /> Secure payment powered by Stripe
-                        </div>
-                    </div>
-
-                    {error ? (
-                        <div className="error-message">
-                            <FiAlertCircle /> {error}
-                        </div>
-                    ) : null}
-
-                    <button type="submit" disabled={!stripe || loading} className="pay-btn">
-                        {loading ? 'Processing...' : `Pay $${amount?.toFixed(2)}`}
-                    </button>
-                </form>
-            ) : (
-                <div className="cod-section">
-                    <p>You will pay when you receive your order.</p>
-                    <button type="button" onClick={() => onSuccess?.('cod')} className="place-order-btn">
-                        Place Order (Cash on Delivery)
-                    </button>
                 </div>
-            )}
+
+                <div className="payment-summary">
+                    <div className="summary-row">
+                        <span>Amount to pay:</span>
+                        <span className="amount">${amount?.toFixed(2)}</span>
+                    </div>
+                    <div className="secure-badge">
+                        <FiLock /> Secure payment powered by Stripe
+                    </div>
+                </div>
+
+                {error ? (
+                    <div className="error-message">
+                        <FiAlertCircle /> {error}
+                    </div>
+                ) : null}
+
+                <button type="submit" disabled={!stripe || loading} className="pay-btn">
+                    {loading ? 'Processing...' : `Pay $${amount?.toFixed(2)}`}
+                </button>
+            </form>
         </div>
     );
 };
