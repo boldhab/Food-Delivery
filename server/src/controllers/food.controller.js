@@ -1,6 +1,6 @@
 const Food = require('../models/Food');
 const APIFeatures = require('../utils/apiResponse');
-const { uploadBuffer } = require('../services/cloudinary.service');
+const { uploadBuffer, destroyByPublicId } = require('../services/cloudinary.service');
 
 // ==================== ADMIN CONTROLLERS ====================
 
@@ -15,6 +15,7 @@ const createFood = async (req, res, next) => {
         if (req.file) {
             const uploaded = await uploadBuffer(req.file, { folder: 'foods' });
             req.body.image = uploaded.secure_url;
+            req.body.imagePublicId = uploaded.public_id;
         }
 
         const food = await Food.create(req.body);
@@ -48,6 +49,16 @@ const updateFood = async (req, res, next) => {
                 success: false,
                 message: 'Food item not found'
             });
+        }
+
+        if (req.file) {
+            const uploaded = await uploadBuffer(req.file, { folder: 'foods' });
+            req.body.image = uploaded.secure_url;
+            req.body.imagePublicId = uploaded.public_id;
+
+            if (food.imagePublicId) {
+                await destroyByPublicId(food.imagePublicId);
+            }
         }
 
         food = await Food.findByIdAndUpdate(
@@ -87,6 +98,12 @@ const deleteFood = async (req, res, next) => {
                 success: false,
                 message: 'Food item not found'
             });
+        }
+
+        if (food.imagePublicId) {
+            await destroyByPublicId(food.imagePublicId);
+            food.image = 'default-food.jpg';
+            food.imagePublicId = undefined;
         }
 
         // Soft delete - just mark as unavailable

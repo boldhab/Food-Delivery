@@ -1,6 +1,27 @@
 const Review = require('../models/Review');
 const Food = require('../models/Food');
 
+const updateFoodRating = async (foodId) => {
+    const stats = await Review.aggregate([
+        { $match: { food: Review.schema.path('food').cast(foodId) } },
+        {
+            $group: {
+                _id: '$food',
+                averageRating: { $avg: '$rating' },
+                reviewCount: { $sum: 1 }
+            }
+        }
+    ]);
+
+    const averageRating = stats[0]?.averageRating || 0;
+    const reviewCount = stats[0]?.reviewCount || 0;
+
+    await Food.findByIdAndUpdate(foodId, {
+        avgRating: Math.round(averageRating * 10) / 10,
+        reviewCount
+    });
+};
+
 /**
  * @desc    Add a review for a food item
  * @route   POST /api/reviews
@@ -39,6 +60,8 @@ const addReview = async (req, res, next) => {
             rating,
             comment
         });
+
+        await updateFoodRating(foodId);
 
         await review.populate('user', 'name');
 
@@ -154,7 +177,9 @@ const deleteReview = async (req, res, next) => {
             });
         }
 
+        const foodId = review.food;
         await review.deleteOne();
+        await updateFoodRating(foodId);
 
         res.json({
             success: true,

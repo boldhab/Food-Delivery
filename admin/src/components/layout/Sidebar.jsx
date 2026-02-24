@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import {
     FiHome,
     FiShoppingBag,
@@ -12,11 +13,19 @@ import {
     FiPieChart
 } from 'react-icons/fi';
 import { useAdminAuth } from '../../hooks/useAdminAuth';
-import './Sidebar.css';
 
-const Sidebar = ({ collapsed, setCollapsed }) => {
+const Sidebar = ({ collapsed, setCollapsed, mobileOpen, setMobileOpen }) => {
     const { logout } = useAdminAuth();
     const navigate = useNavigate();
+    const [isDesktop, setIsDesktop] = useState(true);
+
+    useEffect(() => {
+        const media = window.matchMedia('(min-width: 768px)');
+        const update = () => setIsDesktop(media.matches);
+        update();
+        media.addEventListener('change', update);
+        return () => media.removeEventListener('change', update);
+    }, []);
 
     const menuItems = [
         { path: '/admin', icon: FiHome, label: 'Dashboard' },
@@ -30,48 +39,58 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
     const handleLogout = () => {
         logout();
         navigate('/admin/login');
+        setMobileOpen(false);
     };
 
     return (
-        <aside 
-            className={`flex flex-col h-screen bg-white border-r border-slate-200 transition-all duration-300 ease-in-out z-30 shadow-sm
-            ${collapsed ? 'w-20' : 'w-64'}`}
+        <motion.aside
+            initial={false}
+            animate={{
+                width: collapsed ? 84 : 260,
+                x: isDesktop ? 0 : (mobileOpen ? 0 : -280)
+            }}
+            transition={{ type: 'spring', stiffness: 260, damping: 30 }}
+            className="fixed md:relative z-30 flex h-screen flex-col border-r border-slate-200 bg-[var(--surface)] shadow-sm"
         >
-            {/* Sidebar Header */}
-            <div className="flex items-center justify-between h-16 px-6 border-b border-slate-100">
-                {!collapsed && (
-                    <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold">
-                            F
-                        </div>
-                        <span className="text-xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
-                            FoodieHub
-                        </span>
-                    </div>
-                )}
-                {collapsed && (
-                    <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold mx-auto">
+            <div className="flex items-center justify-between h-16 px-5 border-b border-slate-100">
+                <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-[var(--primary)] flex items-center justify-center text-white font-bold">
                         F
                     </div>
-                )}
+                    {!collapsed && (
+                        <span className="text-lg font-bold text-[var(--text-primary)] tracking-tight">
+                            FoodieHub
+                        </span>
+                    )}
+                </div>
+                <button
+                    onClick={() => setCollapsed(!collapsed)}
+                    className="p-2 rounded-lg text-[var(--text-secondary)] hover:bg-slate-100 transition-colors"
+                    aria-label="Toggle sidebar"
+                    type="button"
+                >
+                    {collapsed ? <FiChevronRight /> : <FiChevronLeft />}
+                </button>
             </div>
 
-            {/* Navigation Section */}
-            <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+            <nav className="flex-1 px-3 py-5 space-y-2 overflow-y-auto">
                 {menuItems.map((item) => (
                     <NavLink
                         key={item.path}
                         to={item.path}
-                        className={({ isActive }) => `
-                            flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group
-                            ${isActive 
-                                ? 'bg-blue-50 text-blue-600 font-semibold' 
-                                : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}
-                            ${collapsed ? 'justify-center' : ''}
-                        `}
+                        onClick={() => {
+                            if (!isDesktop) setMobileOpen(false);
+                        }}
+                        className={({ isActive }) =>
+                            `group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all ${
+                                isActive
+                                    ? 'bg-[rgba(74,144,226,0.12)] text-[var(--primary)]'
+                                    : 'text-[var(--text-secondary)] hover:bg-slate-50 hover:text-[var(--text-primary)]'
+                            } ${collapsed ? 'justify-center' : ''}`
+                        }
                     >
-                        <item.icon className={`text-xl ${collapsed ? '' : 'min-w-[20px]'}`} />
-                        {!collapsed && <span className="text-sm tracking-wide">{item.label}</span>}
+                        <item.icon className="text-lg" />
+                        {!collapsed && <span>{item.label}</span>}
                         {collapsed && (
                             <div className="fixed left-20 ml-2 px-2 py-1 bg-slate-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
                                 {item.label}
@@ -81,25 +100,18 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
                 ))}
             </nav>
 
-            {/* Logout Footer */}
             <div className="p-4 border-t border-slate-100">
-                <button 
+                <button
                     onClick={handleLogout}
-                    className={`
-                        flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-slate-500 hover:bg-red-50 hover:text-red-600 transition-all duration-200 group
-                        ${collapsed ? 'justify-center' : ''}
-                    `}
+                    className={`flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-[var(--text-secondary)] hover:bg-red-50 hover:text-[var(--danger)] transition-all ${
+                        collapsed ? 'justify-center' : ''
+                    }`}
                 >
-                    <FiLogOut className="text-xl" />
-                    {!collapsed && <span className="text-sm font-medium tracking-wide">Logout</span>}
-                    {collapsed && (
-                        <div className="fixed left-20 ml-2 px-2 py-1 bg-red-600 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
-                            Logout
-                        </div>
-                    )}
+                    <FiLogOut className="text-lg" />
+                    {!collapsed && <span className="text-sm font-semibold">Logout</span>}
                 </button>
             </div>
-        </aside>
+        </motion.aside>
     );
 };
 

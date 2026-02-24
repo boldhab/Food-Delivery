@@ -24,5 +24,9 @@ const uploadBuffer = (file, options = {}) => {
 };
 
 module.exports = {
-    uploadBuffer
+    uploadBuffer,
+    destroyByPublicId: async (publicId) => {
+        if (!publicId) return null;
+        return cloudinary.uploader.destroy(publicId, { resource_type: 'image' });
+    }
 };

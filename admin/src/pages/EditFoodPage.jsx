@@ -1,7 +1,10 @@
 import React from 'react';
+import { useParams } from 'react-router-dom';
+import FoodsPage from './FoodsPage';
 
 const EditFoodPage = () => {
-    return <div><h1>Edit Food</h1></div>;
+    const { id } = useParams();
+    return <FoodsPage initialMode="edit" initialFoodId={id} />;
 };
 
 export default EditFoodPage;

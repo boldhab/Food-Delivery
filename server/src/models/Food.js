@@ -39,6 +39,10 @@ const foodSchema = new mongoose.Schema({
         type: String,
         default: 'default-food.jpg'
     },
+
+    imagePublicId: {
+        type: String
+    },
     
     isAvailable: {
         type: Boolean,
@@ -60,6 +64,19 @@ const foodSchema = new mongoose.Schema({
         default: 15,
         min: 5,
         max: 120
+    },
+
+    avgRating: {
+        type: Number,
+        default: 0,
+        min: 0,
+        max: 5
+    },
+
+    reviewCount: {
+        type: Number,
+        default: 0,
+        min: 0
     },
     
     // Track who created/updated this food item

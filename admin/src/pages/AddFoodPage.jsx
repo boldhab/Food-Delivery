@@ -1,7 +1,8 @@
 import React from 'react';
+import FoodsPage from './FoodsPage';
 
 const AddFoodPage = () => {
-    return <div><h1>Add Food</h1></div>;
+    return <FoodsPage initialMode="add" />;
 };
 
 export default AddFoodPage;

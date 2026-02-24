@@ -33,7 +33,7 @@ router.get('/:id', getFoodById);
 
 // ==================== ADMIN ROUTES ====================
 router.post('/', protect, admin, upload.single('image'), addFoodRules, validate, createFood);
-router.put('/:id', protect, admin, updateFoodRules, validate, updateFood);
+router.put('/:id', protect, admin, upload.single('image'), updateFoodRules, validate, updateFood);
 router.delete('/:id', protect, admin, deleteFood);
 router.patch('/:id/toggle-availability', protect, admin, toggleAvailability);
 
