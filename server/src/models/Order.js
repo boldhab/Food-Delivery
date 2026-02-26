@@ -1,5 +1,14 @@
 const mongoose = require('mongoose');
 
+const generateOrderNumber = () => {
+    const date = new Date();
+    const year = date.getFullYear().toString().slice(-2);
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+    return `ORD-${year}${month}${day}-${random}`;
+};
+
 const orderItemSchema = new mongoose.Schema({
     foodId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -44,7 +53,8 @@ const orderSchema = new mongoose.Schema({
     orderNumber: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        default: generateOrderNumber
     },
     
     // User Information
@@ -139,17 +149,11 @@ const orderSchema = new mongoose.Schema({
     timestamps: true
 });
 
-// Generate order number before saving (KEEP - only here)
-orderSchema.pre('save', function(next) {
+// Generate order number before saving
+orderSchema.pre('save', function() {
     if (!this.orderNumber) {
-        const date = new Date();
-        const year = date.getFullYear().toString().slice(-2);
-        const month = (date.getMonth() + 1).toString().padStart(2, '0');
-        const day = date.getDate().toString().padStart(2, '0');
-        const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
-        this.orderNumber = `ORD-${year}${month}${day}-${random}`;
+        this.orderNumber = generateOrderNumber();
     }
-    next();
 });
 
 // Indexes (KEEP)
