@@ -9,8 +9,8 @@
 }
 
 .page-container {
-    width: min(1180px, 92%);
-    margin: 1.5rem auto;
+    width: 100%;
+    margin: 0;
     flex: 1;
 }
 
