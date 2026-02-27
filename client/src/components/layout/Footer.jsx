@@ -44,7 +44,7 @@ const Footer = () => {
                     {/* Brand Info */}
                     <div className="space-y-4">
                         <Link to="/" className="inline-flex items-center gap-2 group">
-                            <span className="text-2xl font-bold bg-gradient-to-r from-orange-500 to-amber-500 
+                            <span className="text-2xl font-bold bg-gradient-to-r from-green-500 to-emerald-500 
                                          bg-clip-text text-transparent">
                                 FoodDash
                             </span>
@@ -60,7 +60,7 @@ const Footer = () => {
                         <div className="space-y-2 pt-4">
                             {contactInfo.map((item, index) => (
                                 <div key={index} className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-400">
-                                    <item.icon className="w-4 h-4 text-orange-500 flex-shrink-0" />
+                                    <item.icon className="w-4 h-4 text-green-500 flex-shrink-0" />
                                     <span>{item.text}</span>
                                 </div>
                             ))}
@@ -83,17 +83,17 @@ const Footer = () => {
                                          border border-slate-200 dark:border-slate-700
                                          rounded-xl text-slate-900 dark:text-white
                                          placeholder:text-slate-400
-                                         focus:outline-none focus:border-orange-500
-                                         focus:ring-2 focus:ring-orange-500/20
+                                         focus:outline-none focus:border-green-500
+                                         focus:ring-2 focus:ring-green-500/20
                                          transition-all duration-200"
                             />
                             <button
                                 type="submit"
-                                className="px-6 py-3 bg-orange-500 hover:bg-orange-600
+                                className="px-6 py-3 bg-green-500 hover:bg-green-600
                                          text-white font-medium rounded-xl
                                          transition-colors duration-200
-                                         shadow-lg shadow-orange-500/25
-                                         hover:shadow-orange-500/35"
+                                         shadow-lg shadow-green-500/25
+                                         hover:shadow-green-500/35"
                             >
                                 Subscribe
                             </button>
@@ -144,7 +144,7 @@ const Footer = () => {
                                 href={social.href}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-slate-400 hover:text-orange-500 
+                                className="text-slate-400 hover:text-green-500 
                                          transition-colors duration-200"
                                 aria-label={social.label}
                             >

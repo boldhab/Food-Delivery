@@ -180,8 +180,8 @@ const FoodList = ({
                                  dark:hover:bg-slate-600 transition-colors">
                     Clear filters
                 </button>
-                <button className="px-4 py-2 bg-orange-500 text-white
-                                 rounded-full text-sm hover:bg-orange-600 
+                <button className="px-4 py-2 bg-green-500 text-white
+                                 rounded-full text-sm hover:bg-green-600 
                                  transition-colors">
                     Browse popular items
                 </button>
@@ -208,7 +208,7 @@ const FoodList = ({
                     {/* View toggle (optional) */}
                     {variant === 'grid' && (
                         <div className="flex items-center gap-2">
-                            <button className="p-2 bg-orange-500 text-white rounded-lg">
+                            <button className="p-2 bg-green-500 text-white rounded-lg">
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
                                           d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6z" />
@@ -268,8 +268,8 @@ const FoodList = ({
                 <div ref={loadMoreRef} className="w-full py-8 flex justify-center">
                     {loading ? (
                         <div className="flex items-center gap-3">
-                            <div className="w-6 h-6 border-2 border-orange-500/30 
-                                          border-t-orange-500 rounded-full animate-spin" />
+                            <div className="w-6 h-6 border-2 border-green-500/30 
+                                          border-t-green-500 rounded-full animate-spin" />
                             <span className="text-sm text-slate-500 dark:text-slate-400">
                                 Loading more items...
                             </span>
@@ -281,7 +281,7 @@ const FoodList = ({
                                 className="px-6 py-3 bg-white dark:bg-slate-800
                                          border border-slate-200 dark:border-slate-700
                                          rounded-xl text-slate-700 dark:text-slate-300
-                                         hover:border-orange-500 hover:text-orange-500
+                                         hover:border-green-500 hover:text-green-500
                                          transition-all duration-200
                                          flex items-center gap-2"
                             >

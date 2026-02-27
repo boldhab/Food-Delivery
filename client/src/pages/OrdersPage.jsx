@@ -165,8 +165,8 @@ const OrdersPage = () => {
             preparing: { 
                 color: 'orange', 
                 icon: FiPackage, 
-                bg: 'bg-orange-100 dark:bg-orange-900/30',
-                text: 'text-orange-700 dark:text-orange-300',
+                bg: 'bg-green-100 dark:bg-green-900/30',
+                text: 'text-green-700 dark:text-green-300',
                 label: 'Preparing'
             },
             out_for_delivery: { 
@@ -212,7 +212,7 @@ const OrdersPage = () => {
     return (
         <div className="min-h-screen bg-white dark:bg-slate-950">
             {/* Header */}
-            <div className="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-slate-900 dark:to-slate-800 border-b border-slate-200 dark:border-slate-800">
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-slate-900 dark:to-slate-800 border-b border-slate-200 dark:border-slate-800">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                         <div>
@@ -232,7 +232,7 @@ const OrdersPage = () => {
                                      bg-white dark:bg-slate-800
                                      border border-slate-200 dark:border-slate-700
                                      rounded-lg text-slate-700 dark:text-slate-300
-                                     hover:border-orange-500 transition-colors
+                                     hover:border-green-500 transition-colors
                                      disabled:opacity-50"
                         >
                             <FiRefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
@@ -248,7 +248,7 @@ const OrdersPage = () => {
                             className="px-4 py-2 bg-white dark:bg-slate-800
                                      border border-slate-200 dark:border-slate-700
                                      rounded-lg text-slate-700 dark:text-slate-300
-                                     focus:outline-none focus:border-orange-500"
+                                     focus:outline-none focus:border-green-500"
                         >
                             <option value="all">All Orders</option>
                             <option value="pending">Pending</option>
@@ -265,7 +265,7 @@ const OrdersPage = () => {
                             className="px-4 py-2 bg-white dark:bg-slate-800
                                      border border-slate-200 dark:border-slate-700
                                      rounded-lg text-slate-700 dark:text-slate-300
-                                     focus:outline-none focus:border-orange-500"
+                                     focus:outline-none focus:border-green-500"
                         >
                             <option value="newest">Newest First</option>
                             <option value="oldest">Oldest First</option>
@@ -295,10 +295,10 @@ const OrdersPage = () => {
                         </p>
                         <button
                             onClick={() => navigate('/menu')}
-                            className="px-6 py-3 bg-orange-500 hover:bg-orange-600
+                            className="px-6 py-3 bg-green-500 hover:bg-green-600
                                      text-white font-medium rounded-xl
                                      transition-colors duration-200
-                                     shadow-lg shadow-orange-500/25"
+                                     shadow-lg shadow-green-500/25"
                         >
                             Browse Menu
                         </button>
@@ -321,8 +321,8 @@ const OrdersPage = () => {
                                         className="bg-white dark:bg-slate-800 
                                                  rounded-2xl border border-slate-200 
                                                  dark:border-slate-700 overflow-hidden
-                                                 hover:border-orange-200 
-                                                 dark:hover:border-orange-800
+                                                 hover:border-green-200 
+                                                 dark:hover:border-green-800
                                                  transition-all duration-200"
                                     >
                                         {/* Order Header */}
@@ -355,7 +355,7 @@ const OrdersPage = () => {
                                                 {/* Right side - Status & actions */}
                                                 <div className="flex flex-wrap items-center gap-4">
                                                     <div className="text-right">
-                                                        <div className="text-2xl font-bold text-orange-500">
+                                                        <div className="text-2xl font-bold text-green-500">
                                                             ${order.totalAmount.toFixed(2)}
                                                         </div>
                                                         <div className={`
@@ -385,9 +385,9 @@ const OrdersPage = () => {
                                                         {order.orderStatus === 'out_for_delivery' && (
                                                             <button
                                                                 onClick={() => handleTrackOrder(order._id)}
-                                                                className="px-4 py-2 bg-orange-500 
+                                                                className="px-4 py-2 bg-green-500 
                                                                          text-white rounded-lg
-                                                                         hover:bg-orange-600
+                                                                         hover:bg-green-600
                                                                          transition-colors text-sm font-medium"
                                                             >
                                                                 Track Order
@@ -397,9 +397,9 @@ const OrdersPage = () => {
                                                         {order.orderStatus === 'delivered' && (
                                                             <button
                                                                 onClick={() => handleReorder(order)}
-                                                                className="px-4 py-2 bg-orange-500 
+                                                                className="px-4 py-2 bg-green-500 
                                                                          text-white rounded-lg
-                                                                         hover:bg-orange-600
+                                                                         hover:bg-green-600
                                                                          transition-colors text-sm font-medium"
                                                             >
                                                                 Reorder
@@ -410,7 +410,7 @@ const OrdersPage = () => {
                                                             onClick={() => toggleOrderDetails(order._id)}
                                                             className="p-2 border border-slate-200 
                                                                      dark:border-slate-700 rounded-lg
-                                                                     hover:border-orange-500 transition-colors"
+                                                                     hover:border-green-500 transition-colors"
                                                         >
                                                             {isExpanded ? 
                                                                 <FiChevronUp className="w-5 h-5" /> : 
@@ -461,7 +461,7 @@ const OrdersPage = () => {
                                                                                     Qty: {item.quantity} × ${item.price.toFixed(2)}
                                                                                 </div>
                                                                             </div>
-                                                                            <div className="font-semibold text-orange-500">
+                                                                            <div className="font-semibold text-green-500">
                                                                                 ${(item.quantity * item.price).toFixed(2)}
                                                                             </div>
                                                                         </div>
@@ -513,7 +513,7 @@ const OrdersPage = () => {
                                                                         <div className="border-t border-slate-200 dark:border-slate-700 pt-2 mt-2">
                                                                             <div className="flex justify-between font-semibold">
                                                                                 <span className="text-slate-900 dark:text-white">Total</span>
-                                                                                <span className="text-orange-500">
+                                                                                <span className="text-green-500">
                                                                                     ${order.totalAmount.toFixed(2)}
                                                                                 </span>
                                                                             </div>
@@ -525,7 +525,7 @@ const OrdersPage = () => {
                                                                 <div className="flex gap-2">
                                                                     <button className="flex-1 p-3 border border-slate-200 
                                                                                      dark:border-slate-700 rounded-lg
-                                                                                     hover:border-orange-500 transition-colors
+                                                                                     hover:border-green-500 transition-colors
                                                                                      flex items-center justify-center gap-2
                                                                                      text-slate-600 dark:text-slate-400">
                                                                         <FiHelpCircle className="w-4 h-4" />
@@ -533,7 +533,7 @@ const OrdersPage = () => {
                                                                     </button>
                                                                     <button className="flex-1 p-3 border border-slate-200 
                                                                                      dark:border-slate-700 rounded-lg
-                                                                                     hover:border-orange-500 transition-colors
+                                                                                     hover:border-green-500 transition-colors
                                                                                      flex items-center justify-center gap-2
                                                                                      text-slate-600 dark:text-slate-400">
                                                                         <FiPrinter className="w-4 h-4" />

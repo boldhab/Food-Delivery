@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useMemo, useState, useCallback } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useState, useCallback, useRef } from 'react';
 import authService from '../services/auth.service';
 
 const AuthContext = createContext(null);
@@ -18,6 +18,7 @@ const parseStoredUser = () => {
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(parseStoredUser);
     const [loading, setLoading] = useState(true);
+    const didInitRef = useRef(false);
 
     const isAuthenticated = Boolean(user && localStorage.getItem(TOKEN_KEY));
 
@@ -54,6 +55,9 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     useEffect(() => {
+        if (didInitRef.current) return;
+        didInitRef.current = true;
+
         const init = async () => {
             const token = localStorage.getItem(TOKEN_KEY);
             if (!token) {

@@ -47,16 +47,16 @@ const HeroBackground = ({
     const variants = {
         default: {
             shapes: [
-                { color: 'orange-500', size: '72', top: '-24', left: '-24', blur: '3xl' },
-                { color: 'amber-400', size: '80', top: '1/3', right: '-20', blur: '3xl' },
+                { color: 'green-500', size: '72', top: '-24', left: '-24', blur: '3xl' },
+                { color: 'emerald-400', size: '80', top: '1/3', right: '-20', blur: '3xl' },
                 { color: 'red-500', size: '96', bottom: '-28', left: '1/3', blur: '3xl' },
             ],
             gradient: 'radial-gradient(circle_at_top,rgba(255,255,255,0.08),transparent_45%)'
         },
         food: {
             shapes: [
-                { color: 'orange-500', size: '64', top: '-16', left: '-16', blur: '2xl', emoji: '🍕' },
-                { color: 'amber-400', size: '72', top: '1/4', right: '-12', blur: '2xl', emoji: '🍔' },
+                { color: 'green-500', size: '64', top: '-16', left: '-16', blur: '2xl', emoji: '🍕' },
+                { color: 'emerald-400', size: '72', top: '1/4', right: '-12', blur: '2xl', emoji: '🍔' },
                 { color: 'red-500', size: '80', bottom: '-20', left: '1/4', blur: '2xl', emoji: '🍣' },
                 { color: 'yellow-400', size: '56', top: '2/3', right: '1/3', blur: '2xl', emoji: '🍜' },
             ],
@@ -95,8 +95,8 @@ const HeroBackground = ({
         >
             {/* Background Gradient Base */}
             <div 
-                className="absolute inset-0 bg-gradient-to-br from-orange-50/30 via-amber-50/20 to-transparent 
-                           dark:from-orange-950/20 dark:via-amber-950/10 dark:to-transparent"
+                className="absolute inset-0 bg-gradient-to-br from-green-50/30 via-emerald-50/20 to-transparent 
+                           dark:from-green-950/20 dark:via-emerald-950/10 dark:to-transparent"
             />
 
             {/* Animated Blobs */}
@@ -159,7 +159,7 @@ const HeroBackground = ({
                     {[...Array(12)].map((_, i) => (
                         <motion.div
                             key={`particle-${i}`}
-                            className="absolute w-1 h-1 bg-orange-500/30 rounded-full"
+                            className="absolute w-1 h-1 bg-green-500/30 rounded-full"
                             style={{
                                 top: `${Math.random() * 100}%`,
                                 left: `${Math.random() * 100}%`,

@@ -1,7 +1,7 @@
 import React from 'react';
 
 const LABELS = ['Very weak', 'Weak', 'Fair', 'Good', 'Strong'];
-const COLORS = ['bg-red-500', 'bg-orange-500', 'bg-yellow-500', 'bg-lime-500', 'bg-green-500'];
+const COLORS = ['bg-red-500', 'bg-green-500', 'bg-yellow-500', 'bg-lime-500', 'bg-green-500'];
 
 const PasswordStrengthMeter = ({ strength = 0 }) => {
     const normalized = Math.max(0, Math.min(5, Number(strength) || 0));

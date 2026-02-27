@@ -240,13 +240,13 @@ const RegisterPage = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-50 dark:from-slate-900 dark:to-slate-800 py-12">
+        <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 dark:from-slate-900 dark:to-slate-800 py-12">
             <div className="max-w-md mx-auto px-4">
                 {/* Back button */}
                 <button
                     onClick={() => navigate(-1)}
                     className="mb-6 flex items-center gap-2 text-slate-600 dark:text-slate-400
-                             hover:text-orange-500 transition-colors"
+                             hover:text-green-500 transition-colors"
                 >
                     <FiArrowLeft className="w-4 h-4" />
                     <span>Back</span>
@@ -264,7 +264,7 @@ const RegisterPage = () => {
                                         ${currentStep > step.number 
                                             ? 'bg-green-500 text-white' 
                                             : currentStep === step.number
-                                            ? 'bg-orange-500 text-white ring-4 ring-orange-500/20'
+                                            ? 'bg-green-500 text-white ring-4 ring-green-500/20'
                                             : 'bg-slate-200 dark:bg-slate-700 text-slate-500'
                                         }
                                     `}>
@@ -286,7 +286,7 @@ const RegisterPage = () => {
                     {/* Progress bar */}
                     <div className="relative mt-8 h-1 bg-slate-200 dark:bg-slate-700 rounded-full">
                         <motion.div
-                            className="absolute top-0 left-0 h-full bg-orange-500 rounded-full"
+                            className="absolute top-0 left-0 h-full bg-green-500 rounded-full"
                             initial={{ width: '0%' }}
                             animate={{ width: `${((currentStep - 1) / 2) * 100}%` }}
                             transition={{ duration: 0.3 }}
@@ -341,7 +341,7 @@ const RegisterPage = () => {
                                                         border transition-colors duration-200
                                                         ${touched.name && errors.name
                                                             ? 'border-red-500 focus:ring-red-200' 
-                                                            : 'border-slate-200 dark:border-slate-700 focus:border-orange-500'
+                                                            : 'border-slate-200 dark:border-slate-700 focus:border-green-500'
                                                         }
                                                         dark:bg-slate-900 dark:text-white
                                                     `}
@@ -374,7 +374,7 @@ const RegisterPage = () => {
                                                         border transition-colors duration-200
                                                         ${touched.password && errors.password
                                                             ? 'border-red-500 focus:ring-red-200' 
-                                                            : 'border-slate-200 dark:border-slate-700 focus:border-orange-500'
+                                                            : 'border-slate-200 dark:border-slate-700 focus:border-green-500'
                                                         }
                                                         dark:bg-slate-900 dark:text-white
                                                     `}
@@ -422,7 +422,7 @@ const RegisterPage = () => {
                                                         border transition-colors duration-200
                                                         ${touched.confirmPassword && errors.confirmPassword
                                                             ? 'border-red-500 focus:ring-red-200' 
-                                                            : 'border-slate-200 dark:border-slate-700 focus:border-orange-500'
+                                                            : 'border-slate-200 dark:border-slate-700 focus:border-green-500'
                                                         }
                                                         dark:bg-slate-900 dark:text-white
                                                     `}
@@ -473,7 +473,7 @@ const RegisterPage = () => {
                                                         border transition-colors duration-200
                                                         ${touched.email && errors.email
                                                             ? 'border-red-500 focus:ring-red-200' 
-                                                            : 'border-slate-200 dark:border-slate-700 focus:border-orange-500'
+                                                            : 'border-slate-200 dark:border-slate-700 focus:border-green-500'
                                                         }
                                                         dark:bg-slate-900 dark:text-white
                                                     `}
@@ -506,7 +506,7 @@ const RegisterPage = () => {
                                                         border transition-colors duration-200
                                                         ${touched.phone && errors.phone
                                                             ? 'border-red-500 focus:ring-red-200' 
-                                                            : 'border-slate-200 dark:border-slate-700 focus:border-orange-500'
+                                                            : 'border-slate-200 dark:border-slate-700 focus:border-green-500'
                                                         }
                                                         dark:bg-slate-900 dark:text-white
                                                     `}
@@ -547,7 +547,7 @@ const RegisterPage = () => {
                                                     className="w-full pl-10 pr-4 py-3 rounded-xl
                                                              border border-slate-200 dark:border-slate-700
                                                              dark:bg-slate-900 dark:text-white
-                                                             focus:border-orange-500 transition-colors"
+                                                             focus:border-green-500 transition-colors"
                                                 />
                                             </div>
                                         </div>
@@ -568,7 +568,7 @@ const RegisterPage = () => {
                                                     className="w-full pl-10 pr-4 py-3 rounded-xl
                                                              border border-slate-200 dark:border-slate-700
                                                              dark:bg-slate-900 dark:text-white
-                                                             focus:border-orange-500 transition-colors"
+                                                             focus:border-green-500 transition-colors"
                                                 />
                                             </div>
                                         </div>
@@ -590,7 +590,7 @@ const RegisterPage = () => {
                                                         className="w-full pl-10 pr-4 py-3 rounded-xl
                                                                  border border-slate-200 dark:border-slate-700
                                                                  dark:bg-slate-900 dark:text-white
-                                                                 focus:border-orange-500 transition-colors"
+                                                                 focus:border-green-500 transition-colors"
                                                     />
                                                 </div>
                                             </div>
@@ -610,7 +610,7 @@ const RegisterPage = () => {
                                                         border transition-colors duration-200
                                                         ${touched.zipCode && errors.zipCode
                                                             ? 'border-red-500 focus:ring-red-200' 
-                                                            : 'border-slate-200 dark:border-slate-700 focus:border-orange-500'
+                                                            : 'border-slate-200 dark:border-slate-700 focus:border-green-500'
                                                         }
                                                         dark:bg-slate-900 dark:text-white
                                                     `}
@@ -633,7 +633,7 @@ const RegisterPage = () => {
                                                 className="w-full px-4 py-3 rounded-xl
                                                          border border-slate-200 dark:border-slate-700
                                                          dark:bg-slate-900 dark:text-white
-                                                         focus:border-orange-500 transition-colors"
+                                                         focus:border-green-500 transition-colors"
                                             >
                                                 <option value="USA">United States</option>
                                                 <option value="CAN">Canada</option>
@@ -663,8 +663,8 @@ const RegisterPage = () => {
                                     <button
                                         type="button"
                                         onClick={() => setCurrentStep(prev => prev + 1)}
-                                        className="flex-1 px-4 py-3 bg-orange-500 text-white rounded-xl
-                                                 hover:bg-orange-600 transition-colors duration-200
+                                        className="flex-1 px-4 py-3 bg-green-500 text-white rounded-xl
+                                                 hover:bg-green-600 transition-colors duration-200
                                                  font-medium"
                                     >
                                         Continue
@@ -673,8 +673,8 @@ const RegisterPage = () => {
                                     <button
                                         type="submit"
                                         disabled={submitting || !isFormValid()}
-                                        className="flex-1 px-4 py-3 bg-orange-500 text-white rounded-xl
-                                                 hover:bg-orange-600 transition-colors duration-200
+                                        className="flex-1 px-4 py-3 bg-green-500 text-white rounded-xl
+                                                 hover:bg-green-600 transition-colors duration-200
                                                  disabled:opacity-50 disabled:cursor-not-allowed
                                                  font-medium flex items-center justify-center gap-2"
                                     >
@@ -701,16 +701,16 @@ const RegisterPage = () => {
                                     id="terms"
                                     checked={acceptedTerms}
                                     onChange={(e) => setAcceptedTerms(e.target.checked)}
-                                    className="mt-1 w-4 h-4 text-orange-500 border-slate-300 rounded
-                                             focus:ring-orange-500"
+                                    className="mt-1 w-4 h-4 text-green-500 border-slate-300 rounded
+                                             focus:ring-green-500"
                                 />
                                 <label htmlFor="terms" className="text-xs text-slate-600 dark:text-slate-400">
                                     I agree to the{' '}
-                                    <Link to="/terms" className="text-orange-500 hover:text-orange-600">
+                                    <Link to="/terms" className="text-green-500 hover:text-green-600">
                                         Terms of Service
                                     </Link>{' '}
                                     and{' '}
-                                    <Link to="/privacy" className="text-orange-500 hover:text-orange-600">
+                                    <Link to="/privacy" className="text-green-500 hover:text-green-600">
                                         Privacy Policy
                                     </Link>
                                 </label>
@@ -764,7 +764,7 @@ const RegisterPage = () => {
                                 <Link 
                                     to="/login" 
                                     state={{ from }}
-                                    className="text-orange-500 hover:text-orange-600 font-medium
+                                    className="text-green-500 hover:text-green-600 font-medium
                                              transition-colors duration-200"
                                 >
                                     Sign in

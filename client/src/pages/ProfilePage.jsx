@@ -76,7 +76,7 @@ const ProfilePage = () => {
         const loadOrderStats = async () => {
             try {
                 const response = await orderService.getOrderStats();
-                setOrderStats(response.data);
+                setOrderStats(response?.data || response || { total: 0, delivered: 0, cancelled: 0 });
             } catch (error) {
                 console.error('Failed to load order stats:', error);
             }
@@ -214,7 +214,7 @@ const ProfilePage = () => {
     return (
         <div className="min-h-screen bg-white dark:bg-slate-950">
             {/* Header */}
-            <div className="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-slate-900 dark:to-slate-800 border-b border-slate-200 dark:border-slate-800">
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-slate-900 dark:to-slate-800 border-b border-slate-200 dark:border-slate-800">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     <h1 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-2">
                         My Profile
@@ -235,15 +235,15 @@ const ProfilePage = () => {
                             <div className="text-center">
                                 {/* Avatar */}
                                 <div className="relative inline-block mb-4">
-                                    <div className="w-24 h-24 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 
+                                    <div className="w-24 h-24 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 
                                                   flex items-center justify-center text-white text-3xl font-bold
-                                                  shadow-lg shadow-orange-500/25">
+                                                  shadow-lg shadow-green-500/25">
                                         {user?.name?.charAt(0) || 'U'}
                                     </div>
                                     <label htmlFor="avatar-upload" 
                                            className="absolute bottom-0 right-0 w-8 h-8 bg-white dark:bg-slate-700
                                                     rounded-full shadow-lg flex items-center justify-center
-                                                    cursor-pointer hover:bg-orange-500 hover:text-white
+                                                    cursor-pointer hover:bg-green-500 hover:text-white
                                                     transition-colors duration-200
                                                     border-2 border-white dark:border-slate-800">
                                         <FiCamera className="w-4 h-4" />
@@ -267,7 +267,7 @@ const ProfilePage = () => {
                                 {/* Stats */}
                                 <div className="grid grid-cols-3 gap-2 p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl">
                                     <div className="text-center">
-                                        <div className="text-xl font-bold text-orange-500">
+                                        <div className="text-xl font-bold text-green-500">
                                             {orderStats.total || 0}
                                         </div>
                                         <div className="text-xs text-slate-500 dark:text-slate-400">
@@ -304,7 +304,7 @@ const ProfilePage = () => {
                                         w-full flex items-center gap-3 px-4 py-3 rounded-xl
                                         transition-all duration-200
                                         ${activeTab === tab.id
-                                            ? 'bg-orange-500 text-white'
+                                            ? 'bg-green-500 text-white'
                                             : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'
                                         }
                                     `}
@@ -352,10 +352,10 @@ const ProfilePage = () => {
                                                 <button
                                                     onClick={() => setIsEditing(true)}
                                                     className="flex items-center gap-2 px-4 py-2
-                                                             text-orange-500 hover:text-orange-600
-                                                             border border-orange-200 dark:border-orange-800
-                                                             rounded-lg hover:bg-orange-50 
-                                                             dark:hover:bg-orange-900/20
+                                                             text-green-500 hover:text-green-600
+                                                             border border-green-200 dark:border-green-800
+                                                             rounded-lg hover:bg-green-50 
+                                                             dark:hover:bg-green-900/20
                                                              transition-colors duration-200"
                                                 >
                                                     <FiEdit2 className="w-4 h-4" />
@@ -384,7 +384,7 @@ const ProfilePage = () => {
                                                             border transition-colors duration-200
                                                             ${errors.name 
                                                                 ? 'border-red-500 focus:ring-red-200' 
-                                                                : 'border-slate-200 dark:border-slate-700 focus:border-orange-500'
+                                                                : 'border-slate-200 dark:border-slate-700 focus:border-green-500'
                                                             }
                                                             ${!isEditing && 'bg-slate-50 dark:bg-slate-900 cursor-not-allowed'}
                                                             dark:bg-slate-800 dark:text-white
@@ -413,7 +413,7 @@ const ProfilePage = () => {
                                                             border transition-colors duration-200
                                                             ${errors.email 
                                                                 ? 'border-red-500 focus:ring-red-200' 
-                                                                : 'border-slate-200 dark:border-slate-700 focus:border-orange-500'
+                                                                : 'border-slate-200 dark:border-slate-700 focus:border-green-500'
                                                             }
                                                             ${!isEditing && 'bg-slate-50 dark:bg-slate-900 cursor-not-allowed'}
                                                             dark:bg-slate-800 dark:text-white
@@ -442,7 +442,7 @@ const ProfilePage = () => {
                                                             border transition-colors duration-200
                                                             ${errors.phone 
                                                                 ? 'border-red-500 focus:ring-red-200' 
-                                                                : 'border-slate-200 dark:border-slate-700 focus:border-orange-500'
+                                                                : 'border-slate-200 dark:border-slate-700 focus:border-green-500'
                                                             }
                                                             ${!isEditing && 'bg-slate-50 dark:bg-slate-900 cursor-not-allowed'}
                                                             dark:bg-slate-800 dark:text-white
@@ -478,7 +478,7 @@ const ProfilePage = () => {
                                                                          border border-slate-200 dark:border-slate-700
                                                                          disabled:bg-slate-50 dark:disabled:bg-slate-900
                                                                          dark:bg-slate-800 dark:text-white
-                                                                         focus:border-orange-500 transition-colors"
+                                                                         focus:border-green-500 transition-colors"
                                                             />
                                                         </div>
                                                     </div>
@@ -500,7 +500,7 @@ const ProfilePage = () => {
                                                                          border border-slate-200 dark:border-slate-700
                                                                          disabled:bg-slate-50 dark:disabled:bg-slate-900
                                                                          dark:bg-slate-800 dark:text-white
-                                                                         focus:border-orange-500 transition-colors"
+                                                                         focus:border-green-500 transition-colors"
                                                             />
                                                         </div>
                                                     </div>
@@ -522,7 +522,7 @@ const ProfilePage = () => {
                                                                          border border-slate-200 dark:border-slate-700
                                                                          disabled:bg-slate-50 dark:disabled:bg-slate-900
                                                                          dark:bg-slate-800 dark:text-white
-                                                                         focus:border-orange-500 transition-colors"
+                                                                         focus:border-green-500 transition-colors"
                                                             />
                                                         </div>
                                                     </div>
@@ -544,7 +544,7 @@ const ProfilePage = () => {
                                                                          border border-slate-200 dark:border-slate-700
                                                                          disabled:bg-slate-50 dark:disabled:bg-slate-900
                                                                          dark:bg-slate-800 dark:text-white
-                                                                         focus:border-orange-500 transition-colors"
+                                                                         focus:border-green-500 transition-colors"
                                                             />
                                                         </div>
                                                     </div>
@@ -557,7 +557,7 @@ const ProfilePage = () => {
                                                     <button
                                                         type="submit"
                                                         disabled={loading}
-                                                        className="flex-1 px-6 py-3 bg-orange-500 hover:bg-orange-600
+                                                        className="flex-1 px-6 py-3 bg-green-500 hover:bg-green-600
                                                                  text-white font-medium rounded-xl
                                                                  disabled:opacity-50 disabled:cursor-not-allowed
                                                                  transition-colors duration-200
@@ -631,7 +631,7 @@ const ProfilePage = () => {
                                                             border transition-colors duration-200
                                                             ${errors.currentPassword 
                                                                 ? 'border-red-500 focus:ring-red-200' 
-                                                                : 'border-slate-200 dark:border-slate-700 focus:border-orange-500'
+                                                                : 'border-slate-200 dark:border-slate-700 focus:border-green-500'
                                                             }
                                                             dark:bg-slate-800 dark:text-white
                                                         `}
@@ -665,7 +665,7 @@ const ProfilePage = () => {
                                                             border transition-colors duration-200
                                                             ${errors.newPassword 
                                                                 ? 'border-red-500 focus:ring-red-200' 
-                                                                : 'border-slate-200 dark:border-slate-700 focus:border-orange-500'
+                                                                : 'border-slate-200 dark:border-slate-700 focus:border-green-500'
                                                             }
                                                             dark:bg-slate-800 dark:text-white
                                                         `}
@@ -702,7 +702,7 @@ const ProfilePage = () => {
                                                             border transition-colors duration-200
                                                             ${errors.confirmPassword 
                                                                 ? 'border-red-500 focus:ring-red-200' 
-                                                                : 'border-slate-200 dark:border-slate-700 focus:border-orange-500'
+                                                                : 'border-slate-200 dark:border-slate-700 focus:border-green-500'
                                                             }
                                                             dark:bg-slate-800 dark:text-white
                                                         `}
@@ -718,7 +718,7 @@ const ProfilePage = () => {
                                                 <button
                                                     type="submit"
                                                     disabled={loading}
-                                                    className="w-full px-6 py-3 bg-orange-500 hover:bg-orange-600
+                                                    className="w-full px-6 py-3 bg-green-500 hover:bg-green-600
                                                              text-white font-medium rounded-xl
                                                              disabled:opacity-50 disabled:cursor-not-allowed
                                                              transition-colors duration-200
@@ -765,7 +765,7 @@ const ProfilePage = () => {
                                             {/* Email Notifications */}
                                             <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl">
                                                 <div className="flex items-start gap-3">
-                                                    <FiMail className="w-5 h-5 text-orange-500 mt-0.5" />
+                                                    <FiMail className="w-5 h-5 text-green-500 mt-0.5" />
                                                     <div>
                                                         <h3 className="font-medium text-slate-900 dark:text-white">
                                                             Email Notifications
@@ -795,14 +795,14 @@ const ProfilePage = () => {
                                                                   after:absolute after:top-[2px] after:left-[2px] 
                                                                   after:bg-white after:border-slate-300 after:border 
                                                                   after:rounded-full after:h-5 after:w-5 after:transition-all
-                                                                  peer-checked:bg-orange-500"></div>
+                                                                  peer-checked:bg-green-500"></div>
                                                 </label>
                                             </div>
 
                                             {/* Push Notifications */}
                                             <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl">
                                                 <div className="flex items-start gap-3">
-                                                    <FiSmartphone className="w-5 h-5 text-orange-500 mt-0.5" />
+                                                    <FiSmartphone className="w-5 h-5 text-green-500 mt-0.5" />
                                                     <div>
                                                         <h3 className="font-medium text-slate-900 dark:text-white">
                                                             Push Notifications
@@ -832,14 +832,14 @@ const ProfilePage = () => {
                                                                   after:absolute after:top-[2px] after:left-[2px] 
                                                                   after:bg-white after:border-slate-300 after:border 
                                                                   after:rounded-full after:h-5 after:w-5 after:transition-all
-                                                                  peer-checked:bg-orange-500"></div>
+                                                                  peer-checked:bg-green-500"></div>
                                                 </label>
                                             </div>
 
                                             {/* SMS Notifications */}
                                             <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl">
                                                 <div className="flex items-start gap-3">
-                                                    <FiPhone className="w-5 h-5 text-orange-500 mt-0.5" />
+                                                    <FiPhone className="w-5 h-5 text-green-500 mt-0.5" />
                                                     <div>
                                                         <h3 className="font-medium text-slate-900 dark:text-white">
                                                             SMS Notifications
@@ -869,7 +869,7 @@ const ProfilePage = () => {
                                                                   after:absolute after:top-[2px] after:left-[2px] 
                                                                   after:bg-white after:border-slate-300 after:border 
                                                                   after:rounded-full after:h-5 after:w-5 after:transition-all
-                                                                  peer-checked:bg-orange-500"></div>
+                                                                  peer-checked:bg-green-500"></div>
                                                 </label>
                                             </div>
                                         </div>
@@ -880,7 +880,7 @@ const ProfilePage = () => {
                                                 onClick={() => {
                                                     toast.success('Preferences saved!');
                                                 }}
-                                                className="w-full px-6 py-3 bg-orange-500 hover:bg-orange-600
+                                                className="w-full px-6 py-3 bg-green-500 hover:bg-green-600
                                                          text-white font-medium rounded-xl
                                                          transition-colors duration-200"
                                             >
@@ -912,8 +912,8 @@ const ProfilePage = () => {
                                         <p>View your full order history in the Orders section</p>
                                         <button
                                             onClick={() => navigate('/orders')}
-                                            className="mt-4 px-6 py-2 bg-orange-500 text-white rounded-lg
-                                                     hover:bg-orange-600 transition-colors"
+                                            className="mt-4 px-6 py-2 bg-green-500 text-white rounded-lg
+                                                     hover:bg-green-600 transition-colors"
                                         >
                                             Go to Orders
                                         </button>
@@ -956,8 +956,8 @@ const ProfilePage = () => {
                                             </div>
                                             
                                             <button className="w-full p-4 border-2 border-dashed border-slate-200 dark:border-slate-700
-                                                             rounded-xl text-slate-500 hover:border-orange-500
-                                                             hover:text-orange-500 transition-colors">
+                                                             rounded-xl text-slate-500 hover:border-green-500
+                                                             hover:text-green-500 transition-colors">
                                                 + Add Payment Method
                                             </button>
                                         </div>

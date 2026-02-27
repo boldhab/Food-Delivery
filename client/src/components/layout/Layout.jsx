@@ -80,7 +80,7 @@ const Layout = ({
                     🍕
                 </motion.div>
                 <motion.h1 
-                    className="text-2xl font-bold bg-gradient-to-r from-orange-500 to-amber-500 
+                    className="text-2xl font-bold bg-gradient-to-r from-green-500 to-emerald-500 
                              bg-clip-text text-transparent"
                     animate={{ opacity: [0.5, 1, 0.5] }}
                     transition={{ duration: 2, repeat: Infinity }}
@@ -168,12 +168,12 @@ const BackToTopButton = () => {
                     whileTap={{ scale: 0.9 }}
                     onClick={scrollToTop}
                     className="fixed bottom-6 right-6 z-40
-                             w-12 h-12 bg-orange-500 hover:bg-orange-600
+                             w-12 h-12 bg-green-500 hover:bg-green-600
                              text-white rounded-full shadow-lg
                              flex items-center justify-center
                              transition-colors duration-200
                              focus:outline-none focus:ring-2 
-                             focus:ring-orange-500 focus:ring-offset-2"
+                             focus:ring-green-500 focus:ring-offset-2"
                     aria-label="Back to top"
                 >
                     <svg 

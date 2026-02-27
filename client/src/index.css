@@ -6,10 +6,32 @@
     color: #182026;
     background: #f6f8fb;
     color-scheme: light;
+    --app-bg-start: #f6f8fb;
+    --app-bg-end: #edf2f7;
+    --app-text: #182026;
+    --app-surface: #ffffff;
+    --app-surface-muted: #f8fafc;
+    --app-border: #d8e0e7;
+    --app-input-bg: #ffffff;
+    --app-input-border: #c5d0da;
+    --app-muted-text: #5e6b78;
+    --app-accent: #22c55e;
+    --app-accent-strong: #16a34a;
 }
 
 html.dark {
     color-scheme: dark;
+    --app-bg-start: #0b1220;
+    --app-bg-end: #111a2d;
+    --app-text: #e2e8f0;
+    --app-surface: #0f172a;
+    --app-surface-muted: #111827;
+    --app-border: #273449;
+    --app-input-bg: #0b1220;
+    --app-input-border: #334155;
+    --app-muted-text: #94a3b8;
+    --app-accent: #4ade80;
+    --app-accent-strong: #22c55e;
 }
 
 * {
@@ -19,11 +41,8 @@ html.dark {
 body {
     margin: 0;
     min-width: 320px;
-    background: linear-gradient(180deg, #f6f8fb 0%, #edf2f7 100%);
-}
-
-html.dark body {
-    background: linear-gradient(180deg, #020617 0%, #0f172a 100%);
+    background: linear-gradient(180deg, var(--app-bg-start) 0%, var(--app-bg-end) 100%);
+    color: var(--app-text);
 }
 
 a {

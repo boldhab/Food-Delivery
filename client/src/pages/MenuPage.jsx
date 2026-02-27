@@ -166,7 +166,7 @@ const MenuPage = () => {
                     <p className="text-slate-600 dark:text-slate-400 mb-6">{error}</p>
                     <button 
                         onClick={() => window.location.reload()}
-                        className="px-6 py-3 bg-orange-500 text-white rounded-xl hover:bg-orange-600 
+                        className="px-6 py-3 bg-green-500 text-white rounded-xl hover:bg-green-600 
                                  transition-colors font-medium"
                     >
                         Try again
@@ -179,9 +179,9 @@ const MenuPage = () => {
     return (
         <div className="min-h-screen bg-white dark:bg-slate-950">
             {/* Header - Simple and clean */}
-            <div className="relative overflow-hidden bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 border-b border-slate-200 dark:border-slate-800">
-                <div className="pointer-events-none absolute -top-20 -right-10 h-72 w-72 rounded-full bg-orange-400/20 blur-3xl" />
-                <div className="pointer-events-none absolute -bottom-20 left-1/4 h-72 w-72 rounded-full bg-amber-300/20 blur-3xl" />
+            <div className="relative overflow-hidden bg-gradient-to-br from-green-50 via-emerald-50 to-yellow-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 border-b border-slate-200 dark:border-slate-800">
+                <div className="pointer-events-none absolute -top-20 -right-10 h-72 w-72 rounded-full bg-green-400/20 blur-3xl" />
+                <div className="pointer-events-none absolute -bottom-20 left-1/4 h-72 w-72 rounded-full bg-emerald-300/20 blur-3xl" />
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                         <div>
@@ -192,9 +192,9 @@ const MenuPage = () => {
                                 {filteredFoods.length} delicious items available
                                 {category && ` in ${category}`}
                             </p>
-                            <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-orange-200 bg-white/70 px-3 py-1 text-xs text-orange-700 dark:border-orange-900/50 dark:bg-slate-800/70 dark:text-orange-300">
+                            <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-green-200 bg-white/70 px-3 py-1 text-xs text-green-700 dark:border-green-900/50 dark:bg-slate-800/70 dark:text-green-300">
                                 <span>Live Menu</span>
-                                <span className="h-1.5 w-1.5 rounded-full bg-orange-500" />
+                                <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
                                 <span>Freshly updated</span>
                             </div>
                         </div>
@@ -207,7 +207,7 @@ const MenuPage = () => {
                                 </span>
                                 <button
                                     onClick={handleClearFilters}
-                                    className="text-sm text-orange-500 hover:text-orange-600 font-medium
+                                    className="text-sm text-green-500 hover:text-green-600 font-medium
                                              flex items-center gap-1 transition-colors"
                                 >
                                     Clear all
@@ -243,7 +243,7 @@ const MenuPage = () => {
                     <div className="flex justify-center py-16">
                         <div className="relative">
                             <div className="w-16 h-16 border-4 border-slate-200 dark:border-slate-700 
-                                          border-t-orange-500 rounded-full animate-spin" />
+                                          border-t-green-500 rounded-full animate-spin" />
                             <div className="absolute inset-0 flex items-center justify-center text-2xl">
                                 🍽️
                             </div>
@@ -288,8 +288,8 @@ const MenuPage = () => {
                                     </p>
                                     <button
                                         onClick={handleClearFilters}
-                                        className="px-6 py-3 bg-orange-500 text-white rounded-xl 
-                                                 hover:bg-orange-600 transition-colors font-medium"
+                                        className="px-6 py-3 bg-green-500 text-white rounded-xl 
+                                                 hover:bg-green-600 transition-colors font-medium"
                                     >
                                         Clear all filters
                                     </button>

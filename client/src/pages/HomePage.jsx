@@ -30,9 +30,9 @@ const HomePage = () => {
     // Main categories for food delivery
     const categories = [
         { id: 'pizza', name: 'Pizza', icon: '🍕', bgColor: 'bg-red-50 dark:bg-red-950/30' },
-        { id: 'burger', name: 'Burger', icon: '🍔', bgColor: 'bg-amber-50 dark:bg-amber-950/30' },
+        { id: 'burger', name: 'Burger', icon: '🍔', bgColor: 'bg-emerald-50 dark:bg-emerald-950/30' },
         { id: 'sushi', name: 'Sushi', icon: '🍱', bgColor: 'bg-emerald-50 dark:bg-emerald-950/30' },
-        { id: 'pasta', name: 'Pasta', icon: '🍝', bgColor: 'bg-orange-50 dark:bg-orange-950/30' },
+        { id: 'pasta', name: 'Pasta', icon: '🍝', bgColor: 'bg-green-50 dark:bg-green-950/30' },
         { id: 'salad', name: 'Salad', icon: '🥗', bgColor: 'bg-green-50 dark:bg-green-950/30' },
         { id: 'dessert', name: 'Dessert', icon: '🍰', bgColor: 'bg-pink-50 dark:bg-pink-950/30' },
     ];
@@ -40,7 +40,7 @@ const HomePage = () => {
     return (
         <div className="min-h-screen bg-white dark:bg-slate-950">
             {/* Hero Section - Clean and Focused */}
-            <section className="relative bg-gradient-to-br from-orange-50 to-amber-50 dark:from-slate-900 dark:to-slate-800 overflow-hidden">
+            <section className="relative bg-gradient-to-br from-green-50 to-emerald-50 dark:from-slate-900 dark:to-slate-800 overflow-hidden">
                 {/* Simple decorative elements - very subtle */}
                 <div className="absolute inset-0 bg-grid-slate-200/50 dark:bg-grid-slate-700/25 [mask-image:radial-gradient(ellipse_at_center,white,transparent)]" />
                 
@@ -53,15 +53,15 @@ const HomePage = () => {
                             transition={{ duration: 0.5 }}
                         >
                             {/* Badge */}
-                            <div className="inline-flex items-center px-3 py-1 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 text-sm font-medium mb-6">
-                                <span className="w-1.5 h-1.5 bg-orange-500 rounded-full mr-2" />
+                            <div className="inline-flex items-center px-3 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-sm font-medium mb-6">
+                                <span className="w-1.5 h-1.5 bg-green-500 rounded-full mr-2" />
                                 Free delivery on orders over $25
                             </div>
 
                             {/* Headline */}
                             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 dark:text-white mb-4">
                                 Your favorite food,
-                                <span className="block text-orange-500 dark:text-orange-400">
+                                <span className="block text-green-500 dark:text-green-400">
                                     delivered fast
                                 </span>
                             </h1>
@@ -83,9 +83,9 @@ const HomePage = () => {
                             <div className="flex flex-wrap gap-4">
                                 <Link
                                     to="/menu"
-                                    className="px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl
-                                             transition-colors duration-200 shadow-lg shadow-orange-500/25
-                                             focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+                                    className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-medium rounded-xl
+                                             transition-colors duration-200 shadow-lg shadow-green-500/25
+                                             focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
                                 >
                                     Order now
                                 </Link>
@@ -93,9 +93,9 @@ const HomePage = () => {
                                     to="/restaurants"
                                     className="px-6 py-3 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 
                                              font-medium rounded-xl border border-slate-200 dark:border-slate-700
-                                             hover:border-orange-300 dark:hover:border-orange-700
+                                             hover:border-green-300 dark:hover:border-green-700
                                              transition-colors duration-200
-                                             focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+                                             focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
                                 >
                                     View restaurants
                                 </Link>
@@ -154,101 +154,17 @@ const HomePage = () => {
                                     </div>
                                 </div>
                                 {/* Decorative gradient */}
-                                <div className="absolute -inset-4 bg-gradient-to-r from-orange-500/20 to-amber-500/20 blur-3xl -z-10" />
+                                <div className="absolute -inset-4 bg-gradient-to-r from-green-500/20 to-emerald-500/20 blur-3xl -z-10" />
                             </div>
                         </motion.div>
                     </div>
                 </div>
             </section>
 
-            {/* Categories Section - Clean Grid */}
-            <section className="py-12 bg-white dark:bg-slate-950">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex items-center justify-between mb-8">
-                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
-                            Browse by category
-                        </h2>
-                        <Link 
-                            to="/categories" 
-                            className="text-orange-500 hover:text-orange-600 font-medium text-sm
-                                     flex items-center gap-1 transition-colors"
-                        >
-                            View all
-                            <span className="text-lg">→</span>
-                        </Link>
-                    </div>
+            
 
-                    <div className="grid grid-cols-3 md:grid-cols-6 gap-3 md:gap-4">
-                        {categories.map((category) => (
-                            <Link
-                                key={category.id}
-                                to={`/category/${category.id}`}
-                                className="group"
-                            >
-                                <div className={`
-                                    ${category.bgColor} 
-                                    rounded-xl p-4 text-center
-                                    transition-all duration-200
-                                    hover:scale-105 hover:shadow-md
-                                    border border-transparent hover:border-orange-200 dark:hover:border-orange-800
-                                `}>
-                                    <div className="text-2xl md:text-3xl mb-1">
-                                        {category.icon}
-                                    </div>
-                                    <div className="text-xs md:text-sm font-medium text-slate-700 dark:text-slate-300">
-                                        {category.name}
-                                    </div>
-                                </div>
-                            </Link>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* Featured Items Section */}
-            <section className="py-12 bg-slate-50 dark:bg-slate-900/50">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex items-center justify-between mb-8">
-                        <div>
-                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
-                                Popular right now
-                            </h2>
-                            <p className="text-slate-600 dark:text-slate-400 mt-1">
-                                Most ordered items from our top restaurants
-                            </p>
-                        </div>
-                        <Link 
-                            to="/menu" 
-                            className="hidden sm:flex items-center gap-2 text-orange-500 hover:text-orange-600 
-                                     font-medium transition-colors"
-                        >
-                            View full menu
-                            <span>→</span>
-                        </Link>
-                    </div>
-
-                    {loading ? (
-                        <div className="flex justify-center py-12">
-                            <Loader />
-                        </div>
-                    ) : (
-                        <>
-                            <FoodList foods={featuredFoods} />
-                            
-                            {/* Mobile view all link */}
-                            <div className="sm:hidden text-center mt-6">
-                                <Link 
-                                    to="/menu" 
-                                    className="inline-flex items-center gap-2 text-orange-500 font-medium"
-                                >
-                                    View full menu
-                                    <span>→</span>
-                                </Link>
-                            </div>
-                        </>
-                    )}
-                </div>
-            </section>
+            
+           
 
             {/* How It Works - Simple Steps */}
             <section className="py-12 bg-white dark:bg-slate-950">
@@ -280,12 +196,12 @@ const HomePage = () => {
                         ].map((item) => (
                             <div key={item.step} className="text-center">
                                 <div className="relative inline-block">
-                                    <div className="w-16 h-16 bg-orange-100 dark:bg-orange-900/30 
+                                    <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 
                                                   rounded-full flex items-center justify-center mx-auto mb-4
                                                   text-2xl">
                                         {item.icon}
                                     </div>
-                                    <div className="absolute -top-1 -right-1 w-6 h-6 bg-orange-500 
+                                    <div className="absolute -top-1 -right-1 w-6 h-6 bg-green-500 
                                                   rounded-full flex items-center justify-center text-white text-sm font-bold">
                                         {item.step}
                                     </div>
@@ -303,12 +219,12 @@ const HomePage = () => {
             </section>
 
             {/* App Download Banner - Optional */}
-            <section className="py-12 bg-orange-500">
+            <section className="py-12 bg-green-500">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
                         Get the app for faster ordering
                     </h2>
-                    <p className="text-orange-100 mb-6 max-w-2xl mx-auto">
+                    <p className="text-green-100 mb-6 max-w-2xl mx-auto">
                         Download our app for exclusive deals and faster checkout
                     </p>
                     <div className="flex flex-wrap justify-center gap-4">
