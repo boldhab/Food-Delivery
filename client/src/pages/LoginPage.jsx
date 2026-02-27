@@ -10,6 +10,8 @@ const LoginPage = () => {
     const { login } = useAuth();
     const [form, setForm] = useState({ email: '', password: '' });
     const [submitting, setSubmitting] = useState(false);
+    const fromState = location.state?.from;
+    const redirectTo = typeof fromState === 'string' ? fromState : fromState?.pathname || '/';
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -17,7 +19,7 @@ const LoginPage = () => {
         try {
             await login(form);
             toast.success('Welcome back');
-            navigate(location.state?.from || '/');
+            navigate(redirectTo, { replace: true });
         } catch (error) {
             toast.error(error.response?.data?.message || 'Login failed');
         } finally {
@@ -47,7 +49,7 @@ const LoginPage = () => {
                     {submitting ? 'Signing in...' : 'Login'}
                 </button>
                 <p>
-                    Don&apos;t have an account? <Link to="/register">Register</Link>
+                    Don&apos;t have an account? <Link to="/register" state={{ from: redirectTo }}>Register</Link>
                 </p>
             </form>
         </div>

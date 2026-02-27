@@ -12,16 +12,20 @@ import {
     FiUserPlus,
     FiBell,
     FiChevronDown,
-    FiSearch
+    FiSearch,
+    FiMoon,
+    FiSun
 } from 'react-icons/fi';
 import useAuth from '../../hooks/useAuth';
 import useCart from '../../hooks/useCart';
+import { useTheme } from '../../context/ThemeContext';
 
 const Navbar = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { isAuthenticated, user, logout } = useAuth();
     const { cart } = useCart();
+    const { isDark, toggleTheme } = useTheme();
     
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
@@ -139,6 +143,17 @@ const Navbar = () => {
 
                         {/* Desktop Right Section */}
                         <div className="hidden md:flex items-center gap-2">
+                            <button
+                                onClick={toggleTheme}
+                                className="p-2 rounded-lg text-slate-600 dark:text-slate-300
+                                         hover:text-orange-500 hover:bg-slate-50 dark:hover:bg-slate-800
+                                         transition-all duration-200"
+                                aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+                                title={isDark ? 'Light mode' : 'Dark mode'}
+                            >
+                                {isDark ? <FiSun className="w-5 h-5" /> : <FiMoon className="w-5 h-5" />}
+                            </button>
+
                             {/* Search Bar */}
                             <form onSubmit={handleSearch} className="relative mr-2">
                                 <input
@@ -395,6 +410,19 @@ const Navbar = () => {
 
                                 {/* Mobile Cart & Auth */}
                                 <div className="pt-4 border-t border-slate-200 dark:border-slate-800">
+                                    <button
+                                        onClick={toggleTheme}
+                                        className="w-full mb-3 p-3 border border-slate-200 dark:border-slate-700
+                                                 rounded-xl text-slate-700 dark:text-slate-300
+                                                 hover:border-orange-500 transition-colors
+                                                 flex items-center justify-center gap-2"
+                                    >
+                                        {isDark ? <FiSun className="w-4 h-4" /> : <FiMoon className="w-4 h-4" />}
+                                        <span className="text-sm font-medium">
+                                            {isDark ? 'Light mode' : 'Dark mode'}
+                                        </span>
+                                    </button>
+
                                     <NavLink 
                                         to="/cart"
                                         className="flex items-center justify-between p-4 

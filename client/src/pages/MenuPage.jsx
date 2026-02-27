@@ -91,23 +91,8 @@ const MenuPage = () => {
     // Filter and sort foods
     const filteredFoods = useMemo(() => {
         let result = foods.filter((food) => {
-            // Keyword search
-            const keywordMatch = keyword
-                ? `${food?.name || ''} ${food?.description || ''} ${food?.category || ''} ${food?.tags?.join(' ') || ''}`
-                    .toLowerCase()
-                    .includes(keyword.toLowerCase())
-                : true;
-
-            // Category filter
-            const categoryMatch = category
-                ? String(food?.category || '').toLowerCase() === String(category).toLowerCase()
-                : true;
-
-            // Price range filter
             const price = Number(food?.price) || 0;
-            const priceMatch = price >= priceRange.min && price <= priceRange.max;
-
-            return keywordMatch && categoryMatch && priceMatch;
+            return price >= priceRange.min && price <= priceRange.max;
         });
 
         // Sorting
@@ -128,7 +113,7 @@ const MenuPage = () => {
         }
 
         return result;
-    }, [foods, keyword, category, sortBy, priceRange]);
+    }, [foods, sortBy, priceRange]);
 
     // Handle filter changes with URL sync
     const handleKeywordChange = (value) => {

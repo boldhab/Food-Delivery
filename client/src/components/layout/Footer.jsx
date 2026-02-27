@@ -17,45 +17,7 @@ const Footer = () => {
     const currentYear = new Date().getFullYear();
 
     const footerSections = [
-        {
-            title: 'Discover',
-            links: [
-                { label: 'Restaurants', path: '/restaurants' },
-                { label: 'Cuisines', path: '/cuisines' },
-                { label: 'Near Me', path: '/near-me' },
-                { label: 'Popular Items', path: '/popular' },
-                { label: 'New Arrivals', path: '/new' },
-            ]
-        },
-        {
-            title: 'Support',
-            links: [
-                { label: 'Help Center', path: '/help' },
-                { label: 'Contact Us', path: '/contact' },
-                { label: 'FAQs', path: '/faqs' },
-                { label: 'Privacy Policy', path: '/privacy' },
-                { label: 'Terms of Service', path: '/terms' },
-            ]
-        },
-        {
-            title: 'Company',
-            links: [
-                { label: 'About Us', path: '/about' },
-                { label: 'Careers', path: '/careers' },
-                { label: 'Press', path: '/press' },
-                { label: 'Blog', path: '/blog' },
-                { label: 'Affiliates', path: '/affiliates' },
-            ]
-        },
-        {
-            title: 'For Partners',
-            links: [
-                { label: 'Partner with Us', path: '/partner' },
-                { label: 'Become a Driver', path: '/driver' },
-                { label: 'Become a Restaurant', path: '/restaurant-signup' },
-                { label: 'Corporate Orders', path: '/corporate' },
-            ]
-        }
+       
     ];
 
     const socialLinks = [
@@ -161,70 +123,8 @@ const Footer = () => {
                     </div>
                 </div>
 
-                {/* Links Sections */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-8 py-12">
-                    {footerSections.map((section) => (
-                        <div key={section.title}>
-                            <h3 className="font-semibold text-slate-900 dark:text-white mb-4">
-                                {section.title}
-                            </h3>
-                            <ul className="space-y-3">
-                                {section.links.map((link) => (
-                                    <li key={link.label}>
-                                        <Link
-                                            to={link.path}
-                                            className="text-sm text-slate-600 dark:text-slate-400 
-                                                     hover:text-orange-500 dark:hover:text-orange-400
-                                                     transition-colors duration-200"
-                                        >
-                                            {link.label}
-                                        </Link>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    ))}
-                </div>
+                
 
-                {/* Download Apps Section */}
-                <div className="py-8 border-y border-slate-200 dark:border-slate-800">
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                        <div className="text-center md:text-left">
-                            <h3 className="font-semibold text-slate-900 dark:text-white mb-1">
-                                Get the FoodDash app
-                            </h3>
-                            <p className="text-sm text-slate-600 dark:text-slate-400">
-                                Order faster and track your delivery in real-time
-                            </p>
-                        </div>
-                        <div className="flex flex-wrap justify-center gap-4">
-                            <button className="flex items-center gap-3 px-6 py-3 bg-slate-900 dark:bg-slate-800 
-                                             text-white rounded-xl hover:bg-slate-800 
-                                             dark:hover:bg-slate-700 transition-colors
-                                             border border-slate-700">
-                                <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M17.6 12.3c-.1-2.4 1.9-3.6 2-3.7-1.1-1.6-2.8-1.8-3.4-1.8-1.5-.1-2.9.9-3.6.9-.7 0-1.9-.9-3.1-.9-1.6 0-3 .9-3.8 2.4-1.6 2.8-.4 7 1.2 9.2.8 1.1 1.7 2.4 2.9 2.4 1.2 0 1.7-.8 3.1-.8 1.4 0 1.8.8 3.1.8 1.3 0 2.1-1.2 2.9-2.3.9-1.3 1.2-2.6 1.3-2.7-.2-.1-2.5-1-2.5-3.7zM14.9 4.6c.7-.8 1.1-2 1-3.1-1 .1-2.2.7-2.9 1.5-.6.7-1.1 1.9-1 3 .9.1 1.9-.5 2.9-1.4z"/>
-                                </svg>
-                                <div className="text-left">
-                                    <div className="text-xs">Download on the</div>
-                                    <div className="text-sm font-semibold">App Store</div>
-                                </div>
-                            </button>
-                            <button className="flex items-center gap-3 px-6 py-3 bg-slate-900 dark:bg-slate-800 
-                                             text-white rounded-xl hover:bg-slate-800 
-                                             dark:hover:bg-slate-700 transition-colors
-                                             border border-slate-700">
-                                <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M6 18l8.5-6L6 6v12zM18 6h-2v12h2V6z"/>
-                                </svg>
-                                <div className="text-left">
-                                    <div className="text-xs">Get it on</div>
-                                    <div className="text-sm font-semibold">Google Play</div>
-                                </div>
-                            </button>
-                        </div>
-                    </div>
-                </div>
 
                 {/* Bottom Bar */}
                 <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4">

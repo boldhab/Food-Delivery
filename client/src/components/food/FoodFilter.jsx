@@ -244,32 +244,7 @@ const FoodFilter = ({
                         </div>
                     </div>
 
-                    {/* Sort select */}
-                    <div className="relative">
-                        <select
-                            value={sortBy}
-                            onChange={(e) => onSortChange(e.target.value)}
-                            className="h-12 px-4 pr-10 bg-white dark:bg-slate-800
-                                     border border-slate-200 dark:border-slate-700
-                                     rounded-xl text-slate-700 dark:text-slate-300
-                                     focus:outline-none focus:border-orange-500
-                                     focus:ring-2 focus:ring-orange-500/20
-                                     transition-all duration-200
-                                     cursor-pointer min-w-[180px]
-                                     appearance-none"
-                        >
-                            {sortOptions.map((option) => (
-                                <option key={option.value} value={option.value}>
-                                    {option.icon} {option.label}
-                                </option>
-                            ))}
-                        </select>
-                        <div className="absolute right-3 top-4 pointer-events-none">
-                            <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </div>
-                    </div>
+                    
 
                     {/* Price filter button */}
                     <div className="relative" ref={priceFilterRef}>
