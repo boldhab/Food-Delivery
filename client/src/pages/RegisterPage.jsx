@@ -58,6 +58,20 @@ const RegisterPage = () => {
     // Validation errors
     const [errors, setErrors] = useState({});
 
+    const getServerErrorMessage = (error) => {
+        const status = error?.response?.status;
+        const data = error?.response?.data || {};
+
+        if (Array.isArray(data.errors) && data.errors.length > 0) {
+            return data.errors[0]?.msg || data.errors[0]?.message || 'Please fix the errors in the form';
+        }
+
+        if (status === 400) return data.message || 'Please fix the errors in the form';
+        if (status === 429) return data.message || 'Too many attempts. Please try again later.';
+
+        return data.message || 'Registration failed';
+    };
+
     // Password strength calculation
     useEffect(() => {
         let strength = 0;
@@ -189,7 +203,8 @@ const RegisterPage = () => {
         setTouched(allTouched);
 
         if (Object.keys(newErrors).length > 0) {
-            toast.error('Please fix the errors in the form');
+            const firstError = Object.values(newErrors).find(Boolean);
+            toast.error(firstError || 'Please fix the errors in the form');
             return;
         }
 
@@ -216,7 +231,7 @@ const RegisterPage = () => {
             
             navigate(from, { replace: true });
         } catch (error) {
-            toast.error(error.response?.data?.message || 'Registration failed', {
+            toast.error(getServerErrorMessage(error), {
                 icon: '❌',
                 duration: 4000
             });

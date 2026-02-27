@@ -15,6 +15,23 @@ const parseStoredUser = () => {
     }
 };
 
+const extractAuthPayload = (responseBody) => {
+    const payload = responseBody?.data && typeof responseBody.data === 'object'
+        ? responseBody.data
+        : responseBody;
+
+    const token = payload?.token || null;
+    let user = null;
+    if (payload?._id) {
+        const { token: _ignoredToken, ...rest } = payload;
+        user = rest;
+    } else if (payload?.user) {
+        user = payload.user;
+    }
+
+    return { token, user };
+};
+
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(parseStoredUser);
     const [loading, setLoading] = useState(true);
@@ -79,8 +96,7 @@ export const AuthProvider = ({ children }) => {
 
     const login = useCallback(async (credentials) => {
         const res = await authService.login(credentials);
-        const token = res?.token || res?.data?.token;
-        const nextUser = res?.user || res?.data?.user || null;
+        const { token, user: nextUser } = extractAuthPayload(res);
 
         persistAuth(token, nextUser);
 
@@ -93,8 +109,7 @@ export const AuthProvider = ({ children }) => {
 
     const register = useCallback(async (payload) => {
         const res = await authService.register(payload);
-        const token = res?.token || res?.data?.token;
-        const nextUser = res?.user || res?.data?.user || null;
+        const { token, user: nextUser } = extractAuthPayload(res);
 
         persistAuth(token, nextUser);
 

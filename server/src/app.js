@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
 const path = require('path');
 const errorMiddleware = require('./middleware/error.middleware');
 const sanitizeRequest = require('./middleware/sanitize.middleware');
@@ -32,23 +31,13 @@ app.use('/assets', express.static(path.join(__dirname, '../public/assets')));
 // Sanitize request
 app.use(sanitizeRequest);
 
-// Rate limiting for auth routes
-const authLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 5,
-    message: {
-        success: false,
-        message: 'Too many attempts, please try again later'
-    }
-});
-
 // Test route
 app.get('/api/test', (req, res) => {
     res.json({ message: 'Server & MongoDB connected!' });
 });
 
 // Routes
-app.use('/api/auth', authLimiter, authRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/api/foods', foodRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
