@@ -1,290 +1,891 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiEdit2, FiTrash2, FiPlus, FiSearch } from 'react-icons/fi';
+import { 
+    FiEdit2, 
+    FiTrash2, 
+    FiPlus, 
+    FiSearch,
+    FiFilter,
+    FiDownload,
+    FiUpload,
+    FiCopy,
+    FiEye,
+    FiStar,
+    FiClock,
+    FiDollarSign,
+    FiPackage,
+    FiTag,
+    FiCheckCircle,
+    FiXCircle,
+    FiAlertCircle,
+    FiMoreVertical,
+    FiGrid,
+    FiList,
+    FiRefreshCw,
+    FiSliders,
+    FiChevronDown,
+    FiChevronUp,
+    FiImage,
+    FiCamera,
+    FiVideo,
+    FiLink,
+    FiPrinter,
+    FiMail,
+    FiShare2
+} from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import adminFoodService from '../services/adminFoodService';
+import { useAdminDataContext } from '../../contexts/AdminDataContext';
+import StatusBadge from '../common/StatusBadge';
+import DataTable from '../common/DataTable';
+import Pagination from '../common/Pagination';
+import FoodForm from '../forms/FoodForm';
+import { format } from 'date-fns';
 
-const categories = [
-    'Pizza', 'Burger', 'Sushi', 'Chinese', 'Indian',
-    'Mexican', 'Italian', 'Thai', 'Desserts', 'Beverages',
-    'Salads', 'Breakfast', 'Seafood', 'BBQ', 'Healthy',
-    'Fast Food', 'Vegetarian', 'Vegan'
-];
-
-const modalVariants = {
-    hidden: { opacity: 0, scale: 0.98 },
-    visible: { opacity: 1, scale: 1, transition: { duration: 0.2 } },
-    exit: { opacity: 0, scale: 0.98, transition: { duration: 0.15 } }
+// Animation variants
+const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.05,
+            delayChildren: 0.1
+        }
+    }
 };
 
-const FoodsPage = ({ initialMode = null, initialFoodId = null }) => {
-    const [foods, setFoods] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [search, setSearch] = useState('');
-    const [category, setCategory] = useState('All');
-    const [modalOpen, setModalOpen] = useState(false);
-    const [editingFood, setEditingFood] = useState(null);
-    const [deleteTarget, setDeleteTarget] = useState(null);
-    const [formState, setFormState] = useState({
-        name: '',
-        description: '',
-        price: '',
-        category: 'Pizza',
-        isAvailable: true,
-        isVegetarian: false,
-        isPopular: false,
-        preparationTime: 15,
-        image: null
-    });
+const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+        opacity: 1,
+        y: 0,
+        transition: { type: 'spring', stiffness: 300, damping: 30 }
+    }
+};
 
+const modalVariants = {
+    hidden: { opacity: 0, scale: 0.95 },
+    visible: { opacity: 1, scale: 1, transition: { duration: 0.2 } },
+    exit: { opacity: 0, scale: 0.95, transition: { duration: 0.15 } }
+};
+
+interface Food {
+    _id: string;
+    name: string;
+    description: string;
+    price: number;
+    category: string;
+    cuisine: string;
+    image: string;
+    images?: string[];
+    preparationTime: number;
+    isVegetarian: boolean;
+    isVegan: boolean;
+    isGlutenFree: boolean;
+    isSpicy: boolean;
+    isPopular: boolean;
+    isFeatured: boolean;
+    discount?: number;
+    available: boolean;
+    maxQuantity?: number;
+    ingredients: string[];
+    allergens: string[];
+    nutritionalInfo?: {
+        calories: number;
+        protein: number;
+        carbs: number;
+        fat: number;
+        fiber: number;
+    };
+    tags: string[];
+    orderCount: number;
+    rating: number;
+    totalReviews: number;
+    createdAt: string;
+    updatedAt: string;
+}
+
+interface FoodsPageProps {
+    initialMode?: 'add' | 'edit' | null;
+    initialFoodId?: string | null;
+}
+
+const FoodsPage: React.FC<FoodsPageProps> = ({ initialMode = null, initialFoodId = null }) => {
     const navigate = useNavigate();
+    const {
+        state,
+        fetchFoods,
+        fetchFoodById,
+        createFood,
+        updateFood,
+        deleteFood,
+        updateFoodAvailability,
+        isLoading,
+        getError,
+        setFilters,
+        clearFilters,
+        pagination,
+        goToPage,
+        setPageSize,
+        bulkUpdateFoods,
+        bulkDeleteFoods,
+        exportData,
+        invalidateCache
+    } = useAdminDataContext();
 
+    const [search, setSearch] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState('All');
+    const [selectedCuisine, setSelectedCuisine] = useState('All');
+    const [selectedStatus, setSelectedStatus] = useState('All');
+    const [selectedDietary, setSelectedDietary] = useState<string[]>([]);
+    const [priceRange, setPriceRange] = useState<[number, number]>([0, 100]);
+    const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
+    const [showFilters, setShowFilters] = useState(false);
+    const [showBulkActions, setShowBulkActions] = useState(false);
+    const [selectedFoods, setSelectedFoods] = useState<string[]>([]);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [editingFood, setEditingFood] = useState<Food | null>(null);
+    const [deleteTarget, setDeleteTarget] = useState<Food | null>(null);
+    const [bulkDeleteTarget, setBulkDeleteTarget] = useState(false);
+    const [sortBy, setSortBy] = useState('createdAt');
+    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+
+    // Categories and cuisines (would come from API)
+    const categories = [
+        'Pizza', 'Burger', 'Sushi', 'Chinese', 'Indian',
+        'Mexican', 'Italian', 'Thai', 'Desserts', 'Beverages',
+        'Salads', 'Breakfast', 'Seafood', 'BBQ', 'Healthy',
+        'Fast Food', 'Vegetarian', 'Vegan'
+    ];
+
+    const cuisines = [
+        'Italian', 'Chinese', 'Indian', 'Mexican', 'Japanese',
+        'Thai', 'American', 'Mediterranean', 'French', 'Spanish',
+        'Korean', 'Vietnamese', 'Greek', 'Turkish', 'Lebanese'
+    ];
+
+    const dietaryOptions = [
+        { id: 'vegetarian', label: 'Vegetarian', color: 'green' },
+        { id: 'vegan', label: 'Vegan', color: 'emerald' },
+        { id: 'glutenFree', label: 'Gluten Free', color: 'yellow' },
+        { id: 'spicy', label: 'Spicy', color: 'red' }
+    ];
+
+    // Load foods
     useEffect(() => {
-        const fetchFoods = async () => {
-            try {
-                const response = await adminFoodService.getFoodsWithStats();
-                const data = response?.data?.foods || [];
-                setFoods(data);
-            } catch (error) {
-                console.error('Failed to fetch foods', error);
-            } finally {
-                setLoading(false);
-            }
-        };
+        loadFoods();
+    }, [selectedCategory, selectedCuisine, selectedStatus, priceRange, sortBy, sortOrder]);
 
-        fetchFoods();
-    }, []);
-
+    // Handle initial mode
     useEffect(() => {
-        if (!loading && initialMode === 'add') {
+        if (initialMode === 'add') {
             handleOpenCreate();
+        } else if (initialMode === 'edit' && initialFoodId) {
+            loadFoodForEdit(initialFoodId);
         }
-        if (!loading && initialMode === 'edit' && initialFoodId) {
-            const match = foods.find((food) => food._id === initialFoodId);
-            if (match) {
-                handleOpenEdit(match);
-            }
-        }
-    }, [loading, initialMode, initialFoodId, foods]);
+    }, [initialMode, initialFoodId]);
 
-    const filteredFoods = useMemo(() => {
-        return foods.filter((food) => {
-            const matchesSearch = `${food.name} ${food.description}`
-                .toLowerCase()
-                .includes(search.toLowerCase());
-            const matchesCategory = category === 'All' || food.category === category;
-            return matchesSearch && matchesCategory;
+    const loadFoods = async () => {
+        await fetchFoods({
+            search,
+            category: selectedCategory !== 'All' ? selectedCategory : undefined,
+            cuisine: selectedCuisine !== 'All' ? selectedCuisine : undefined,
+            status: selectedStatus !== 'All' ? selectedStatus : undefined,
+            dietary: selectedDietary,
+            minPrice: priceRange[0],
+            maxPrice: priceRange[1],
+            sortBy,
+            sortOrder,
+            page: pagination.currentPage,
+            limit: pagination.itemsPerPage
         });
-    }, [foods, search, category]);
+    };
+
+    const loadFoodForEdit = async (id: string) => {
+        const food = await fetchFoodById(id);
+        if (food) {
+            handleOpenEdit(food);
+        } else {
+            toast.error('Food item not found');
+            navigate('/admin/foods');
+        }
+    };
+
+    const handleSearch = useCallback((value: string) => {
+        setSearch(value);
+        // Debounce search
+        const timeout = setTimeout(() => {
+            loadFoods();
+        }, 300);
+        return () => clearTimeout(timeout);
+    }, []);
 
     const handleOpenCreate = () => {
         setEditingFood(null);
-        setFormState({
-            name: '',
-            description: '',
-            price: '',
-            category: 'Pizza',
-            isAvailable: true,
-            isVegetarian: false,
-            isPopular: false,
-            preparationTime: 15,
-            image: null
-        });
         setModalOpen(true);
     };
 
-    const handleOpenEdit = (food) => {
+    const handleOpenEdit = (food: Food) => {
         setEditingFood(food);
-        setFormState({
-            name: food.name || '',
-            description: food.description || '',
-            price: food.price || '',
-            category: food.category || 'Pizza',
-            isAvailable: !!food.isAvailable,
-            isVegetarian: !!food.isVegetarian,
-            isPopular: !!food.isPopular,
-            preparationTime: food.preparationTime || 15,
-            image: null
-        });
         setModalOpen(true);
     };
 
-    const handleDelete = async (foodId) => {
+    const handleDuplicate = async (food: Food) => {
         try {
-            await adminFoodService.deleteFood(foodId);
-            setFoods((prev) => prev.filter((item) => item._id !== foodId));
-            toast.success('Food item deleted');
+            const { _id, createdAt, updatedAt, ...foodData } = food;
+            await createFood({
+                ...foodData,
+                name: `${food.name} (Copy)`
+            });
+            toast.success('Food item duplicated');
+            loadFoods();
+        } catch (error) {
+            toast.error('Failed to duplicate food');
+        }
+    };
+
+    const handleDelete = async (foodId: string) => {
+        const success = await deleteFood(foodId);
+        if (success) {
+            setSelectedFoods(prev => prev.filter(id => id !== foodId));
             setDeleteTarget(null);
-        } catch (error) {
-            toast.error('Failed to delete food');
         }
     };
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        const formData = new FormData();
-        formData.append('name', formState.name.trim());
-        formData.append('description', formState.description.trim());
-        formData.append('price', String(Number(formState.price)));
-        formData.append('category', formState.category);
-        formData.append('isAvailable', String(Boolean(formState.isAvailable)));
-        formData.append('isVegetarian', String(Boolean(formState.isVegetarian)));
-        formData.append('isPopular', String(Boolean(formState.isPopular)));
-        if (formState.preparationTime !== '' && formState.preparationTime !== null && formState.preparationTime !== undefined) {
-            formData.append('preparationTime', String(Number(formState.preparationTime)));
-        }
-        if (formState.image instanceof File) {
-            formData.append('image', formState.image);
-        }
-
-        try {
-            if (editingFood) {
-                const response = await adminFoodService.updateFood(editingFood._id, formData);
-                const updated = response?.data || response?.data?.data;
-                setFoods((prev) => prev.map((item) => (item._id === updated._id ? updated : item)));
-                toast.success('Food item updated');
-            } else {
-                const response = await adminFoodService.createFood(formData);
-                const created = response?.data || response?.data?.data;
-                setFoods((prev) => [created, ...prev]);
-                toast.success('Food item created');
-            }
-            setModalOpen(false);
-            navigate('/admin/foods');
-        } catch (error) {
-            const validationMessage = error?.response?.data?.errors?.[0]?.message;
-            const message = validationMessage || error?.response?.data?.message || 'Failed to save food item';
-            toast.error(message);
-        }
+    const handleBulkDelete = async () => {
+        await bulkDeleteFoods(selectedFoods);
+        setSelectedFoods([]);
+        setBulkDeleteTarget(false);
+        loadFoods();
     };
 
-    if (loading) {
+    const handleBulkUpdate = async (updates: Partial<Food>) => {
+        await bulkUpdateFoods(selectedFoods, updates);
+        setSelectedFoods([]);
+        setShowBulkActions(false);
+        loadFoods();
+    };
+
+    const handleToggleAvailability = async (food: Food) => {
+        await updateFoodAvailability(food._id, !food.available);
+    };
+
+    const handleExport = async (format: 'csv' | 'excel' | 'pdf') => {
+        await exportData('foods', format);
+    };
+
+    const handleClearFilters = () => {
+        setSearch('');
+        setSelectedCategory('All');
+        setSelectedCuisine('All');
+        setSelectedStatus('All');
+        setSelectedDietary([]);
+        setPriceRange([0, 100]);
+        clearFilters();
+        loadFoods();
+    };
+
+    // Table columns
+    const columns = [
+        {
+            key: 'image',
+            title: 'Image',
+            render: (_: any, record: Food) => (
+                <div className="w-12 h-12 rounded-lg bg-slate-100 dark:bg-slate-800 overflow-hidden">
+                    {record.image ? (
+                        <img 
+                            src={record.image} 
+                            alt={record.name} 
+                            className="w-full h-full object-cover"
+                        />
+                    ) : (
+                        <FiImage className="w-6 h-6 m-3 text-slate-400" />
+                    )}
+                </div>
+            ),
+            width: '80px'
+        },
+        {
+            key: 'name',
+            title: 'Item',
+            sortable: true,
+            render: (_: any, record: Food) => (
+                <div>
+                    <div className="font-medium text-slate-900 dark:text-white">
+                        {record.name}
+                    </div>
+                    <div className="text-xs text-slate-500">
+                        {record.description?.substring(0, 50)}...
+                    </div>
+                </div>
+            )
+        },
+        {
+            key: 'category',
+            title: 'Category',
+            sortable: true,
+            render: (value: string) => (
+                <span className="px-2 py-1 bg-slate-100 dark:bg-slate-700 rounded-full text-xs">
+                    {value}
+                </span>
+            )
+        },
+        {
+            key: 'cuisine',
+            title: 'Cuisine',
+            sortable: true
+        },
+        {
+            key: 'price',
+            title: 'Price',
+            sortable: true,
+            align: 'right' as const,
+            render: (value: number, record: Food) => (
+                <div>
+                    <div className="font-medium text-slate-900 dark:text-white">
+                        ${value.toFixed(2)}
+                    </div>
+                    {record.discount > 0 && (
+                        <div className="text-xs text-green-500">
+                            -{record.discount}% off
+                        </div>
+                    )}
+                </div>
+            )
+        },
+        {
+            key: 'rating',
+            title: 'Rating',
+            sortable: true,
+            align: 'center' as const,
+            render: (value: number, record: Food) => (
+                <div className="flex items-center gap-1">
+                    <FiStar className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                    <span>{value?.toFixed(1) || '0.0'}</span>
+                    <span className="text-xs text-slate-400">
+                        ({record.totalReviews})
+                    </span>
+                </div>
+            )
+        },
+        {
+            key: 'available',
+            title: 'Status',
+            sortable: true,
+            align: 'center' as const,
+            render: (value: boolean) => (
+                <StatusBadge 
+                    status={value} 
+                    type="food" 
+                    variant="pill"
+                    showIcon
+                />
+            )
+        },
+        {
+            key: 'orderCount',
+            title: 'Orders',
+            sortable: true,
+            align: 'right' as const,
+            render: (value: number) => value.toLocaleString()
+        },
+        {
+            key: 'preparationTime',
+            title: 'Prep Time',
+            sortable: true,
+            align: 'right' as const,
+            render: (value: number) => `${value} min`
+        },
+        {
+            key: 'createdAt',
+            title: 'Created',
+            sortable: true,
+            render: (value: string) => format(new Date(value), 'MMM d, yyyy')
+        }
+    ];
+
+    // Filter component
+    const FilterPanel = () => (
+        <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="overflow-hidden"
+        >
+            <div className="p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl mt-4 space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {/* Category Filter */}
+                    <div>
+                        <label className="block text-xs font-medium text-slate-500 mb-1">
+                            Category
+                        </label>
+                        <select
+                            value={selectedCategory}
+                            onChange={(e) => setSelectedCategory(e.target.value)}
+                            className="w-full px-3 py-2 bg-white dark:bg-slate-800
+                                     border border-slate-200 dark:border-slate-700
+                                     rounded-lg text-sm"
+                        >
+                            <option value="All">All Categories</option>
+                            {categories.map(cat => (
+                                <option key={cat} value={cat}>{cat}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* Cuisine Filter */}
+                    <div>
+                        <label className="block text-xs font-medium text-slate-500 mb-1">
+                            Cuisine
+                        </label>
+                        <select
+                            value={selectedCuisine}
+                            onChange={(e) => setSelectedCuisine(e.target.value)}
+                            className="w-full px-3 py-2 bg-white dark:bg-slate-800
+                                     border border-slate-200 dark:border-slate-700
+                                     rounded-lg text-sm"
+                        >
+                            <option value="All">All Cuisines</option>
+                            {cuisines.map(cuisine => (
+                                <option key={cuisine} value={cuisine}>{cuisine}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* Status Filter */}
+                    <div>
+                        <label className="block text-xs font-medium text-slate-500 mb-1">
+                            Status
+                        </label>
+                        <select
+                            value={selectedStatus}
+                            onChange={(e) => setSelectedStatus(e.target.value)}
+                            className="w-full px-3 py-2 bg-white dark:bg-slate-800
+                                     border border-slate-200 dark:border-slate-700
+                                     rounded-lg text-sm"
+                        >
+                            <option value="All">All Status</option>
+                            <option value="available">Available</option>
+                            <option value="unavailable">Unavailable</option>
+                        </select>
+                    </div>
+
+                    {/* Price Range */}
+                    <div>
+                        <label className="block text-xs font-medium text-slate-500 mb-1">
+                            Price Range
+                        </label>
+                        <div className="flex items-center gap-2">
+                            <input
+                                type="number"
+                                value={priceRange[0]}
+                                onChange={(e) => setPriceRange([Number(e.target.value), priceRange[1]])}
+                                className="w-full px-3 py-2 bg-white dark:bg-slate-800
+                                         border border-slate-200 dark:border-slate-700
+                                         rounded-lg text-sm"
+                                placeholder="Min"
+                            />
+                            <span>-</span>
+                            <input
+                                type="number"
+                                value={priceRange[1]}
+                                onChange={(e) => setPriceRange([priceRange[0], Number(e.target.value)])}
+                                className="w-full px-3 py-2 bg-white dark:bg-slate-800
+                                         border border-slate-200 dark:border-slate-700
+                                         rounded-lg text-sm"
+                                placeholder="Max"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                {/* Dietary Filters */}
+                <div>
+                    <label className="block text-xs font-medium text-slate-500 mb-2">
+                        Dietary Options
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                        {dietaryOptions.map(option => (
+                            <button
+                                key={option.id}
+                                onClick={() => {
+                                    setSelectedDietary(prev =>
+                                        prev.includes(option.id)
+                                            ? prev.filter(id => id !== option.id)
+                                            : [...prev, option.id]
+                                    );
+                                }}
+                                className={`
+                                    px-3 py-1.5 rounded-full text-xs font-medium
+                                    transition-colors duration-200
+                                    ${selectedDietary.includes(option.id)
+                                        ? `bg-${option.color}-100 text-${option.color}-700
+                                           dark:bg-${option.color}-900/30 dark:text-${option.color}-400`
+                                        : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
+                                    }
+                                `}
+                            >
+                                {option.label}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Active Filters */}
+                <div className="flex items-center justify-between pt-2 border-t border-slate-200 dark:border-slate-700">
+                    <div className="flex flex-wrap gap-2">
+                        {selectedCategory !== 'All' && (
+                            <span className="inline-flex items-center gap-1 px-2 py-1
+                                           bg-orange-100 dark:bg-orange-900/30
+                                           text-orange-700 dark:text-orange-300
+                                           rounded-full text-xs">
+                                Category: {selectedCategory}
+                                <button onClick={() => setSelectedCategory('All')}>×</button>
+                            </span>
+                        )}
+                        {selectedCuisine !== 'All' && (
+                            <span className="inline-flex items-center gap-1 px-2 py-1
+                                           bg-orange-100 dark:bg-orange-900/30
+                                           text-orange-700 dark:text-orange-300
+                                           rounded-full text-xs">
+                                Cuisine: {selectedCuisine}
+                                <button onClick={() => setSelectedCuisine('All')}>×</button>
+                            </span>
+                        )}
+                        {selectedStatus !== 'All' && (
+                            <span className="inline-flex items-center gap-1 px-2 py-1
+                                           bg-orange-100 dark:bg-orange-900/30
+                                           text-orange-700 dark:text-orange-300
+                                           rounded-full text-xs">
+                                Status: {selectedStatus}
+                                <button onClick={() => setSelectedStatus('All')}>×</button>
+                            </span>
+                        )}
+                        {selectedDietary.map(diet => (
+                            <span key={diet} className="inline-flex items-center gap-1 px-2 py-1
+                                                       bg-orange-100 dark:bg-orange-900/30
+                                                       text-orange-700 dark:text-orange-300
+                                                       rounded-full text-xs">
+                                {diet}
+                                <button onClick={() => setSelectedDietary(prev => prev.filter(d => d !== diet))}>×</button>
+                            </span>
+                        ))}
+                    </div>
+                    
+                    <button
+                        onClick={handleClearFilters}
+                        className="text-xs text-orange-500 hover:text-orange-600"
+                    >
+                        Clear All
+                    </button>
+                </div>
+            </div>
+        </motion.div>
+    );
+
+    // Bulk Actions Bar
+    const BulkActionsBar = () => (
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40
+                     bg-white dark:bg-slate-800 rounded-xl shadow-2xl
+                     border border-slate-200 dark:border-slate-700
+                     p-4 flex items-center gap-4"
+        >
+            <span className="text-sm font-medium">
+                {selectedFoods.length} items selected
+            </span>
+            
+            <div className="h-6 w-px bg-slate-200 dark:bg-slate-700" />
+
+            <select
+                onChange={(e) => {
+                    const value = e.target.value;
+                    if (value === 'available' || value === 'unavailable') {
+                        handleBulkUpdate({ available: value === 'available' });
+                    } else if (value === 'delete') {
+                        setBulkDeleteTarget(true);
+                    }
+                    e.target.value = '';
+                }}
+                className="px-3 py-1.5 bg-slate-100 dark:bg-slate-700
+                         border border-transparent rounded-lg text-sm
+                         focus:outline-none focus:border-orange-500"
+            >
+                <option value="">Bulk Actions</option>
+                <option value="available">Mark as Available</option>
+                <option value="unavailable">Mark as Unavailable</option>
+                <option value="delete" className="text-red-500">Delete Selected</option>
+            </select>
+
+            <button
+                onClick={() => setSelectedFoods([])}
+                className="text-slate-400 hover:text-slate-600"
+            >
+                Cancel
+            </button>
+        </motion.div>
+    );
+
+    if (isLoading('foods') && !state.foods.length) {
         return (
-            <div className="flex items-center justify-center min-h-[50vh]">
-                <div className="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+            <div className="flex items-center justify-center min-h-[60vh]">
+                <div className="flex flex-col items-center gap-4">
+                    <div className="relative">
+                        <div className="w-16 h-16 border-4 border-orange-200 dark:border-orange-900/30 
+                                      border-t-orange-500 rounded-full animate-spin" />
+                        <div className="absolute inset-0 flex items-center justify-center">
+                            <FiPackage className="w-6 h-6 text-orange-500 animate-pulse" />
+                        </div>
+                    </div>
+                    <p className="text-slate-600 dark:text-slate-400 font-medium">
+                        Loading food items...
+                    </p>
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="space-y-6">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="space-y-6"
+        >
+            {/* Header */}
+            <motion.div variants={itemVariants} className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold text-[var(--text-primary)]">Food Items</h1>
-                    <p className="text-sm text-[var(--text-secondary)]">Manage menu items, pricing, and availability.</p>
+                    <h1 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">
+                        Food Items
+                    </h1>
+                    <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                        Manage your menu items, pricing, and availability
+                    </p>
                 </div>
-                <button
-                    onClick={handleOpenCreate}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-primary text-white hover:bg-primary/90 transition-colors"
-                >
-                    <FiPlus />
-                    Add Food
-                </button>
-            </div>
 
-            <div className="rounded-2xl bg-[var(--surface)] border border-slate-100 shadow-sm p-4 md:p-6">
-                <div className="flex flex-col md:flex-row md:items-center gap-4 justify-between">
-                    <div className="relative w-full md:w-80">
-                        <FiSearch className="absolute left-3 top-3 text-[var(--text-secondary)]" />
+                <div className="flex items-center gap-3">
+                    {/* View Toggle */}
+                    <div className="flex items-center gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-lg">
+                        <button
+                            onClick={() => setViewMode('list')}
+                            className={`p-2 rounded-md transition-colors ${
+                                viewMode === 'list'
+                                    ? 'bg-white dark:bg-slate-700 text-orange-500 shadow-sm'
+                                    : 'text-slate-500 hover:text-orange-500'
+                            }`}
+                        >
+                            <FiList className="w-4 h-4" />
+                        </button>
+                        <button
+                            onClick={() => setViewMode('grid')}
+                            className={`p-2 rounded-md transition-colors ${
+                                viewMode === 'grid'
+                                    ? 'bg-white dark:bg-slate-700 text-orange-500 shadow-sm'
+                                    : 'text-slate-500 hover:text-orange-500'
+                            }`}
+                        >
+                            <FiGrid className="w-4 h-4" />
+                        </button>
+                    </div>
+
+                    {/* Export Dropdown */}
+                    <div className="relative">
+                        <button
+                            onClick={() => setShowBulkActions(!showBulkActions)}
+                            className="px-4 py-2 bg-white dark:bg-slate-800
+                                     border border-slate-200 dark:border-slate-700
+                                     rounded-xl text-slate-700 dark:text-slate-300
+                                     hover:border-orange-500 transition-colors
+                                     flex items-center gap-2"
+                        >
+                            <FiDownload className="w-4 h-4" />
+                            <span>Export</span>
+                        </button>
+
+                        <AnimatePresence>
+                            {showBulkActions && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: 10 }}
+                                    className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800
+                                             rounded-xl shadow-xl border border-slate-200 dark:border-slate-700
+                                             overflow-hidden z-10"
+                                >
+                                    {(['csv', 'excel', 'pdf'] as const).map((format) => (
+                                        <button
+                                            key={format}
+                                            onClick={() => {
+                                                handleExport(format);
+                                                setShowBulkActions(false);
+                                            }}
+                                            className="w-full px-4 py-3 text-left text-sm
+                                                     hover:bg-slate-100 dark:hover:bg-slate-700
+                                                     flex items-center gap-2"
+                                        >
+                                            <FiDownload className="w-4 h-4" />
+                                            <span className="capitalize">Export as {format.toUpperCase()}</span>
+                                        </button>
+                                    ))}
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
+
+                    {/* Add Button */}
+                    <button
+                        onClick={handleOpenCreate}
+                        className="px-4 py-2 bg-orange-500 hover:bg-orange-600
+                                 text-white rounded-xl transition-colors
+                                 flex items-center gap-2 shadow-lg shadow-orange-500/25"
+                    >
+                        <FiPlus className="w-4 h-4" />
+                        <span>Add Food</span>
+                    </button>
+                </div>
+            </motion.div>
+
+            {/* Search and Filters */}
+            <motion.div variants={itemVariants} className="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-slate-200 dark:border-slate-700">
+                <div className="flex flex-col md:flex-row md:items-center gap-4">
+                    {/* Search */}
+                    <div className="relative flex-1">
+                        <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                         <input
                             value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            placeholder="Search food items..."
-                            className="w-full pl-10 pr-3 py-2 rounded-md border border-slate-200 bg-white text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
+                            onChange={(e) => handleSearch(e.target.value)}
+                            placeholder="Search food items by name, description, or tags..."
+                            className="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-900
+                                     border border-slate-200 dark:border-slate-700
+                                     rounded-lg text-sm
+                                     focus:outline-none focus:border-orange-500
+                                     focus:ring-2 focus:ring-orange-500/20"
                         />
                     </div>
-                    <div className="flex items-center gap-3">
+
+                    {/* Filter Toggle */}
+                    <button
+                        onClick={() => setShowFilters(!showFilters)}
+                        className={`px-4 py-2 rounded-lg border transition-colors
+                                 flex items-center gap-2
+                                 ${showFilters
+                                     ? 'bg-orange-500 text-white border-orange-500'
+                                     : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-orange-500'
+                                 }`}
+                    >
+                        <FiSliders className="w-4 h-4" />
+                        <span>Filters</span>
+                        {(selectedCategory !== 'All' || selectedCuisine !== 'All' || selectedStatus !== 'All' || selectedDietary.length > 0) && (
+                            <span className="w-5 h-5 bg-orange-500 text-white rounded-full text-xs flex items-center justify-center">
+                                {[
+                                    selectedCategory !== 'All' ? 1 : 0,
+                                    selectedCuisine !== 'All' ? 1 : 0,
+                                    selectedStatus !== 'All' ? 1 : 0,
+                                    selectedDietary.length
+                                ].reduce((a, b) => a + b, 0)}
+                            </span>
+                        )}
+                    </button>
+
+                    {/* Sort */}
+                    <div className="flex items-center gap-2">
                         <select
-                            value={category}
-                            onChange={(e) => setCategory(e.target.value)}
-                            className="rounded-md border border-slate-200 bg-white px-3 py-2 text-sm"
+                            value={sortBy}
+                            onChange={(e) => setSortBy(e.target.value)}
+                            className="px-3 py-2 bg-white dark:bg-slate-800
+                                     border border-slate-200 dark:border-slate-700
+                                     rounded-lg text-sm"
                         >
-                            <option value="All">All Categories</option>
-                            {categories.map((cat) => (
-                                <option key={cat} value={cat}>{cat}</option>
-                            ))}
+                            <option value="createdAt">Date Created</option>
+                            <option value="name">Name</option>
+                            <option value="price">Price</option>
+                            <option value="rating">Rating</option>
+                            <option value="orderCount">Popularity</option>
                         </select>
+                        <button
+                            onClick={() => setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc')}
+                            className="p-2 bg-white dark:bg-slate-800
+                                     border border-slate-200 dark:border-slate-700
+                                     rounded-lg hover:border-orange-500 transition-colors"
+                        >
+                            {sortOrder === 'asc' ? <FiChevronUp /> : <FiChevronDown />}
+                        </button>
                     </div>
                 </div>
 
-                <div className="mt-6 overflow-x-auto">
-                    <table className="min-w-full text-left text-sm">
-                        <thead>
-                            <tr className="border-b border-slate-100 text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">
-                                <th className="pb-3">Item</th>
-                                <th className="pb-3">Category</th>
-                                <th className="pb-3">Price</th>
-                                <th className="pb-3">Rating</th>
-                                <th className="pb-3">Status</th>
-                                <th className="pb-3 text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <AnimatePresence>
-                            <tbody className="divide-y divide-slate-100">
-                                {filteredFoods.map((food, index) => (
-                                    <motion.tr
-                                        key={food._id}
-                                        initial={{ opacity: 0, y: 6 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: -6 }}
-                                        transition={{ duration: 0.2 }}
-                                        whileHover={{ scale: 1.005 }}
-                                        className={index % 2 === 0 ? 'bg-white' : 'bg-slate-50/60'}
-                                    >
-                                        <td className="py-4">
-                                            <div className="flex items-center gap-3">
-                                                <div className="h-10 w-10 rounded-lg bg-slate-100 overflow-hidden">
-                                                    {food.image && (
-                                                        <img src={food.image} alt={food.name} className="h-full w-full object-cover" />
-                                                    )}
-                                                </div>
-                                                <div>
-                                                    <div className="font-semibold text-[var(--text-primary)]">{food.name}</div>
-                                                    <div className="text-xs text-[var(--text-secondary)]">{food.description?.slice(0, 40)}...</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="py-4 text-[var(--text-secondary)]">{food.category}</td>
-                                        <td className="py-4 font-semibold text-[var(--text-primary)]">${food.price}</td>
-                                        <td className="py-4 text-[var(--text-secondary)]">
-                                            {food.avgRating ? `${food.avgRating} (${food.reviewCount})` : 'No reviews'}
-                                        </td>
-                                        <td className="py-4">
-                                            <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide ${
-                                                food.isAvailable ? 'bg-secondary/20 text-secondary' : 'bg-danger/20 text-danger'
-                                            }`}>
-                                                {food.isAvailable ? 'Active' : 'Inactive'}
-                                            </span>
-                                        </td>
-                                        <td className="py-4 text-right">
-                                            <div className="flex items-center justify-end gap-2">
-                                                <button
-                                                    onClick={() => handleOpenEdit(food)}
-                                                    className="p-2 rounded-md bg-primary/10 text-primary hover:bg-primary/20"
-                                                >
-                                                    <FiEdit2 />
-                                                </button>
-                                                <button
-                                                    onClick={() => setDeleteTarget(food)}
-                                                    className="p-2 rounded-md bg-danger/10 text-danger hover:bg-danger/20"
-                                                >
-                                                    <FiTrash2 />
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </motion.tr>
-                                ))}
-                            </tbody>
-                        </AnimatePresence>
-                    </table>
-                </div>
-            </div>
+                {/* Filter Panel */}
+                <AnimatePresence>
+                    {showFilters && <FilterPanel />}
+                </AnimatePresence>
+            </motion.div>
 
+            {/* Error Display */}
+            <AnimatePresence>
+                {getError('foods') && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="p-4 bg-red-50 dark:bg-red-900/20
+                                 border border-red-200 dark:border-red-800
+                                 rounded-xl flex items-center gap-3"
+                    >
+                        <FiAlertCircle className="w-5 h-5 text-red-500" />
+                        <span className="text-sm text-red-700 dark:text-red-300">
+                            {getError('foods')}
+                        </span>
+                        <button
+                            onClick={loadFoods}
+                            className="ml-auto text-sm text-red-600 hover:text-red-700"
+                        >
+                            Retry
+                        </button>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* Data Table */}
+            <motion.div variants={itemVariants}>
+                <DataTable
+                    columns={columns}
+                    data={state.foods}
+                    loading={isLoading('foods')}
+                    onSort={(key, direction) => {
+                        setSortBy(key);
+                        setSortOrder(direction);
+                    }}
+                    onRowClick={(record) => navigate(`/admin/foods/${record._id}`)}
+                    onSelectionChange={(selected) => setSelectedFoods(selected)}
+                    onEdit={(record) => handleOpenEdit(record)}
+                    onDelete={(record) => setDeleteTarget(record)}
+                    onView={(record) => navigate(`/admin/foods/${record._id}`)}
+                    selectable
+                    rowKey="_id"
+                    currentPage={pagination.currentPage}
+                    pageSize={pagination.itemsPerPage}
+                    totalItems={pagination.totalItems}
+                    onPageChange={goToPage}
+                    onPageSizeChange={setPageSize}
+                    showSizeChanger
+                    pageSizeOptions={[10, 25, 50, 100]}
+                    striped
+                    hoverable
+                />
+            </motion.div>
+
+            {/* Bulk Actions Bar */}
+            <AnimatePresence>
+                {selectedFoods.length > 0 && <BulkActionsBar />}
+            </AnimatePresence>
+
+            {/* Food Form Modal */}
             <AnimatePresence>
                 {modalOpen && (
                     <motion.div
-                        className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 px-4"
+                        className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 overflow-y-auto"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
@@ -295,141 +896,41 @@ const FoodsPage = ({ initialMode = null, initialFoodId = null }) => {
                             initial="hidden"
                             animate="visible"
                             exit="exit"
-                            onClick={(event) => event.stopPropagation()}
-                            className="w-full max-w-2xl rounded-2xl bg-white p-6 shadow-xl"
+                            onClick={(e) => e.stopPropagation()}
+                            className="w-full max-w-4xl"
                         >
-                            <div className="flex items-center justify-between mb-4">
-                                <h2 className="text-xl font-bold text-[var(--text-primary)]">
-                                    {editingFood ? 'Edit Food Item' : 'Add Food Item'}
-                                </h2>
-                                <button
-                                    onClick={() => setModalOpen(false)}
-                                    className="text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-                                    type="button"
-                                >
-                                    Close
-                                </button>
-                            </div>
-
-                            <form onSubmit={handleSubmit} className="space-y-4">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="text-xs font-semibold text-[var(--text-secondary)]">Name</label>
-                                        <input
-                                            value={formState.name}
-                                            onChange={(e) => setFormState({ ...formState, name: e.target.value })}
-                                            className="mt-1 w-full rounded-md border border-slate-200 px-3 py-2"
-                                            required
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="text-xs font-semibold text-[var(--text-secondary)]">Category</label>
-                                        <select
-                                            value={formState.category}
-                                            onChange={(e) => setFormState({ ...formState, category: e.target.value })}
-                                            className="mt-1 w-full rounded-md border border-slate-200 px-3 py-2"
-                                        >
-                                            {categories.map((cat) => (
-                                                <option key={cat} value={cat}>{cat}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <label className="text-xs font-semibold text-[var(--text-secondary)]">Description</label>
-                                    <textarea
-                                        value={formState.description}
-                                        onChange={(e) => setFormState({ ...formState, description: e.target.value })}
-                                        className="mt-1 w-full rounded-md border border-slate-200 px-3 py-2"
-                                        rows={3}
-                                        required
-                                    />
-                                </div>
-
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    <div>
-                                        <label className="text-xs font-semibold text-[var(--text-secondary)]">Price</label>
-                                        <input
-                                            type="number"
-                                            value={formState.price}
-                                            onChange={(e) => setFormState({ ...formState, price: e.target.value })}
-                                            className="mt-1 w-full rounded-md border border-slate-200 px-3 py-2"
-                                            required
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="text-xs font-semibold text-[var(--text-secondary)]">Prep Time (min)</label>
-                                        <input
-                                            type="number"
-                                            value={formState.preparationTime}
-                                            onChange={(e) => setFormState({ ...formState, preparationTime: e.target.value })}
-                                            className="mt-1 w-full rounded-md border border-slate-200 px-3 py-2"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="text-xs font-semibold text-[var(--text-secondary)]">Image</label>
-                                        <input
-                                            type="file"
-                                            accept="image/*"
-                                            onChange={(e) => setFormState({ ...formState, image: e.target.files?.[0] || null })}
-                                            className="mt-1 w-full text-sm"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    <label className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
-                                        <input
-                                            type="checkbox"
-                                            checked={formState.isAvailable}
-                                            onChange={(e) => setFormState({ ...formState, isAvailable: e.target.checked })}
-                                        />
-                                        Available
-                                    </label>
-                                    <label className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
-                                        <input
-                                            type="checkbox"
-                                            checked={formState.isVegetarian}
-                                            onChange={(e) => setFormState({ ...formState, isVegetarian: e.target.checked })}
-                                        />
-                                        Vegetarian
-                                    </label>
-                                    <label className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
-                                        <input
-                                            type="checkbox"
-                                            checked={formState.isPopular}
-                                            onChange={(e) => setFormState({ ...formState, isPopular: e.target.checked })}
-                                        />
-                                        Popular
-                                    </label>
-                                </div>
-
-                                <div className="flex items-center justify-end gap-3 pt-2">
-                                    <button
-                                        type="button"
-                                        onClick={() => setModalOpen(false)}
-                                        className="px-4 py-2 rounded-md bg-white border border-slate-200 text-[var(--text-primary)]"
-                                    >
-                                        Cancel
-                                    </button>
-                                    <button
-                                        type="submit"
-                                        className="px-4 py-2 rounded-md bg-primary text-white hover:bg-primary/90"
-                                    >
-                                        {editingFood ? 'Save Changes' : 'Create Food'}
-                                    </button>
-                                </div>
-                            </form>
+                            <FoodForm
+                                initialData={editingFood || undefined}
+                                onSubmit={async (data) => {
+                                    if (editingFood) {
+                                        await updateFood(editingFood._id, data);
+                                    } else {
+                                        await createFood(data);
+                                    }
+                                    setModalOpen(false);
+                                    loadFoods();
+                                }}
+                                onCancel={() => setModalOpen(false)}
+                                onDelete={editingFood ? async (id) => {
+                                    await deleteFood(id);
+                                    setModalOpen(false);
+                                    loadFoods();
+                                } : undefined}
+                                mode={editingFood ? 'edit' : 'create'}
+                                categories={categories}
+                                cuisines={cuisines}
+                                loading={isLoading('createFood') || isLoading('updateFood')}
+                            />
                         </motion.div>
                     </motion.div>
                 )}
             </AnimatePresence>
 
+            {/* Delete Confirmation Modal */}
             <AnimatePresence>
                 {deleteTarget && (
                     <motion.div
-                        className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 px-4"
+                        className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
@@ -440,34 +941,99 @@ const FoodsPage = ({ initialMode = null, initialFoodId = null }) => {
                             initial="hidden"
                             animate="visible"
                             exit="exit"
-                            onClick={(event) => event.stopPropagation()}
-                            className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl"
+                            onClick={(e) => e.stopPropagation()}
+                            className="w-full max-w-md bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-xl"
                         >
-                            <h3 className="text-lg font-bold text-[var(--text-primary)]">Confirm Delete</h3>
-                            <p className="text-sm text-[var(--text-secondary)] mt-2">
-                                Delete <span className="font-semibold text-[var(--text-primary)]">{deleteTarget.name}</span>? This action cannot be undone.
-                            </p>
-                            <div className="flex items-center justify-end gap-3 mt-6">
-                                <button
-                                    type="button"
-                                    onClick={() => setDeleteTarget(null)}
-                                    className="px-4 py-2 rounded-md bg-white border border-slate-200 text-[var(--text-primary)]"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => handleDelete(deleteTarget._id)}
-                                    className="px-4 py-2 rounded-md bg-danger text-white hover:bg-danger/90"
-                                >
-                                    Delete
-                                </button>
+                            <div className="text-center">
+                                <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30
+                                              rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <FiTrash2 className="w-8 h-8 text-red-500" />
+                                </div>
+                                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
+                                    Delete Food Item
+                                </h3>
+                                <p className="text-sm text-slate-600 dark:text-slate-400 mb-6">
+                                    Are you sure you want to delete <span className="font-semibold">{deleteTarget.name}</span>? 
+                                    This action cannot be undone.
+                                </p>
+                                <div className="flex gap-3">
+                                    <button
+                                        onClick={() => setDeleteTarget(null)}
+                                        className="flex-1 px-4 py-2 border border-slate-200 dark:border-slate-700
+                                                 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-700
+                                                 transition-colors"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        onClick={() => handleDelete(deleteTarget._id)}
+                                        className="flex-1 px-4 py-2 bg-red-500 text-white
+                                                 rounded-lg text-sm hover:bg-red-600
+                                                 transition-colors"
+                                    >
+                                        Delete
+                                    </button>
+                                </div>
                             </div>
                         </motion.div>
                     </motion.div>
                 )}
             </AnimatePresence>
-        </div>
+
+            {/* Bulk Delete Confirmation Modal */}
+            <AnimatePresence>
+                {bulkDeleteTarget && (
+                    <motion.div
+                        className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={() => setBulkDeleteTarget(false)}
+                    >
+                        <motion.div
+                            variants={modalVariants}
+                            initial="hidden"
+                            animate="visible"
+                            exit="exit"
+                            onClick={(e) => e.stopPropagation()}
+                            className="w-full max-w-md bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-xl"
+                        >
+                            <div className="text-center">
+                                <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30
+                                              rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <FiAlertCircle className="w-8 h-8 text-red-500" />
+                                </div>
+                                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
+                                    Delete Multiple Items
+                                </h3>
+                                <p className="text-sm text-slate-600 dark:text-slate-400 mb-6">
+                                    Are you sure you want to delete {selectedFoods.length} food items? 
+                                    This action cannot be undone.
+                                </p>
+                                <div className="flex gap-3">
+                                    <button
+                                        onClick={() => setBulkDeleteTarget(false)}
+                                        className="flex-1 px-4 py-2 border border-slate-200 dark:border-slate-700
+                                                 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-700
+                                                 transition-colors"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        onClick={handleBulkDelete}
+                                        className="flex-1 px-4 py-2 bg-red-500 text-white
+                                                 rounded-lg text-sm hover:bg-red-600
+                                                 transition-colors"
+                                    >
+                                        Delete All
+                                    </button>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </motion.div>
     );
 };
 
