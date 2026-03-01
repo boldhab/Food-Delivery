@@ -1,11 +1,9 @@
-import React from 'react';
-
 const FoodList = () => {
-  return (
-    <div>
+  return <div>
       <h2>Food List</h2>
-    </div>
-  );
+    </div>;
 };
-
-export default FoodList;
+var stdin_default = FoodList;
+export {
+  stdin_default as default
+};

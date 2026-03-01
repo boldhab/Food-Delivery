@@ -1,10 +1,10 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
-import FoodsPage from './FoodsPage';
-
+import { useParams } from "react-router-dom";
+import FoodsPage from "./FoodsPage";
 const EditFoodPage = () => {
-    const { id } = useParams();
-    return <FoodsPage initialMode="edit" initialFoodId={id} />;
+  const { id } = useParams();
+  return <FoodsPage initialMode="edit" initialFoodId={id} />;
 };
-
-export default EditFoodPage;
+var stdin_default = EditFoodPage;
+export {
+  stdin_default as default
+};

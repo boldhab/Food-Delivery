@@ -1,8 +1,8 @@
-import React from 'react';
-import FoodsPage from './FoodsPage';
-
+import FoodsPage from "./FoodsPage";
 const AddFoodPage = () => {
-    return <FoodsPage initialMode="add" />;
+  return <FoodsPage initialMode="add" />;
 };
-
-export default AddFoodPage;
+var stdin_default = AddFoodPage;
+export {
+  stdin_default as default
+};

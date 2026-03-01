@@ -1,11 +1,9 @@
-import React from 'react';
-
 const AdminProtectedRoute = ({ children }) => {
-  return (
-    <div>
+  return <div>
       {children}
-    </div>
-  );
+    </div>;
 };
-
-export default AdminProtectedRoute;
+var stdin_default = AdminProtectedRoute;
+export {
+  stdin_default as default
+};

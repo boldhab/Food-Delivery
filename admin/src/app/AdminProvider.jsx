@@ -1,11 +1,9 @@
-import React from 'react';
-
 const AdminProvider = ({ children }) => {
-  return (
-    <div>
+  return <div>
       {children}
-    </div>
-  );
+    </div>;
 };
-
-export default AdminProvider;
+var stdin_default = AdminProvider;
+export {
+  stdin_default as default
+};

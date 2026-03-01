@@ -1,179 +1,141 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
-    FiHeart,
-    FiGithub,
-    FiTwitter,
-    FiMail,
-    FiHelpCircle,
-    FiShield,
-    FiClock,
-    FiDatabase,
-    FiCpu,
-    FiServer,
-    FiCloud,
-    FiAlertCircle,
-    FiCheckCircle,
-    FiXCircle,
-    FiLoader,
-    FiChevronUp,
-    FiChevronDown,
-    FiInfo,
-    FiExternalLink
-} from 'react-icons/fi';
-
-interface FooterProps {
-    variant?: 'default' | 'admin' | 'minimal' | 'compact';
-    showVersion?: boolean;
-    showStatus?: boolean;
-    showLinks?: boolean;
-    showSocial?: boolean;
-    showSystemInfo?: boolean;
-    companyName?: string;
-    year?: number;
-    version?: string;
-    buildNumber?: string;
-    environment?: 'development' | 'staging' | 'production';
-    links?: Array<{
-        label: string;
-        href: string;
-        external?: boolean;
-    }>;
-    socialLinks?: Array<{
-        icon: React.ReactNode;
-        href: string;
-        label: string;
-    }>;
-    onLinkClick?: (link: string) => void;
-    className?: string;
-}
-
-const Footer: React.FC<FooterProps> = ({
-    variant = 'default',
-    showVersion = true,
-    showStatus = true,
-    showLinks = true,
-    showSocial = true,
-    showSystemInfo = false,
-    companyName = 'FoodieHub',
-    year = new Date().getFullYear(),
-    version = '1.0.0',
-    buildNumber = '2024.001',
-    environment = 'production',
-    links = [
-        { label: 'Privacy Policy', href: '/privacy' },
-        { label: 'Terms of Service', href: '/terms' },
-        { label: 'Support', href: '/support' },
-        { label: 'Documentation', href: '/docs', external: true }
-    ],
-    socialLinks = [
-        { icon: <FiGithub />, href: 'https://github.com/foodiehub', label: 'GitHub' },
-        { icon: <FiTwitter />, href: 'https://twitter.com/foodiehub', label: 'Twitter' },
-        { icon: <FiMail />, href: 'mailto:support@foodiehub.com', label: 'Email' }
-    ],
-    onLinkClick,
-    className = ''
+  FiHeart,
+  FiGithub,
+  FiTwitter,
+  FiMail,
+  FiClock,
+  FiDatabase,
+  FiCpu,
+  FiServer,
+  FiCloud,
+  FiAlertCircle,
+  FiCheckCircle,
+  FiXCircle,
+  FiLoader,
+  FiChevronUp,
+  FiChevronDown,
+  FiInfo,
+  FiExternalLink
+} from "react-icons/fi";
+const Footer = ({
+  variant = "default",
+  showVersion = true,
+  showStatus = true,
+  showLinks = true,
+  showSocial = true,
+  showSystemInfo = false,
+  companyName = "FoodieHub",
+  year = (/* @__PURE__ */ new Date()).getFullYear(),
+  version = "1.0.0",
+  buildNumber = "2024.001",
+  environment = "production",
+  links = [
+    { label: "Privacy Policy", href: "/privacy" },
+    { label: "Terms of Service", href: "/terms" },
+    { label: "Support", href: "/support" },
+    { label: "Documentation", href: "/docs", external: true }
+  ],
+  socialLinks = [
+    { icon: <FiGithub />, href: "https://github.com/foodiehub", label: "GitHub" },
+    { icon: <FiTwitter />, href: "https://twitter.com/foodiehub", label: "Twitter" },
+    { icon: <FiMail />, href: "mailto:support@foodiehub.com", label: "Email" }
+  ],
+  onLinkClick,
+  className = ""
 }) => {
-    const [showDetails, setShowDetails] = useState(false);
-    const [systemStatus, setSystemStatus] = useState<'healthy' | 'degraded' | 'down'>('healthy');
-    const [serverTime, setServerTime] = useState(new Date());
-    const [metrics, setMetrics] = useState({
-        uptime: '99.9%',
-        responseTime: '245ms',
-        activeUsers: 1234,
-        requestsPerMin: 5678
-    });
-
-    // Update server time every second
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setServerTime(new Date());
-        }, 1000);
-        return () => clearInterval(timer);
-    }, []);
-
-    // Simulate status check
-    useEffect(() => {
-        const checkStatus = () => {
-            // This would be replaced with actual API health check
-            const random = Math.random();
-            if (random > 0.95) {
-                setSystemStatus('degraded');
-            } else if (random > 0.98) {
-                setSystemStatus('down');
-            } else {
-                setSystemStatus('healthy');
-            }
+  const [showDetails, setShowDetails] = useState(false);
+  const [systemStatus, setSystemStatus] = useState("healthy");
+  const [serverTime, setServerTime] = useState(/* @__PURE__ */ new Date());
+  const [metrics, setMetrics] = useState({
+    uptime: "99.9%",
+    responseTime: "245ms",
+    activeUsers: 1234,
+    requestsPerMin: 5678
+  });
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setServerTime(/* @__PURE__ */ new Date());
+    }, 1e3);
+    return () => clearInterval(timer);
+  }, []);
+  useEffect(() => {
+    const checkStatus = () => {
+      const random = Math.random();
+      if (random > 0.95) {
+        setSystemStatus("degraded");
+      } else if (random > 0.98) {
+        setSystemStatus("down");
+      } else {
+        setSystemStatus("healthy");
+      }
+    };
+    const interval = setInterval(checkStatus, 3e4);
+    return () => clearInterval(interval);
+  }, []);
+  const getStatusConfig = () => {
+    switch (systemStatus) {
+      case "healthy":
+        return {
+          color: "text-green-500",
+          bg: "bg-green-100 dark:bg-green-900/30",
+          icon: <FiCheckCircle className="w-3 h-3" />,
+          label: "All Systems Operational"
         };
-
-        const interval = setInterval(checkStatus, 30000);
-        return () => clearInterval(interval);
-    }, []);
-
-    // Get status color and icon
-    const getStatusConfig = () => {
-        switch (systemStatus) {
-            case 'healthy':
-                return {
-                    color: 'text-green-500',
-                    bg: 'bg-green-100 dark:bg-green-900/30',
-                    icon: <FiCheckCircle className="w-3 h-3" />,
-                    label: 'All Systems Operational'
-                };
-            case 'degraded':
-                return {
-                    color: 'text-yellow-500',
-                    bg: 'bg-yellow-100 dark:bg-yellow-900/30',
-                    icon: <FiAlertCircle className="w-3 h-3" />,
-                    label: 'Degraded Performance'
-                };
-            case 'down':
-                return {
-                    color: 'text-red-500',
-                    bg: 'bg-red-100 dark:bg-red-900/30',
-                    icon: <FiXCircle className="w-3 h-3" />,
-                    label: 'System Outage'
-                };
-        }
-    };
-
-    const statusConfig = getStatusConfig();
-
-    // Variant classes
-    const variantClasses = {
-        default: 'bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700',
-        admin: 'bg-slate-50 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800',
-        minimal: 'bg-transparent border-t border-slate-100 dark:border-slate-800',
-        compact: 'bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 py-2'
-    };
-
-    // Environment badge colors
-    const envColors = {
-        development: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
-        staging: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
-        production: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-    };
-
-    return (
-        <footer className={`
+      case "degraded":
+        return {
+          color: "text-yellow-500",
+          bg: "bg-yellow-100 dark:bg-yellow-900/30",
+          icon: <FiAlertCircle className="w-3 h-3" />,
+          label: "Degraded Performance"
+        };
+      case "down":
+        return {
+          color: "text-red-500",
+          bg: "bg-red-100 dark:bg-red-900/30",
+          icon: <FiXCircle className="w-3 h-3" />,
+          label: "System Outage"
+        };
+    }
+  };
+  const statusConfig = getStatusConfig();
+  const variantClasses = {
+    default: "bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700",
+    admin: "bg-slate-50 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800",
+    minimal: "bg-transparent border-t border-slate-100 dark:border-slate-800",
+    compact: "bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 py-2"
+  };
+  const envColors = {
+    development: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
+    staging: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400",
+    production: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+  };
+  return <footer className={`
             ${variantClasses[variant]}
             px-4 sm:px-6 lg:px-8
             transition-all duration-200
             ${className}
         `}>
             <div className="max-w-7xl mx-auto">
-                {/* Main Footer Content */}
+                {
+    /* Main Footer Content */
+  }
                 <div className={`
                     flex flex-col sm:flex-row items-center justify-between
-                    ${variant === 'compact' ? 'py-2' : 'py-4'}
+                    ${variant === "compact" ? "py-2" : "py-4"}
                 `}>
-                    {/* Copyright Section */}
+                    {
+    /* Copyright Section */
+  }
                     <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400">
                         <p>
                             © {year} {companyName}. All rights reserved.
                         </p>
                         
-                        {/* Made with love indicator */}
+                        {
+    /* Made with love indicator */
+  }
                         <span className="hidden sm:flex items-center gap-1 ml-2">
                             Made with
                             <FiHeart className="w-3 h-3 text-red-500 animate-pulse" />
@@ -181,21 +143,24 @@ const Footer: React.FC<FooterProps> = ({
                         </span>
                     </div>
 
-                    {/* Right Section */}
+                    {
+    /* Right Section */
+  }
                     <div className="flex items-center gap-4 mt-2 sm:mt-0">
-                        {/* Environment Badge */}
-                        {environment !== 'production' && (
-                            <span className={`
+                        {
+    /* Environment Badge */
+  }
+                        {environment !== "production" && <span className={`
                                 px-2 py-0.5 rounded-full text-[10px] font-medium uppercase
                                 ${envColors[environment]}
                             `}>
                                 {environment}
-                            </span>
-                        )}
+                            </span>}
 
-                        {/* Version Info */}
-                        {showVersion && (
-                            <div className="relative group">
+                        {
+    /* Version Info */
+  }
+                        {showVersion && <div className="relative group">
                                 <span className="px-2 py-0.5 rounded-full
                                                bg-slate-100 dark:bg-slate-700
                                                text-slate-600 dark:text-slate-400
@@ -205,7 +170,9 @@ const Footer: React.FC<FooterProps> = ({
                                     v{version}
                                 </span>
                                 
-                                {/* Version Tooltip */}
+                                {
+    /* Version Tooltip */
+  }
                                 <div className="absolute bottom-full right-0 mb-2 hidden
                                               group-hover:block z-10">
                                     <div className="bg-white dark:bg-slate-800
@@ -216,16 +183,16 @@ const Footer: React.FC<FooterProps> = ({
                                             Build: {buildNumber}
                                         </p>
                                         <p className="text-slate-600 dark:text-slate-400">
-                                            Released: {new Date().toLocaleDateString()}
+                                            Released: {(/* @__PURE__ */ new Date()).toLocaleDateString()}
                                         </p>
                                     </div>
                                 </div>
-                            </div>
-                        )}
+                            </div>}
 
-                        {/* System Status */}
-                        {showStatus && (
-                            <div className="relative group">
+                        {
+    /* System Status */
+  }
+                        {showStatus && <div className="relative group">
                                 <div className={`
                                     flex items-center gap-1.5 px-2 py-0.5 rounded-full
                                     ${statusConfig.bg} ${statusConfig.color}
@@ -235,7 +202,9 @@ const Footer: React.FC<FooterProps> = ({
                                     <span className="hidden sm:inline">Status</span>
                                 </div>
 
-                                {/* Status Tooltip */}
+                                {
+    /* Status Tooltip */
+  }
                                 <div className="absolute bottom-full right-0 mb-2 hidden
                                               group-hover:block z-10">
                                     <div className="bg-white dark:bg-slate-800
@@ -245,9 +214,9 @@ const Footer: React.FC<FooterProps> = ({
                                         <div className="flex items-center gap-2 mb-2">
                                             <div className={`
                                                 w-2 h-2 rounded-full
-                                                ${systemStatus === 'healthy' && 'bg-green-500'}
-                                                ${systemStatus === 'degraded' && 'bg-yellow-500'}
-                                                ${systemStatus === 'down' && 'bg-red-500'}
+                                                ${systemStatus === "healthy" && "bg-green-500"}
+                                                ${systemStatus === "degraded" && "bg-yellow-500"}
+                                                ${systemStatus === "down" && "bg-red-500"}
                                             `} />
                                             <span className="text-sm font-medium text-slate-900 dark:text-white">
                                                 {statusConfig.label}
@@ -258,80 +227,72 @@ const Footer: React.FC<FooterProps> = ({
                                         </p>
                                     </div>
                                 </div>
-                            </div>
-                        )}
+                            </div>}
 
-                        {/* Navigation Links */}
-                        {showLinks && links.length > 0 && (
-                            <div className="flex items-center gap-3">
-                                {links.map((link, index) => (
-                                    <a
-                                        key={index}
-                                        href={link.href}
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            onLinkClick?.(link.label);
-                                        }}
-                                        target={link.external ? '_blank' : undefined}
-                                        rel={link.external ? 'noopener noreferrer' : undefined}
-                                        className="text-xs text-slate-600 dark:text-slate-400
+                        {
+    /* Navigation Links */
+  }
+                        {showLinks && links.length > 0 && <div className="flex items-center gap-3">
+                                {links.map((link, index) => <a
+    key={index}
+    href={link.href}
+    onClick={(e) => {
+      e.preventDefault();
+      onLinkClick?.(link.label);
+    }}
+    target={link.external ? "_blank" : void 0}
+    rel={link.external ? "noopener noreferrer" : void 0}
+    className="text-xs text-slate-600 dark:text-slate-400
                                                  hover:text-orange-500 dark:hover:text-orange-400
                                                  transition-colors flex items-center gap-1"
-                                    >
+  >
                                         {link.label}
-                                        {link.external && (
-                                            <FiExternalLink className="w-3 h-3" />
-                                        )}
-                                    </a>
-                                ))}
-                            </div>
-                        )}
+                                        {link.external && <FiExternalLink className="w-3 h-3" />}
+                                    </a>)}
+                            </div>}
 
-                        {/* Social Links */}
-                        {showSocial && socialLinks.length > 0 && (
-                            <div className="flex items-center gap-2">
-                                {socialLinks.map((social, index) => (
-                                    <a
-                                        key={index}
-                                        href={social.href}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="p-1.5 text-slate-500 hover:text-orange-500
+                        {
+    /* Social Links */
+  }
+                        {showSocial && socialLinks.length > 0 && <div className="flex items-center gap-2">
+                                {socialLinks.map((social, index) => <a
+    key={index}
+    href={social.href}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="p-1.5 text-slate-500 hover:text-orange-500
                                                  hover:bg-slate-100 dark:hover:bg-slate-700
                                                  rounded-lg transition-all duration-200"
-                                        aria-label={social.label}
-                                    >
-                                        {React.cloneElement(social.icon as React.ReactElement, {
-                                            className: 'w-4 h-4'
-                                        })}
-                                    </a>
-                                ))}
-                            </div>
-                        )}
+    aria-label={social.label}
+  >
+                                        {React.cloneElement(social.icon, {
+    className: "w-4 h-4"
+  })}
+                                    </a>)}
+                            </div>}
 
-                        {/* Expand/Collapse Button (for system info) */}
-                        {showSystemInfo && (
-                            <button
-                                onClick={() => setShowDetails(!showDetails)}
-                                className="p-1.5 text-slate-500 hover:text-orange-500
+                        {
+    /* Expand/Collapse Button (for system info) */
+  }
+                        {showSystemInfo && <button
+    onClick={() => setShowDetails(!showDetails)}
+    className="p-1.5 text-slate-500 hover:text-orange-500
                                          hover:bg-slate-100 dark:hover:bg-slate-700
                                          rounded-lg transition-all duration-200
                                          sm:hidden"
-                            >
-                                {showDetails ? (
-                                    <FiChevronDown className="w-4 h-4" />
-                                ) : (
-                                    <FiChevronUp className="w-4 h-4" />
-                                )}
-                            </button>
-                        )}
+  >
+                                {showDetails ? <FiChevronDown className="w-4 h-4" /> : <FiChevronUp className="w-4 h-4" />}
+                            </button>}
                     </div>
                 </div>
 
-                {/* System Information (Collapsible) */}
-                {showSystemInfo && (
-                    <>
-                        {/* Desktop view - always visible */}
+                {
+    /* System Information (Collapsible) */
+  }
+                {showSystemInfo && <>
+                        {
+    /* Desktop view - always visible */
+  }
                         <div className="hidden sm:grid grid-cols-2 md:grid-cols-4 gap-4 py-4
                                       border-t border-slate-200 dark:border-slate-700
                                       text-xs text-slate-600 dark:text-slate-400">
@@ -353,16 +314,17 @@ const Footer: React.FC<FooterProps> = ({
                             </div>
                         </div>
 
-                        {/* Mobile view - collapsible */}
+                        {
+    /* Mobile view - collapsible */
+  }
                         <AnimatePresence>
-                            {showDetails && (
-                                <motion.div
-                                    initial={{ height: 0, opacity: 0 }}
-                                    animate={{ height: 'auto', opacity: 1 }}
-                                    exit={{ height: 0, opacity: 0 }}
-                                    transition={{ duration: 0.2 }}
-                                    className="sm:hidden overflow-hidden"
-                                >
+                            {showDetails && <motion.div
+    initial={{ height: 0, opacity: 0 }}
+    animate={{ height: "auto", opacity: 1 }}
+    exit={{ height: 0, opacity: 0 }}
+    transition={{ duration: 0.2 }}
+    className="sm:hidden overflow-hidden"
+  >
                                     <div className="py-4 space-y-2 border-t border-slate-200
                                                   dark:border-slate-700">
                                         <div className="flex items-center justify-between text-xs">
@@ -390,15 +352,14 @@ const Footer: React.FC<FooterProps> = ({
                                             </span>
                                         </div>
                                     </div>
-                                </motion.div>
-                            )}
+                                </motion.div>}
                         </AnimatePresence>
-                    </>
-                )}
+                    </>}
 
-                {/* Live Stats Bar (Optional) */}
-                {variant === 'admin' && (
-                    <div className="py-2 border-t border-slate-200 dark:border-slate-700
+                {
+    /* Live Stats Bar (Optional) */
+  }
+                {variant === "admin" && <div className="py-2 border-t border-slate-200 dark:border-slate-700
                                   flex flex-wrap items-center justify-between gap-4
                                   text-[10px] text-slate-500">
                         <div className="flex items-center gap-4">
@@ -420,11 +381,11 @@ const Footer: React.FC<FooterProps> = ({
                             <span>•</span>
                             <span>Cache: 98% hit</span>
                         </div>
-                    </div>
-                )}
+                    </div>}
             </div>
-        </footer>
-    );
+        </footer>;
 };
-
-export default Footer;
+var stdin_default = Footer;
+export {
+  stdin_default as default
+};

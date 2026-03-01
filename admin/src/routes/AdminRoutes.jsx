@@ -1,11 +1,11 @@
-import React from 'react';
-
 const AdminRoutes = () => {
-  return (
-    <div>
-      {/* Routes will be defined here */}
-    </div>
-  );
+  return <div>
+      {
+    /* Routes will be defined here */
+  }
+    </div>;
 };
-
-export default AdminRoutes;
+var stdin_default = AdminRoutes;
+export {
+  stdin_default as default
+};

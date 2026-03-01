@@ -1,11 +1,9 @@
-import React from 'react';
-
 const OrderList = () => {
-  return (
-    <div>
+  return <div>
       <h2>Order List</h2>
-    </div>
-  );
+    </div>;
 };
-
-export default OrderList;
+var stdin_default = OrderList;
+export {
+  stdin_default as default
+};

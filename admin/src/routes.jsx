@@ -1,43 +1,33 @@
-import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
-import { useAdminAuth } from './hooks/useAdminAuth';
-
-import AdminLayout from './components/layout/AdminLayout';
-
-import LoginPage from './pages/LoginPage';
-import DashboardPage from './pages/DashboardPage';
-import OrdersPage from './pages/OrdersPage';
-import OrderDetailPage from './pages/OrderDetailPage';
-import FoodsPage from './pages/FoodsPage';
-import AddFoodPage from './pages/AddFoodPage';
-import EditFoodPage from './pages/EditFoodPage';
-import UsersPage from './pages/UsersPage';
-import ReportsPage from './pages/ReportsPage';
-import SettingsPage from './pages/SettingsPage';
-
+import { Routes, Route, Navigate } from "react-router-dom";
+import { useAdminAuth } from "./hooks/useAdminAuth";
+import AdminLayout from "./components/layout/AdminLayout";
+import LoginPage from "./pages/LoginPage";
+import DashboardPage from "./pages/DashboardPage";
+import OrdersPage from "./pages/OrdersPage";
+import OrderDetailPage from "./pages/OrderDetailPage";
+import FoodsPage from "./pages/FoodsPage";
+import AddFoodPage from "./pages/AddFoodPage";
+import EditFoodPage from "./pages/EditFoodPage";
+import UsersPage from "./pages/UsersPage";
+import ReportsPage from "./pages/ReportsPage";
+import SettingsPage from "./pages/SettingsPage";
 const PrivateRoute = ({ children }) => {
-    const { isAuthenticated, loading } = useAdminAuth();
-
-    if (loading) {
-        return <div>Loading...</div>;
-    }
-
-    return isAuthenticated ? children : <Navigate to="/admin/login" replace />;
+  const { isAuthenticated, loading } = useAdminAuth();
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+  return isAuthenticated ? children : <Navigate to="/admin/login" replace />;
 };
-
 const AppRoutes = () => {
-    return (
-        <Routes>
+  return <Routes>
             <Route path="/admin/login" element={<LoginPage />} />
 
             <Route
-                path="/admin"
-                element={
-                    <PrivateRoute>
+    path="/admin"
+    element={<PrivateRoute>
                         <AdminLayout />
-                    </PrivateRoute>
-                }
-            >
+                    </PrivateRoute>}
+  >
                 <Route index element={<DashboardPage />} />
                 <Route path="orders" element={<OrdersPage />} />
                 <Route path="orders/:id" element={<OrderDetailPage />} />
@@ -50,8 +40,9 @@ const AppRoutes = () => {
             </Route>
 
             <Route path="*" element={<Navigate to="/admin/login" replace />} />
-        </Routes>
-    );
+        </Routes>;
 };
-
-export default AppRoutes;
+var stdin_default = AppRoutes;
+export {
+  stdin_default as default
+};
