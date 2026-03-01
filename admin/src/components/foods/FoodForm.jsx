@@ -12,8 +12,8 @@ import {
   FiAlertCircle,
   FiStar,
   FiHeart,
-  FiFlame,
-  FiLeaf,
+  FiZap,
+  FiAperture,
   FiAlertTriangle,
   FiPackage,
   FiEdit2,
@@ -564,7 +564,7 @@ const FoodForm = ({
     onChange={(e) => setFormData((prev) => ({ ...prev, isVegetarian: e.target.checked }))}
     className="w-4 h-4 text-orange-500"
   />
-                                    <FiLeaf className="w-4 h-4 text-green-500" />
+                                    <FiAperture className="w-4 h-4 text-green-500" />
                                     <span className="text-sm">Vegetarian</span>
                                 </label>
 
@@ -603,7 +603,7 @@ const FoodForm = ({
     onChange={(e) => setFormData((prev) => ({ ...prev, isSpicy: e.target.checked }))}
     className="w-4 h-4 text-orange-500"
   />
-                                    <FiFlame className="w-4 h-4 text-red-500" />
+                                    <FiZap className="w-4 h-4 text-red-500" />
                                     <span className="text-sm">Spicy</span>
                                 </label>
                             </div>

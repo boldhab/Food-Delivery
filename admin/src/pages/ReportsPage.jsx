@@ -41,9 +41,6 @@ import {
 } from "recharts";
 import { format, subDays, startOfMonth, endOfMonth, subMonths } from "date-fns";
 import { toast } from "react-hot-toast";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
-import * as XLSX from "xlsx";
 import adminReportService from "../services/adminReportService";
 import { useAdminDataContext } from "../context/AdminDataContext";
 const containerVariants = {
@@ -258,27 +255,31 @@ const ReportsPage = () => {
     }
   };
   const exportAsPDF = async () => {
-    const element = document.getElementById("report-content");
-    if (!element) return;
-    const canvas = await html2canvas(element);
-    const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF({
-      orientation: "landscape",
-      unit: "px",
-      format: [canvas.width, canvas.height]
-    });
-    pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
-    pdf.save(`${activeReport}-report-${format(/* @__PURE__ */ new Date(), "yyyy-MM-dd")}.pdf`);
+    window.print();
   };
   const exportAsExcel = () => {
-    const ws = XLSX.utils.json_to_sheet(formatDataForExcel());
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Report");
-    XLSX.writeFile(wb, `${activeReport}-report-${format(/* @__PURE__ */ new Date(), "yyyy-MM-dd")}.xlsx`);
+    const rows = formatDataForExcel();
+    if (!rows.length) return;
+    const headers = Object.keys(rows[0]);
+    const csv = [
+      headers.join(","),
+      ...rows.map((row) => headers.map((key) => JSON.stringify(row[key] ?? "")).join(","))
+    ].join("\n");
+    const blob = new Blob([csv], { type: "application/vnd.ms-excel;charset=utf-8;" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${activeReport}-report-${format(/* @__PURE__ */ new Date(), "yyyy-MM-dd")}.xls`;
+    a.click();
   };
   const exportAsCSV = () => {
-    const ws = XLSX.utils.json_to_sheet(formatDataForExcel());
-    const csv = XLSX.utils.sheet_to_csv(ws);
+    const rows = formatDataForExcel();
+    if (!rows.length) return;
+    const headers = Object.keys(rows[0]);
+    const csv = [
+      headers.join(","),
+      ...rows.map((row) => headers.map((key) => JSON.stringify(row[key] ?? "")).join(","))
+    ].join("\n");
     const blob = new Blob([csv], { type: "text/csv" });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -287,14 +288,7 @@ const ReportsPage = () => {
     a.click();
   };
   const exportAsImage = async () => {
-    const element = document.getElementById("report-content");
-    if (!element) return;
-    const canvas = await html2canvas(element);
-    const url = canvas.toDataURL("image/png");
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${activeReport}-report-${format(/* @__PURE__ */ new Date(), "yyyy-MM-dd")}.png`;
-    a.click();
+    toast.error("Image export is unavailable in this build");
   };
   const formatDataForExcel = () => {
     if (!reportData) return [];
