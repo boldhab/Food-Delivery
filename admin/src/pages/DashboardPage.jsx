@@ -205,15 +205,78 @@ const DashboardPage = () => {
       }
     ];
   }, [state.stats]);
-  const statusDistribution = useMemo(() => {
-    const stats = state.stats;
-    if (!stats?.ordersByStatus) return [];
-    return Object.entries(stats.ordersByStatus).map(([status, count]) => ({
-      status,
-      count,
-      percentage: (count / stats.totalOrders * 100).toFixed(1)
+  const normalizedOrdersByStatus = useMemo(() => {
+    const raw = state.stats?.ordersByStatus;
+    if (!raw) return [];
+
+    if (Array.isArray(raw)) {
+      return raw.map((item) => ({
+        status: item?._id || item?.status || "unknown",
+        count: Number(item?.count || 0),
+        revenue: Number(item?.revenue || 0)
+      }));
+    }
+
+    if (typeof raw === "object") {
+      return Object.entries(raw).map(([status, count]) => ({
+        status,
+        count: Number(count || 0),
+        revenue: 0
+      }));
+    }
+
+    return [];
+  }, [state.stats]);
+
+  const normalizedPopularCategories = useMemo(() => {
+    const raw = state.stats?.popularCategories;
+    if (!Array.isArray(raw)) return [];
+    return raw.map((cat) => ({
+      name: cat?.name || cat?._id || "Unknown",
+      count: Number(cat?.count || 0),
+      percentage: Number(cat?.percentage || 0)
     }));
   }, [state.stats]);
+
+  const normalizedPeakHours = useMemo(() => {
+    const raw = state.stats?.peakHours;
+    if (!Array.isArray(raw)) return [];
+    return raw.map((hour) => ({
+      hour: hour?.hour ?? hour?._id ?? 0,
+      count: Number(hour?.count || 0),
+      percentage: Number(hour?.percentage || 0)
+    }));
+  }, [state.stats]);
+
+  const normalizedRecentActivity = useMemo(() => {
+    const raw = state.stats?.recentActivity;
+    if (!Array.isArray(raw)) return [];
+    return raw.map((activity) => ({
+      type: activity?.type || "order",
+      message: typeof activity?.message === "string" ? activity.message : activity?.action || "Activity",
+      timestamp: activity?.timestamp || activity?.createdAt || new Date().toISOString()
+    }));
+  }, [state.stats]);
+
+  const normalizedTopSellingFoods = useMemo(() => {
+    const raw = state.stats?.topSellingFoods;
+    if (!Array.isArray(raw)) return [];
+    return raw.map((item) => ({
+      name: item?.name || item?._id || "Unknown",
+      quantity: Number(item?.quantity ?? item?.count ?? 0),
+      revenue: Number(item?.revenue || 0)
+    }));
+  }, [state.stats]);
+
+  const statusDistribution = useMemo(() => {
+    const totalOrders = Number(state.stats?.totalOrders || 0);
+    if (!normalizedOrdersByStatus.length) return [];
+    return normalizedOrdersByStatus.map((item) => ({
+      status: item.status,
+      count: item.count,
+      percentage: totalOrders > 0 ? ((item.count / totalOrders) * 100).toFixed(1) : "0.0"
+    }));
+  }, [state.stats, normalizedOrdersByStatus]);
   if (isLoading("stats") && !state.stats) {
     return <div className="flex items-center justify-center min-h-[60vh]">
                 <div className="flex flex-col items-center gap-4">
@@ -487,9 +550,10 @@ const DashboardPage = () => {
                     <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6">
                         Order Distribution
                     </h2>
-                    <div className="h-[350px] flex items-center justify-center">
+                    <div className="h-[350px] w-full">
                         <OrdersChart
-    data={state.stats?.ordersByStatus || []}
+    data={normalizedOrdersByStatus}
+    height={320}
     variant="detailed"
   />
                     </div>
@@ -518,7 +582,7 @@ const DashboardPage = () => {
                             View All
                         </button>
                     </div>
-                    <PopularItemsChart data={state.stats?.topSellingFoods || []} />
+                    <PopularItemsChart data={normalizedTopSellingFoods} />
                 </motion.div>
 
                 {
@@ -544,7 +608,7 @@ const DashboardPage = () => {
                     </div>
 
                     <div className="space-y-4">
-                        {state.orders.slice(0, 5).map((order, index) => <motion.div
+                        {(Array.isArray(state.orders) ? state.orders : []).slice(0, 5).map((order, index) => <motion.div
     key={order._id}
     initial={{ opacity: 0, x: -20 }}
     animate={{ opacity: 1, x: 0 }}
@@ -599,7 +663,7 @@ const DashboardPage = () => {
                         Popular Categories
                     </h3>
                     <div className="space-y-3">
-                        {state.stats?.popularCategories?.map((cat, index) => <div key={cat.name} className="flex items-center justify-between">
+                        {normalizedPopularCategories.map((cat, index) => <div key={`${cat.name}-${index}`} className="flex items-center justify-between">
                                 <span className="text-sm text-slate-600 dark:text-slate-400">
                                     {cat.name}
                                 </span>
@@ -624,7 +688,7 @@ const DashboardPage = () => {
                         Peak Order Hours
                     </h3>
                     <div className="space-y-3">
-                        {state.stats?.peakHours?.map((hour, index) => <div key={hour.hour} className="flex items-center gap-2">
+                        {normalizedPeakHours.map((hour, index) => <div key={`${hour.hour}-${index}`} className="flex items-center gap-2">
                                 <span className="text-sm text-slate-600 dark:text-slate-400 w-16">
                                     {hour.hour}:00
                                 </span>
@@ -652,7 +716,7 @@ const DashboardPage = () => {
                         Recent Activity
                     </h3>
                     <div className="space-y-3">
-                        {state.stats?.recentActivity?.map((activity, index) => <div key={index} className="flex items-start gap-3">
+                        {normalizedRecentActivity.map((activity, index) => <div key={index} className="flex items-start gap-3">
                                 <div className={`
                                     w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0
                                     ${activity.type === "order" && "bg-blue-100 text-blue-500"}

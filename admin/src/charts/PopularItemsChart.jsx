@@ -9,8 +9,14 @@ import {
   ResponsiveContainer
 } from "recharts";
 const PopularItemsChart = ({ data = [] }) => {
-  return <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={data}>
+  const normalizedData = Array.isArray(data) ? data.map((item) => ({
+    name: item?.name || item?._id || "Unknown",
+    quantity: Number(item?.quantity ?? item?.count ?? 0),
+    revenue: Number(item?.revenue || 0)
+  })) : [];
+  return <div style={{ width: "100%", minHeight: 300 }}>
+            <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={normalizedData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
                 <XAxis dataKey="name" tick={{ fill: "#666666", fontSize: 12 }} />
                 <YAxis tick={{ fill: "#666666", fontSize: 12 }} />
@@ -19,7 +25,8 @@ const PopularItemsChart = ({ data = [] }) => {
                 <Bar dataKey="quantity" fill="#4A90E2" name="Quantity Sold" radius={[6, 6, 0, 0]} />
                 <Bar dataKey="revenue" fill="#50E3C2" name="Revenue" radius={[6, 6, 0, 0]} />
             </BarChart>
-        </ResponsiveContainer>;
+        </ResponsiveContainer>
+        </div>;
 };
 var stdin_default = PopularItemsChart;
 export {

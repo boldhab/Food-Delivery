@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   FiSearch,
@@ -17,7 +17,7 @@ import {
   FiPieChart,
   FiTrendingUp
 } from "react-icons/fi";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { format, subDays, startOfMonth, endOfMonth } from "date-fns";
 import { toast } from "react-hot-toast";
 import { useAdminDataContext } from "../context/AdminDataContext";
@@ -25,6 +25,7 @@ import DataTable from "../components/common/DataTable";
 import StatusBadge from "../components/common/StatusBadge";
 import adminOrderService from "../services/adminOrderService";
 import adminNotificationService from "../services/adminNotificationService";
+const _MOTION = motion;
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -45,13 +46,12 @@ const itemVariants = {
 };
 const OrdersPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const {
     state,
     fetchOrders,
-    updateOrder,
     isLoading,
     getError,
-    setFilters,
     clearFilters,
     pagination,
     goToPage,
@@ -77,13 +77,7 @@ const OrdersPage = () => {
   const [stats, setStats] = useState(null);
   const [showStats, setShowStats] = useState(false);
   const [viewMode, setViewMode] = useState("table");
-  useEffect(() => {
-    loadOrders();
-  }, [localFilters, pagination.currentPage, pagination.itemsPerPage]);
-  useEffect(() => {
-    loadOrderStats();
-  }, []);
-  const loadOrders = async () => {
+  const loadOrders = useCallback(async () => {
     const filters = {
       page: pagination.currentPage,
       limit: pagination.itemsPerPage
@@ -100,11 +94,12 @@ const OrdersPage = () => {
           filters.startDate = format(now, "yyyy-MM-dd");
           filters.endDate = format(now, "yyyy-MM-dd");
           break;
-        case "yesterday":
+        case "yesterday": {
           const yesterday = subDays(now, 1);
           filters.startDate = format(yesterday, "yyyy-MM-dd");
           filters.endDate = format(yesterday, "yyyy-MM-dd");
           break;
+        }
         case "last7days":
           filters.startDate = format(subDays(now, 7), "yyyy-MM-dd");
           filters.endDate = format(now, "yyyy-MM-dd");
@@ -117,11 +112,12 @@ const OrdersPage = () => {
           filters.startDate = format(startOfMonth(now), "yyyy-MM-dd");
           filters.endDate = format(endOfMonth(now), "yyyy-MM-dd");
           break;
-        case "lastMonth":
+        case "lastMonth": {
           const lastMonth = subDays(startOfMonth(now), 1);
           filters.startDate = format(startOfMonth(lastMonth), "yyyy-MM-dd");
           filters.endDate = format(endOfMonth(lastMonth), "yyyy-MM-dd");
           break;
+        }
       }
     } else {
       if (localFilters.startDate) filters.startDate = localFilters.startDate;
@@ -130,15 +126,30 @@ const OrdersPage = () => {
     if (localFilters.minAmount) filters.minAmount = localFilters.minAmount;
     if (localFilters.maxAmount) filters.maxAmount = localFilters.maxAmount;
     await fetchOrders(filters);
-  };
-  const loadOrderStats = async () => {
+  }, [fetchOrders, localFilters, pagination.currentPage, pagination.itemsPerPage]);
+  const loadOrderStats = useCallback(async () => {
     try {
       const response = await adminOrderService.getOrderStats();
       setStats(response.data);
     } catch (error) {
       console.error("Failed to load order stats:", error);
     }
-  };
+  }, []);
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const statusFromUrl = params.get("status");
+    if (statusFromUrl) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setLocalFilters((prev) => ({ ...prev, status: statusFromUrl }));
+    }
+  }, [location.search]);
+  useEffect(() => {
+    loadOrders();
+  }, [loadOrders]);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadOrderStats();
+  }, [loadOrderStats]);
   const handleRefresh = async () => {
     await loadOrders();
     await loadOrderStats();
@@ -147,14 +158,14 @@ const OrdersPage = () => {
   const handleViewOrder = (orderId) => {
     navigate(`/admin/orders/${orderId}`);
   };
-  const handlePrintOrder = (order) => {
+  const handlePrintOrder = () => {
     window.print();
   };
   const handleSendEmail = async (order) => {
     try {
       await adminNotificationService.sendOrderEmail(order._id);
       toast.success("Email sent to customer");
-    } catch (error) {
+    } catch {
       toast.error("Failed to send email");
     }
   };
@@ -162,7 +173,7 @@ const OrdersPage = () => {
     try {
       await adminNotificationService.sendOrderSMS(order._id);
       toast.success("SMS sent to customer");
-    } catch (error) {
+    } catch {
       toast.error("Failed to send SMS");
     }
   };
@@ -290,7 +301,7 @@ const OrdersPage = () => {
       render: (_, record) => record.driver?.name || "Unassigned"
     }
   ];
-  const FilterPanel = () => <motion.div
+  const renderFilterPanel = () => <motion.div
     initial={{ height: 0, opacity: 0 }}
     animate={{ height: "auto", opacity: 1 }}
     exit={{ height: 0, opacity: 0 }}
@@ -480,7 +491,7 @@ const OrdersPage = () => {
                 </div>
             </div>
         </motion.div>;
-  const StatsCards = () => <motion.div
+  const renderStatsCards = () => <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     exit={{ opacity: 0, y: -20 }}
@@ -542,7 +553,7 @@ const OrdersPage = () => {
                 </div>
             </div>
         </motion.div>;
-  const BulkActionsBar = () => <motion.div
+  const renderBulkActionsBar = () => <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     exit={{ opacity: 0, y: 20 }}
@@ -702,7 +713,7 @@ const OrdersPage = () => {
     /* Stats Section */
   }
             <AnimatePresence>
-                {showStats && stats && <StatsCards />}
+                {showStats && stats && renderStatsCards()}
             </AnimatePresence>
 
             {
@@ -748,7 +759,7 @@ const OrdersPage = () => {
     /* Filter Panel */
   }
                 <AnimatePresence>
-                    {showFilters && <FilterPanel />}
+                    {showFilters && renderFilterPanel()}
                 </AnimatePresence>
             </motion.div>
 
@@ -783,7 +794,7 @@ const OrdersPage = () => {
             <motion.div variants={itemVariants}>
                 <DataTable
     columns={columns}
-    data={state.orders}
+    data={Array.isArray(state.orders) ? state.orders : []}
     loading={isLoading("orders")}
     onRowClick={(record) => handleViewOrder(record._id)}
     onSelectionChange={(selected) => setSelectedOrders(selected)}
@@ -855,11 +866,9 @@ const OrdersPage = () => {
     /* Bulk Actions Bar */
   }
             <AnimatePresence>
-                {selectedOrders.length > 0 && <BulkActionsBar />}
+                {selectedOrders.length > 0 && renderBulkActionsBar()}
             </AnimatePresence>
         </motion.div>;
 };
-var stdin_default = OrdersPage;
-export {
-  stdin_default as default
-};
+
+export default OrdersPage;

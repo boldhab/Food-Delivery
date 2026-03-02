@@ -1,8 +1,17 @@
 import adminApi from './adminApi';
 
 class AdminFoodService {
-    async getFoodsWithStats(params = {}) {
+    async getFoods(params = {}) {
         const response = await adminApi.get('/admin/foods', { params });
+        return response.data;
+    }
+
+    async getFoodsWithStats(params = {}) {
+        return this.getFoods(params);
+    }
+
+    async getFoodById(id) {
+        const response = await adminApi.get(`/foods/${id}`);
         return response.data;
     }
 
@@ -29,6 +38,10 @@ class AdminFoodService {
     async toggleAvailability(id) {
         const response = await adminApi.patch(`/foods/${id}/toggle-availability`);
         return response.data;
+    }
+
+    async updateFoodAvailability(id) {
+        return this.toggleAvailability(id);
     }
 }
 

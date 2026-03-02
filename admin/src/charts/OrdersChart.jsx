@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import {
   PieChart,
@@ -6,7 +6,6 @@ import {
   Cell,
   Tooltip,
   Legend,
-  ResponsiveContainer,
   BarChart,
   Bar,
   XAxis,
@@ -56,6 +55,8 @@ const OrdersChart = ({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [selectedSegment, setSelectedSegment] = useState(null);
   const [hoveredSegment, setHoveredSegment] = useState(null);
+  const chartContainerRef = useRef(null);
+  const [chartSize, setChartSize] = useState({ width: 0, height: 0 });
   const processedData = React.useMemo(() => {
     if (!data || data.length === 0) return [];
     const total = data.reduce((sum, item) => sum + (item[valueKey] || 0), 0);
@@ -65,6 +66,26 @@ const OrdersChart = ({
       fill: item.color || colors[index % colors.length]
     }));
   }, [data, valueKey, colors]);
+  useEffect(() => {
+    if (!chartContainerRef.current) return undefined;
+
+    const updateSize = () => {
+      if (!chartContainerRef.current) return;
+      const rect = chartContainerRef.current.getBoundingClientRect();
+      setChartSize({
+        width: Math.max(0, Math.floor(rect.width)),
+        height: Math.max(0, Math.floor(rect.height))
+      });
+    };
+
+    updateSize();
+    const resizeObserver = new ResizeObserver(updateSize);
+    resizeObserver.observe(chartContainerRef.current);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [isFullscreen, height, variant]);
   if (!processedData.length && !isLoading) {
     return <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -142,10 +163,12 @@ const OrdersChart = ({
     { id: "area", icon: FiActivity, label: "Area Chart" },
     { id: "radar", icon: FiActivity, label: "Radar Chart" }
   ];
+  const resolvedChartWidth = Math.max(chartSize.width, 320);
+  const resolvedChartHeight = Math.max(chartSize.height, 260);
   const renderChart = () => {
     const commonProps = {
-      width: 500,
-      height: 300,
+      width: resolvedChartWidth,
+      height: resolvedChartHeight,
       data: processedData,
       margin: { top: 20, right: 30, left: 20, bottom: 20 }
     };
@@ -305,9 +328,10 @@ const OrdersChart = ({
   return <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
-    className={`
+            className={`
                 bg-white dark:bg-slate-800 rounded-2xl
                 border border-slate-200 dark:border-slate-700
+                w-full
                 ${variantStyles[variant]}
                 ${isFullscreen ? "fixed inset-4 z-50 overflow-auto" : ""}
                 transition-all duration-300
@@ -386,7 +410,10 @@ const OrdersChart = ({
             {
     /* Chart Container */
   }
-            <div style={{ width: "100%", height: isFullscreen ? "calc(100% - 100px)" : height }}>
+            <div
+    ref={chartContainerRef}
+    style={{ width: "100%", minWidth: 0, minHeight: 300, height: isFullscreen ? "calc(100% - 100px)" : height }}
+  >
                 {isLoading ? <div className="flex items-center justify-center h-full">
                         <div className="relative">
                             <div className="w-16 h-16 border-4 border-slate-200 dark:border-slate-700 
@@ -395,9 +422,9 @@ const OrdersChart = ({
                                 📊
                             </div>
                         </div>
-                    </div> : <ResponsiveContainer width="100%" height="100%">
-                        {renderChart()}
-                    </ResponsiveContainer>}
+                    </div> : chartSize.width > 0 && chartSize.height > 0 ? <div className="h-full w-full min-w-0">
+                      {renderChart()}
+                    </div> : <div className="h-full w-full" />}
             </div>
 
             {

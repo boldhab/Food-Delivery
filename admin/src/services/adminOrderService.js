@@ -25,6 +25,27 @@ class AdminOrderService {
         const response = await adminApi.get('/admin/dashboard/sales-report', { params });
         return response.data;
     }
+
+    async getOrderStats() {
+        const response = await adminApi.get('/admin/dashboard/stats');
+        const payload = response?.data?.data || response?.data || {};
+        const overview = payload?.overview || {};
+        const ordersByStatus = Array.isArray(payload?.ordersByStatus) ? payload.ordersByStatus : [];
+        const pendingOrders = ordersByStatus.find((item) => item?._id === 'pending')?.count || 0;
+
+        return {
+            success: response?.data?.success ?? true,
+            data: {
+                totalOrders: Number(overview?.totalOrders || 0),
+                totalRevenue: Number(overview?.totalRevenue || 0),
+                averageOrderValue: Number(overview?.averageOrderValue || 0),
+                pendingOrders: Number(pendingOrders || 0),
+                completedOrders: Number(overview?.completedOrders || 0),
+                cancelledOrders: Number(overview?.cancelledOrders || 0),
+                ordersByStatus
+            }
+        };
+    }
 }
 
 export default new AdminOrderService();

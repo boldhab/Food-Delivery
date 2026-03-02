@@ -14,9 +14,12 @@ import {
   FiBell,
   FiTrendingUp,
   FiMessageSquare,
+  FiClock,
   FiCreditCard,
   FiTruck,
   FiUserCheck,
+  FiCheckCircle,
+  FiXCircle,
   FiGift,
   FiBarChart2,
   FiActivity,
@@ -55,9 +58,9 @@ const Sidebar = ({
       badge: 12,
       badgeColor: "bg-blue-500",
       children: [
-        { path: "/admin/orders/pending", icon: FiActivity, label: "Pending" },
-        { path: "/admin/orders/completed", icon: FiCheckCircle, label: "Completed" },
-        { path: "/admin/orders/cancelled", icon: FiXCircle, label: "Cancelled" }
+        { path: "/admin/orders?status=pending", icon: FiActivity, label: "Pending" },
+        { path: "/admin/orders?status=delivered", icon: FiCheckCircle, label: "Completed" },
+        { path: "/admin/orders?status=cancelled", icon: FiXCircle, label: "Cancelled" }
       ]
     },
     {
@@ -158,15 +161,16 @@ const Sidebar = ({
   };
   const hasActiveChild = (item) => {
     if (!item.children) return false;
-    return item.children.some((child) => location.pathname === child.path);
+    const current = `${location.pathname}${location.search || ""}`;
+    return item.children.some((child) => current === child.path);
   };
   const visibleMenuItems = menuItems.filter(
     (item) => !item.permissions || item.permissions.every((p) => hasPermission(p))
   );
   const quickActions = [
-    { icon: FiShoppingBag, label: "New Order", action: () => navigate("/admin/orders/new") },
-    { icon: FiPackage, label: "Add Food", action: () => navigate("/admin/foods/new") },
-    { icon: FiUsers, label: "Add User", action: () => navigate("/admin/users/new") }
+    { icon: FiShoppingBag, label: "Orders", action: () => navigate("/admin/orders") },
+    { icon: FiPackage, label: "Add Food", action: () => navigate("/admin/foods/add") },
+    { icon: FiUsers, label: "Users", action: () => navigate("/admin/users") }
   ];
   return <>
             {

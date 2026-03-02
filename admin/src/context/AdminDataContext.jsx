@@ -40,10 +40,10 @@ function adminDataReducer(state, action) {
     case "SET_ORDERS":
       return {
         ...state,
-        orders: action.payload.data,
+        orders: Array.isArray(action.payload.data) ? action.payload.data : [],
         pagination: {
           ...state.pagination,
-          orders: action.payload.pagination
+          orders: action.payload.pagination || state.pagination.orders
         }
       };
     case "ADD_ORDER":
@@ -66,10 +66,10 @@ function adminDataReducer(state, action) {
     case "SET_FOODS":
       return {
         ...state,
-        foods: action.payload.data,
+        foods: Array.isArray(action.payload.data) ? action.payload.data : [],
         pagination: {
           ...state.pagination,
-          foods: action.payload.pagination
+          foods: action.payload.pagination || state.pagination.foods
         }
       };
     case "ADD_FOOD":
@@ -92,10 +92,10 @@ function adminDataReducer(state, action) {
     case "SET_USERS":
       return {
         ...state,
-        users: action.payload.data,
+        users: Array.isArray(action.payload.data) ? action.payload.data : [],
         pagination: {
           ...state.pagination,
-          users: action.payload.pagination
+          users: action.payload.pagination || state.pagination.users
         }
       };
     case "ADD_USER":
@@ -207,18 +207,22 @@ const AdminDataProvider = ({ children }) => {
         ...state.filters,
         ...filters
       });
+      const orders =
+        Array.isArray(response) ? response : Array.isArray(response?.data) ? response.data : Array.isArray(response?.orders) ? response.orders : Array.isArray(response?.data?.orders) ? response.data.orders : [];
+      const pagination =
+        response?.pagination || response?.data?.pagination || state.pagination.orders;
       dispatch({
         type: "SET_ORDERS",
         payload: {
-          data: response.data,
-          pagination: response.pagination
+          data: orders,
+          pagination
         }
       });
       dispatch({ type: "SET_LAST_UPDATED", payload: { type: cacheKey, timestamp: Date.now() } });
-      response.data.forEach((order) => {
+      orders.forEach((order) => {
         state.cache.orders.set(order._id, { data: order, timestamp: Date.now() });
       });
-      return response.data;
+      return orders;
     } catch (error) {
       const errorMessage = error.response?.data?.message || "Failed to fetch orders";
       setError("orders", errorMessage);
@@ -227,7 +231,7 @@ const AdminDataProvider = ({ children }) => {
     } finally {
       setLoading("orders", false);
     }
-  }, [state.filters, state.orders, state.cache.orders, isCacheValid, setLoading, setError]);
+  }, [state.filters, state.orders, state.cache.orders, state.pagination.orders, isCacheValid, setLoading, setError]);
   const fetchOrderById = useCallback(async (id, forceRefresh = false) => {
     if (!forceRefresh && state.cache.orders.has(id)) {
       const cached = state.cache.orders.get(id);
@@ -339,18 +343,22 @@ const AdminDataProvider = ({ children }) => {
         ...state.filters,
         ...filters
       });
+      const foods =
+        Array.isArray(response) ? response : Array.isArray(response?.data) ? response.data : Array.isArray(response?.foods) ? response.foods : Array.isArray(response?.data?.foods) ? response.data.foods : [];
+      const pagination =
+        response?.pagination || response?.data?.pagination || state.pagination.foods;
       dispatch({
         type: "SET_FOODS",
         payload: {
-          data: response.data,
-          pagination: response.pagination
+          data: foods,
+          pagination
         }
       });
       dispatch({ type: "SET_LAST_UPDATED", payload: { type: cacheKey, timestamp: Date.now() } });
-      response.data.forEach((food) => {
+      foods.forEach((food) => {
         state.cache.foods.set(food._id, { data: food, timestamp: Date.now() });
       });
-      return response.data;
+      return foods;
     } catch (error) {
       const errorMessage = error.response?.data?.message || "Failed to fetch foods";
       setError("foods", errorMessage);
@@ -359,7 +367,7 @@ const AdminDataProvider = ({ children }) => {
     } finally {
       setLoading("foods", false);
     }
-  }, [state.filters, state.foods, state.cache.foods, isCacheValid, setLoading, setError]);
+  }, [state.filters, state.foods, state.cache.foods, state.pagination.foods, isCacheValid, setLoading, setError]);
   const fetchFoodById = useCallback(async (id, forceRefresh = false) => {
     if (!forceRefresh && state.cache.foods.has(id)) {
       const cached = state.cache.foods.get(id);
@@ -470,18 +478,22 @@ const AdminDataProvider = ({ children }) => {
         ...state.filters,
         ...filters
       });
+      const users =
+        Array.isArray(response) ? response : Array.isArray(response?.data) ? response.data : Array.isArray(response?.users) ? response.users : Array.isArray(response?.data?.users) ? response.data.users : [];
+      const pagination =
+        response?.pagination || response?.data?.pagination || state.pagination.users;
       dispatch({
         type: "SET_USERS",
         payload: {
-          data: response.data,
-          pagination: response.pagination
+          data: users,
+          pagination
         }
       });
       dispatch({ type: "SET_LAST_UPDATED", payload: { type: cacheKey, timestamp: Date.now() } });
-      response.data.forEach((user) => {
+      users.forEach((user) => {
         state.cache.users.set(user._id, { data: user, timestamp: Date.now() });
       });
-      return response.data;
+      return users;
     } catch (error) {
       const errorMessage = error.response?.data?.message || "Failed to fetch users";
       setError("users", errorMessage);
@@ -490,7 +502,7 @@ const AdminDataProvider = ({ children }) => {
     } finally {
       setLoading("users", false);
     }
-  }, [state.filters, state.users, state.cache.users, isCacheValid, setLoading, setError]);
+  }, [state.filters, state.users, state.cache.users, state.pagination.users, isCacheValid, setLoading, setError]);
   const fetchUserById = useCallback(async (id, forceRefresh = false) => {
     if (!forceRefresh && state.cache.users.has(id)) {
       const cached = state.cache.users.get(id);
@@ -710,7 +722,16 @@ const AdminDataProvider = ({ children }) => {
     };
   }, []);
   useEffect(() => {
-    const ws = new WebSocket(process.env.REACT_APP_WS_URL || "ws://localhost:3001");
+    const wsUrl = import.meta.env.VITE_WS_URL;
+    if (!wsUrl) {
+      return;
+    }
+
+    const ws = new WebSocket(wsUrl);
+
+    ws.onerror = () => {
+      // Ignore connection errors when websocket backend is unavailable.
+    };
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
       notifySubscribers(data);
@@ -735,7 +756,9 @@ const AdminDataProvider = ({ children }) => {
       }
     };
     return () => {
-      ws.close();
+      if (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING) {
+        ws.close();
+      }
     };
   }, [notifySubscribers]);
   useEffect(() => {

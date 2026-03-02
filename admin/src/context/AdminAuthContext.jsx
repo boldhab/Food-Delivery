@@ -1,4 +1,4 @@
-import { createContext, useState, useContext, useEffect } from "react";
+import { createContext, useState, useContext, useEffect, useCallback } from "react";
 import adminApi from "../services/adminApi";
 const AdminAuthContext = createContext();
 const useAdminAuth = () => {
@@ -60,12 +60,22 @@ const AdminAuthProvider = ({ children }) => {
     setUser(null);
     setIsAuthenticated(false);
   };
+  const hasPermission = useCallback((permission) => {
+    if (!permission) return true;
+    if (!user) return false;
+    if (user.role === "admin" || user.role === "super_admin") return true;
+    if (Array.isArray(user.permissions)) {
+      return user.permissions.includes(permission);
+    }
+    return false;
+  }, [user]);
   const value = {
     user,
     loading,
     isAuthenticated,
     login,
-    logout
+    logout,
+    hasPermission
   };
   return <AdminAuthContext.Provider value={value}>{children}</AdminAuthContext.Provider>;
 };

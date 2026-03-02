@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FiSearch } from "react-icons/fi";
 import adminUserService from "../services/adminUserService";
 const UsersPage = () => {
+  void motion;
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -32,14 +33,14 @@ const UsersPage = () => {
   return <div className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold text-[var(--text-primary)]">Users</h1>
-                    <p className="text-sm text-[var(--text-secondary)]">Track and manage your customer base.</p>
+                    <h1 className="text-2xl font-bold text-(--text-primary)">Users</h1>
+                    <p className="text-sm text-(--text-secondary)">Track and manage your customer base.</p>
                 </div>
             </div>
 
-            <div className="rounded-2xl bg-[var(--surface)] border border-slate-100 shadow-sm p-4 md:p-6">
+                <div className="rounded-2xl bg-(--surface) border border-slate-100 shadow-sm p-4 md:p-6">
                 <div className="relative w-full md:w-80">
-                    <FiSearch className="absolute left-3 top-3 text-[var(--text-secondary)]" />
+                    <FiSearch className="absolute left-3 top-3 text-(--text-secondary)" />
                     <input
     value={search}
     onChange={(e) => setSearch(e.target.value)}
@@ -51,7 +52,7 @@ const UsersPage = () => {
                 <div className="mt-6 overflow-x-auto">
                     <table className="min-w-full text-left text-sm">
                         <thead>
-                            <tr className="border-b border-slate-100 text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">
+                            <tr className="border-b border-slate-100 text-[11px] uppercase tracking-wider text-(--text-secondary)">
                                 <th className="pb-3">User</th>
                                 <th className="pb-3">Role</th>
                                 <th className="pb-3">Orders</th>
@@ -71,12 +72,12 @@ const UsersPage = () => {
     className={index % 2 === 0 ? "bg-white" : "bg-slate-50/60"}
   >
                                         <td className="py-4">
-                                            <div className="font-semibold text-[var(--text-primary)]">{user.name}</div>
-                                            <div className="text-xs text-[var(--text-secondary)]">{user.email}</div>
+                                            <div className="font-semibold text-(--text-primary)">{user.name}</div>
+                                            <div className="text-xs text-(--text-secondary)">{user.email}</div>
                                         </td>
-                                        <td className="py-4 text-[var(--text-secondary)]">{user.role}</td>
-                                        <td className="py-4 text-[var(--text-secondary)]">{user.stats?.totalOrders || 0}</td>
-                                        <td className="py-4 text-[var(--text-secondary)]">${user.stats?.totalSpent?.toFixed(2) || "0.00"}</td>
+                                          <td className="py-4 text-(--text-secondary)">{user.role}</td>
+                                          <td className="py-4 text-(--text-secondary)">{user.stats?.totalOrders || 0}</td>
+                                          <td className="py-4 text-(--text-secondary)">${user.stats?.totalSpent?.toFixed(2) || "0.00"}</td>
                                         <td className="py-4">
                                             <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide ${user.isActive ? "bg-secondary/20 text-secondary" : "bg-danger/20 text-danger"}`}>
                                                 {user.isActive ? "Active" : "Inactive"}
@@ -90,7 +91,4 @@ const UsersPage = () => {
             </div>
         </div>;
 };
-var stdin_default = UsersPage;
-export {
-  stdin_default as default
-};
+export default UsersPage;

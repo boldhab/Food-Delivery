@@ -42,7 +42,6 @@ import {
 import { format, subDays, startOfMonth, endOfMonth, subMonths } from "date-fns";
 import { toast } from "react-hot-toast";
 import adminReportService from "../services/adminReportService";
-import { useAdminDataContext } from "../context/AdminDataContext";
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -74,7 +73,7 @@ const cardVariants = {
   }
 };
 const ReportsPage = () => {
-  const { isLoading, getError } = useAdminDataContext();
+  void motion;
   const [activeReport, setActiveReport] = useState("sales");
   const [reportData, setReportData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -83,7 +82,8 @@ const ReportsPage = () => {
   const [showExportModal, setShowExportModal] = useState(false);
   const [selectedChartType, setSelectedChartType] = useState("line");
   const [comparison, setComparison] = useState(false);
-  const [previousPeriodData, setPreviousPeriodData] = useState(null);
+  const [refreshTick, setRefreshTick] = useState(0);
+  const [, setPreviousPeriodData] = useState(null);
   const [filters, setFilters] = useState({
     dateRange: "last30days",
     customStart: "",
@@ -124,113 +124,113 @@ const ReportsPage = () => {
     format: "pdf"
   });
   useEffect(() => {
+    const loadReportData = async () => {
+      const getDateRangeFromPreset = (preset) => {
+        const now = /* @__PURE__ */ new Date();
+        let start, end = now;
+        switch (preset) {
+          case "today":
+            start = now;
+            break;
+          case "yesterday":
+            start = subDays(now, 1);
+            end = subDays(now, 1);
+            break;
+          case "last7days":
+            start = subDays(now, 7);
+            break;
+          case "last30days":
+            start = subDays(now, 30);
+            break;
+          case "thisMonth":
+            start = startOfMonth(now);
+            break;
+          case "lastMonth":
+            start = startOfMonth(subMonths(now, 1));
+            end = endOfMonth(subMonths(now, 1));
+            break;
+          case "last3months":
+            start = subMonths(now, 3);
+            break;
+          case "last6months":
+            start = subMonths(now, 6);
+            break;
+          case "thisYear":
+            start = new Date(now.getFullYear(), 0, 1);
+            break;
+          default:
+            start = subDays(now, 30);
+        }
+        return { start, end, label: preset };
+      };
+      const buildReportParams = () => {
+        const params = {};
+        if (filters.dateRange !== "custom") {
+          const { start, end } = getDateRangeFromPreset(filters.dateRange);
+          params.startDate = format(start, "yyyy-MM-dd");
+          params.endDate = format(end, "yyyy-MM-dd");
+        } else {
+          if (filters.customStart) params.startDate = filters.customStart;
+          if (filters.customEnd) params.endDate = filters.customEnd;
+        }
+        if (filters.category !== "all") params.category = filters.category;
+        if (filters.status !== "all") params.status = filters.status;
+        if (filters.paymentMethod !== "all") params.paymentMethod = filters.paymentMethod;
+        if (filters.minAmount) params.minAmount = filters.minAmount;
+        if (filters.maxAmount) params.maxAmount = filters.maxAmount;
+        return params;
+      };
+      const buildPreviousPeriodParams = () => {
+        const params = buildReportParams();
+        const { start, end } = getDateRangeFromPreset(filters.dateRange);
+        const daysDiff = Math.ceil((end.getTime() - start.getTime()) / (1e3 * 60 * 60 * 24));
+        params.startDate = format(subDays(start, daysDiff), "yyyy-MM-dd");
+        params.endDate = format(subDays(end, daysDiff), "yyyy-MM-dd");
+        return params;
+      };
+      setLoading(true);
+      try {
+        let data;
+        const params = buildReportParams();
+        switch (activeReport) {
+          case "sales":
+            data = await adminReportService.getSalesReport(params);
+            break;
+          case "inventory":
+            data = await adminReportService.getInventoryReport(params);
+            break;
+          case "users":
+            data = await adminReportService.getUserReport(params);
+            break;
+          case "drivers":
+            data = await adminReportService.getDriverReport(params);
+            break;
+          case "financial":
+            data = await adminReportService.getFinancialReport(params);
+            break;
+          case "analytics":
+            data = await adminReportService.getAnalyticsReport(params);
+            break;
+          default:
+            data = await adminReportService.getSalesReport(params);
+        }
+        setReportData(data);
+        if (comparison) {
+          const previousParams = buildPreviousPeriodParams();
+          const previousData = await adminReportService.getSalesReport(previousParams);
+          setPreviousPeriodData(previousData);
+        }
+      } catch (error) {
+        console.error("Failed to load report data:", error);
+        toast.error("Failed to load report data");
+      } finally {
+        setLoading(false);
+      }
+    };
     loadReportData();
-  }, [activeReport, filters]);
-  const loadReportData = async () => {
-    setLoading(true);
-    try {
-      let data;
-      const params = buildReportParams();
-      switch (activeReport) {
-        case "sales":
-          data = await adminReportService.getSalesReport(params);
-          break;
-        case "inventory":
-          data = await adminReportService.getInventoryReport(params);
-          break;
-        case "users":
-          data = await adminReportService.getUserReport(params);
-          break;
-        case "drivers":
-          data = await adminReportService.getDriverReport(params);
-          break;
-        case "financial":
-          data = await adminReportService.getFinancialReport(params);
-          break;
-        case "analytics":
-          data = await adminReportService.getAnalyticsReport(params);
-          break;
-        default:
-          data = await adminReportService.getSalesReport(params);
-      }
-      setReportData(data);
-      if (comparison) {
-        const previousParams = buildPreviousPeriodParams();
-        const previousData = await adminReportService.getSalesReport(previousParams);
-        setPreviousPeriodData(previousData);
-      }
-    } catch (error) {
-      console.error("Failed to load report data:", error);
-      toast.error("Failed to load report data");
-    } finally {
-      setLoading(false);
-    }
-  };
-  const buildReportParams = () => {
-    const params = {};
-    if (filters.dateRange !== "custom") {
-      const { start, end } = getDateRangeFromPreset(filters.dateRange);
-      params.startDate = format(start, "yyyy-MM-dd");
-      params.endDate = format(end, "yyyy-MM-dd");
-    } else {
-      if (filters.customStart) params.startDate = filters.customStart;
-      if (filters.customEnd) params.endDate = filters.customEnd;
-    }
-    if (filters.category !== "all") params.category = filters.category;
-    if (filters.status !== "all") params.status = filters.status;
-    if (filters.paymentMethod !== "all") params.paymentMethod = filters.paymentMethod;
-    if (filters.minAmount) params.minAmount = filters.minAmount;
-    if (filters.maxAmount) params.maxAmount = filters.maxAmount;
-    return params;
-  };
-  const buildPreviousPeriodParams = () => {
-    const params = buildReportParams();
-    const { start, end } = getDateRangeFromPreset(filters.dateRange);
-    const daysDiff = Math.ceil((end.getTime() - start.getTime()) / (1e3 * 60 * 60 * 24));
-    params.startDate = format(subDays(start, daysDiff), "yyyy-MM-dd");
-    params.endDate = format(subDays(end, daysDiff), "yyyy-MM-dd");
-    return params;
-  };
-  const getDateRangeFromPreset = (preset) => {
-    const now = /* @__PURE__ */ new Date();
-    let start, end = now;
-    switch (preset) {
-      case "today":
-        start = now;
-        break;
-      case "yesterday":
-        start = subDays(now, 1);
-        end = subDays(now, 1);
-        break;
-      case "last7days":
-        start = subDays(now, 7);
-        break;
-      case "last30days":
-        start = subDays(now, 30);
-        break;
-      case "thisMonth":
-        start = startOfMonth(now);
-        break;
-      case "lastMonth":
-        start = startOfMonth(subMonths(now, 1));
-        end = endOfMonth(subMonths(now, 1));
-        break;
-      case "last3months":
-        start = subMonths(now, 3);
-        break;
-      case "last6months":
-        start = subMonths(now, 6);
-        break;
-      case "thisYear":
-        start = new Date(now.getFullYear(), 0, 1);
-        break;
-      default:
-        start = subDays(now, 30);
-    }
-    return { start, end, label: preset };
-  };
+  }, [activeReport, filters, comparison, refreshTick]);
   const handleRefresh = () => {
-    loadReportData();
+    setRefreshTick((value) => value + 1);
     toast.success("Report refreshed");
   };
   const handleExport = async (format2) => {
@@ -250,7 +250,7 @@ const ReportsPage = () => {
           break;
       }
       toast.success(`Report exported as ${format2.toUpperCase()}`);
-    } catch (error) {
+    } catch {
       toast.error(`Failed to export as ${format2}`);
     }
   };
@@ -613,7 +613,7 @@ const ReportsPage = () => {
                                         </button>)}
                                 </div>
                             </div>
-                            <div className="h-[400px]">
+                            <div className="h-100">
                                 <ResponsiveContainer width="100%" height="100%">
                                     {selectedChartType === "line" && <LineChart data={reportData.salesData}>
                                             <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
@@ -711,7 +711,7 @@ const ReportsPage = () => {
                                 <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
                                     Category Distribution
                                 </h3>
-                                <div className="h-[300px]">
+                                <div className="h-75">
                                     <ResponsiveContainer width="100%" height="100%">
                                         <PieChart>
                                             <Pie
@@ -740,7 +740,7 @@ const ReportsPage = () => {
                                 <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
                                     Orders by Hour
                                 </h3>
-                                <div className="h-[300px]">
+                                <div className="h-75">
                                     <ResponsiveContainer width="100%" height="100%">
                                         <BarChart data={reportData.hourlyOrders}>
                                             <XAxis dataKey="hour" tick={{ fill: "#64748b" }} />
@@ -759,7 +759,7 @@ const ReportsPage = () => {
                                 <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
                                     Payment Methods
                                 </h3>
-                                <div className="h-[300px]">
+                                <div className="h-75">
                                     <ResponsiveContainer width="100%" height="100%">
                                         <PieChart>
                                             <Pie
@@ -808,7 +808,7 @@ const ReportsPage = () => {
                                 <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
                                     Stock Levels
                                 </h3>
-                                <div className="h-[400px]">
+                                <div className="h-100">
                                     <ResponsiveContainer width="100%" height="100%">
                                         <BarChart data={reportData.inventoryAlerts}>
                                             <XAxis dataKey="item" tick={{ fill: "#64748b" }} />
@@ -856,7 +856,7 @@ const ReportsPage = () => {
                                 <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
                                     Driver Earnings
                                 </h3>
-                                <div className="h-[400px]">
+                                <div className="h-100">
                                     <ResponsiveContainer width="100%" height="100%">
                                         <BarChart data={reportData.driverPerformance}>
                                             <XAxis dataKey="driver" tick={{ fill: "#64748b" }} />
@@ -1037,7 +1037,7 @@ const ReportsPage = () => {
     variants={itemVariants}
     className="space-y-6"
   >
-                {loading ? <div className="flex items-center justify-center min-h-[400px]">
+                {loading ? <div className="flex items-center justify-center min-h-100">
                         <div className="relative">
                             <div className="w-16 h-16 border-4 border-orange-200 dark:border-orange-900/30 
                                           border-t-orange-500 rounded-full animate-spin" />
@@ -1188,7 +1188,4 @@ const ReportsPage = () => {
             </AnimatePresence>
         </motion.div>;
 };
-var stdin_default = ReportsPage;
-export {
-  stdin_default as default
-};
+export default ReportsPage;
