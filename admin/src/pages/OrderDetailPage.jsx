@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   FiArrowLeft,
@@ -53,6 +53,8 @@ const modalVariants = {
 const OrderDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const returnTo = location.state?.from || "/admin/orders";
   const { fetchOrderById, updateOrder, isLoading, getError } = useAdminDataContext();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -212,7 +214,7 @@ const OrderDetailPage = () => {
                         The order you're looking for doesn't exist or has been removed.
                     </p>
                     <button
-      onClick={() => navigate("/admin/orders")}
+      onClick={() => navigate(returnTo)}
       className="px-6 py-3 bg-orange-500 text-white rounded-xl
                                  hover:bg-orange-600 transition-colors"
     >
@@ -233,7 +235,7 @@ const OrderDetailPage = () => {
             <motion.div variants={itemVariants} className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
                     <button
-    onClick={() => navigate("/admin/orders")}
+    onClick={() => navigate(returnTo)}
     className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800
                                  transition-colors"
   >

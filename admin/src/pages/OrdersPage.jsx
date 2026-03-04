@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   FiSearch,
@@ -44,6 +44,29 @@ const itemVariants = {
     transition: { type: "spring", stiffness: 300, damping: 30 }
   }
 };
+const ORDER_STATUS_ROUTES = {
+  "/admin/orders/pending": "pending",
+  "/admin/orders/completed": "delivered",
+  "/admin/orders/cancelled": "cancelled"
+};
+const ORDER_VIEW_META = {
+  "": {
+    title: "Orders",
+    description: "Track, manage, and update customer orders"
+  },
+  pending: {
+    title: "Pending Orders",
+    description: "Review new orders and take action quickly."
+  },
+  delivered: {
+    title: "Completed Orders",
+    description: "View successfully delivered orders in detail."
+  },
+  cancelled: {
+    title: "Cancelled Orders",
+    description: "Audit cancelled orders and cancellation reasons."
+  }
+};
 const OrdersPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -77,12 +100,22 @@ const OrdersPage = () => {
   const [stats, setStats] = useState(null);
   const [showStats, setShowStats] = useState(false);
   const [viewMode, setViewMode] = useState("table");
+  const routeStatus = useMemo(() => {
+    const fromPath = ORDER_STATUS_ROUTES[location.pathname];
+    if (fromPath) return fromPath;
+
+    const fromQuery = new URLSearchParams(location.search).get("status");
+    const validStatuses = new Set(["pending", "delivered", "cancelled"]);
+    return validStatuses.has(fromQuery) ? fromQuery : "";
+  }, [location.pathname, location.search]);
+  const activeStatus = routeStatus || localFilters.status;
+  const currentView = ORDER_VIEW_META[routeStatus] || ORDER_VIEW_META[""];
   const loadOrders = useCallback(async () => {
     const filters = {
       page: pagination.currentPage,
       limit: pagination.itemsPerPage
     };
-    if (localFilters.status) filters.status = localFilters.status;
+    if (activeStatus) filters.status = activeStatus;
     if (localFilters.paymentStatus) filters.paymentStatus = localFilters.paymentStatus;
     if (localFilters.search) filters.search = localFilters.search;
     if (localFilters.paymentMethod) filters.paymentMethod = localFilters.paymentMethod;
@@ -126,7 +159,7 @@ const OrdersPage = () => {
     if (localFilters.minAmount) filters.minAmount = localFilters.minAmount;
     if (localFilters.maxAmount) filters.maxAmount = localFilters.maxAmount;
     await fetchOrders(filters);
-  }, [fetchOrders, localFilters, pagination.currentPage, pagination.itemsPerPage]);
+  }, [activeStatus, fetchOrders, localFilters, pagination.currentPage, pagination.itemsPerPage]);
   const loadOrderStats = useCallback(async () => {
     try {
       const response = await adminOrderService.getOrderStats();
@@ -135,14 +168,6 @@ const OrdersPage = () => {
       console.error("Failed to load order stats:", error);
     }
   }, []);
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const statusFromUrl = params.get("status");
-    if (statusFromUrl) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setLocalFilters((prev) => ({ ...prev, status: statusFromUrl }));
-    }
-  }, [location.search]);
   useEffect(() => {
     loadOrders();
   }, [loadOrders]);
@@ -156,7 +181,9 @@ const OrdersPage = () => {
     toast.success("Orders refreshed");
   };
   const handleViewOrder = (orderId) => {
-    navigate(`/admin/orders/${orderId}`);
+    navigate(`/admin/orders/${orderId}`, {
+      state: { from: `${location.pathname}${location.search}` }
+    });
   };
   const handlePrintOrder = () => {
     window.print();
@@ -195,6 +222,9 @@ const OrdersPage = () => {
     await exportData("orders", format2);
   };
   const handleClearFilters = () => {
+    if (routeStatus || location.search) {
+      navigate("/admin/orders");
+    }
     setLocalFilters({
       status: "",
       paymentStatus: "",
@@ -317,8 +347,9 @@ const OrdersPage = () => {
                             Order Status
                         </label>
                         <select
-    value={localFilters.status}
+    value={activeStatus}
     onChange={(e) => setLocalFilters((prev) => ({ ...prev, status: e.target.value }))}
+    disabled={Boolean(routeStatus)}
     className="w-full px-3 py-2 bg-white dark:bg-slate-800
                                      border border-slate-200 dark:border-slate-700
                                      rounded-lg text-sm"
@@ -459,12 +490,12 @@ const OrdersPage = () => {
   }
                 <div className="flex items-center justify-between pt-2 border-t border-slate-200 dark:border-slate-700">
                     <div className="flex flex-wrap gap-2">
-                        {localFilters.status && <span className="inline-flex items-center gap-1 px-2 py-1
+                        {activeStatus && <span className="inline-flex items-center gap-1 px-2 py-1
                                            bg-orange-100 dark:bg-orange-900/30
                                            text-orange-700 dark:text-orange-300
                                            rounded-full text-xs">
-                                Status: {statusOptions.find((o) => o.value === localFilters.status)?.label}
-                                <button onClick={() => setLocalFilters((prev) => ({ ...prev, status: "" }))}>×</button>
+                                Status: {statusOptions.find((o) => o.value === activeStatus)?.label}
+                                <button onClick={() => navigate("/admin/orders")}>×</button>
                             </span>}
                         {localFilters.paymentStatus && <span className="inline-flex items-center gap-1 px-2 py-1
                                            bg-orange-100 dark:bg-orange-900/30
@@ -611,10 +642,10 @@ const OrdersPage = () => {
             <motion.div variants={itemVariants} className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                     <h1 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">
-                        Orders
+                        {currentView.title}
                     </h1>
                     <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                        Track, manage, and update customer orders
+                        {currentView.description}
                     </p>
                 </div>
 
@@ -709,6 +740,32 @@ const OrdersPage = () => {
                 </div>
             </motion.div>
 
+            <motion.div variants={itemVariants} className="flex flex-wrap gap-2">
+                {[{
+    label: "All Orders",
+    path: "/admin/orders",
+    status: ""
+  }, {
+    label: "Pending",
+    path: "/admin/orders/pending",
+    status: "pending"
+  }, {
+    label: "Completed",
+    path: "/admin/orders/completed",
+    status: "delivered"
+  }, {
+    label: "Cancelled",
+    path: "/admin/orders/cancelled",
+    status: "cancelled"
+  }].map((view) => <button
+    key={view.path}
+    onClick={() => navigate(view.path)}
+    className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${routeStatus === view.status ? "bg-orange-500 text-white" : "bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-orange-400"}`}
+  >
+                        {view.label}
+                    </button>)}
+            </motion.div>
+
             {
     /* Stats Section */
   }
@@ -796,6 +853,7 @@ const OrdersPage = () => {
     columns={columns}
     data={Array.isArray(state.orders) ? state.orders : []}
     loading={isLoading("orders")}
+    emptyMessage="No data available"
     onRowClick={(record) => handleViewOrder(record._id)}
     onSelectionChange={(selected) => setSelectedOrders(selected)}
     selectable
@@ -872,3 +930,4 @@ const OrdersPage = () => {
 };
 
 export default OrdersPage;
+

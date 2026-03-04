@@ -58,9 +58,9 @@ const Sidebar = ({
       badge: 12,
       badgeColor: "bg-blue-500",
       children: [
-        { path: "/admin/orders?status=pending", icon: FiActivity, label: "Pending" },
-        { path: "/admin/orders?status=delivered", icon: FiCheckCircle, label: "Completed" },
-        { path: "/admin/orders?status=cancelled", icon: FiXCircle, label: "Cancelled" }
+        { path: "/admin/orders/pending", icon: FiActivity, label: "Pending" },
+        { path: "/admin/orders/completed", icon: FiCheckCircle, label: "Completed" },
+        { path: "/admin/orders/cancelled", icon: FiXCircle, label: "Cancelled" }
       ]
     },
     {
