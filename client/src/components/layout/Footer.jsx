@@ -21,11 +21,11 @@ const Footer = () => {
     ];
 
     const socialLinks = [
-        { icon: FiFacebook, href: 'https://facebook.com/fooddash', label: 'Facebook' },
-        { icon: FiTwitter, href: 'https://twitter.com/fooddash', label: 'Twitter' },
-        { icon: FiInstagram, href: 'https://instagram.com/fooddash', label: 'Instagram' },
-        { icon: FiYoutube, href: 'https://youtube.com/fooddash', label: 'YouTube' },
-        { icon: FiGithub, href: 'https://github.com/fooddash', label: 'GitHub' },
+        { icon: FiFacebook, href: '', label: 'Facebook' },
+        { icon: FiTwitter, href: '', label: 'Twitter' },
+        { icon: FiInstagram, href: '', label: 'Instagram' },
+        { icon: FiYoutube, href: '', label: 'YouTube' },
+        { icon: FiGithub, href: '', label: 'GitHub' },
     ];
 
     const contactInfo = [

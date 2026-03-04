@@ -313,11 +313,9 @@ const Sidebar = ({
       to={item.path}
       onClick={(e) => {
         if (hasChildren) {
-          e.preventDefault();
           toggleSubmenu(item.label);
-        } else {
-          if (!isDesktop) setMobileOpen(false);
         }
+        if (!isDesktop) setMobileOpen(false);
       }}
       className={({ isActive: isActive2 }) => `
                                                 group flex items-center gap-3 px-3 py-2.5 rounded-xl
