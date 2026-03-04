@@ -528,7 +528,7 @@ const OrderDetailPage = () => {
                                                     {order.driver.name}
                                                 </p>
                                                 <p className="text-sm text-slate-500">
-                                                    {order.driver.vehicle} â€¢ {order.driver.licensePlate}
+                                                    {order.driver.driverProfile?.vehicleType || "Vehicle N/A"} • {order.driver.driverProfile?.plateNumber || "Plate N/A"}
                                                 </p>
                                             </div>
                                         </div>
@@ -809,7 +809,7 @@ const OrderDetailPage = () => {
   >
                                 <option value="">Select a driver</option>
                                 {availableDrivers.map((driver) => <option key={driver._id} value={driver._id}>
-                                        {driver.name} - {driver.phone} ({driver.vehicle})
+                                        {driver.name} - {driver.phone} ({driver.driverProfile?.vehicleType || "Vehicle N/A"})
                                     </option>)}
                             </select>
 
@@ -1019,3 +1019,4 @@ var stdin_default = OrderDetailPage;
 export {
   stdin_default as default
 };
+

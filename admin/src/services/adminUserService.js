@@ -1,6 +1,11 @@
 import adminApi from './adminApi';
 
 class AdminUserService {
+    async createUser(data) {
+        const response = await adminApi.post('/admin/users', data);
+        return response.data;
+    }
+
     async getUsers(params = {}) {
         const response = await adminApi.get('/admin/users', { params });
         return response.data;

@@ -69,8 +69,7 @@ const Sidebar = ({
       label: "Food Items",
       children: [
         { path: "/admin/foods/menu", icon: FiGrid, label: "Menu" },
-        { path: "/admin/foods/categories", icon: FiGrid, label: "Categories" },
-        { path: "/admin/foods/inventory", icon: FiPackage, label: "Inventory" }
+        { path: "/admin/foods/categories", icon: FiGrid, label: "Categories" }
       ]
     },
     {

@@ -63,6 +63,12 @@ const orderSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
+
+    driver: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        default: null
+    },
     
     userDetails: {
         name: { type: String, required: true },
@@ -143,7 +149,52 @@ const orderSchema = new mongoose.Schema({
     cancelledBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     
     // Additional Info
-    specialInstructions: String
+    specialInstructions: String,
+
+    // Driver Workflow
+    driverWorkflow: {
+        assignmentStatus: {
+            type: String,
+            enum: ['unassigned', 'accepted', 'declined'],
+            default: 'unassigned'
+        },
+        assignmentNote: String,
+        acceptedAt: Date,
+        declinedAt: Date,
+        checkedInAt: Date,
+        pickupVerified: {
+            items: { type: Boolean, default: false },
+            packaging: { type: Boolean, default: false },
+            tamperSeal: { type: Boolean, default: false }
+        },
+        pickedUpAt: Date,
+        transitStartedAt: Date,
+        deliveryInstructionsFollowed: { type: Boolean, default: false },
+        codCollected: { type: Boolean, default: false },
+        codAmount: { type: Number, default: 0, min: 0 },
+        handoffType: {
+            type: String,
+            enum: ['in_person', 'contactless'],
+            default: 'in_person'
+        },
+        issueReport: {
+            type: {
+                type: String,
+                enum: ['missing_items', 'address_problem', 'delay', 'other']
+            },
+            description: String,
+            reportedAt: Date
+        },
+        customerRating: { type: Number, min: 1, max: 5 },
+        earnings: { type: Number, min: 0, default: 0 },
+        compliance: {
+            vehicleConditionOk: { type: Boolean, default: true },
+            trafficLawsFollowed: { type: Boolean, default: true },
+            hygieneStandardsMet: { type: Boolean, default: true },
+            uniformWorn: { type: Boolean, default: true },
+            checkedAt: Date
+        }
+    }
     
 }, {
     timestamps: true
@@ -158,7 +209,9 @@ orderSchema.pre('save', function() {
 
 // Indexes (KEEP)
 orderSchema.index({ user: 1, createdAt: -1 });
+orderSchema.index({ driver: 1, createdAt: -1 });
 orderSchema.index({ orderStatus: 1 });
+orderSchema.index({ orderStatus: 1, driver: 1 });
 orderSchema.index({ createdAt: -1 });
 
 module.exports = mongoose.model('Order', orderSchema);

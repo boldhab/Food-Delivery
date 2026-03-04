@@ -176,10 +176,12 @@ const getOrderById = async (req, res, next) => {
         const { id } = req.params;
         const userId = req.user._id;
         const isAdmin = req.user.role === 'admin';
+        const isDriver = req.user.role === 'driver';
 
         const order = await Order.findById(id)
             .populate('items.foodId', 'name image category')
-            .populate('user', 'name email phone');
+            .populate('user', 'name email phone')
+            .populate('driver', 'name email phone');
 
         if (!order) {
             return res.status(404).json({
@@ -188,8 +190,9 @@ const getOrderById = async (req, res, next) => {
             });
         }
 
-        // Check if user owns the order or is admin
-        if (order.user._id.toString() !== userId.toString() && !isAdmin) {
+        // Check if user owns the order, is assigned driver, or is admin
+        const isAssignedDriver = order.driver && order.driver._id.toString() === userId.toString();
+        if (order.user._id.toString() !== userId.toString() && !isAdmin && !(isDriver && isAssignedDriver)) {
             return res.status(403).json({
                 success: false,
                 message: 'Not authorized to view this order'
@@ -360,6 +363,7 @@ const getAllOrders = async (req, res, next) => {
             limit = 10,
             status,
             paymentStatus,
+            driver,
             startDate,
             endDate,
             search,
@@ -372,6 +376,7 @@ const getAllOrders = async (req, res, next) => {
         
         if (status) query.orderStatus = status;
         if (paymentStatus) query.paymentStatus = paymentStatus;
+        if (driver) query.driver = driver;
         
         // Date range filter
         if (startDate || endDate) {
@@ -403,6 +408,7 @@ const getAllOrders = async (req, res, next) => {
         // Execute query with population
         const orders = await Order.find(query)
             .populate('user', 'name email phone')
+            .populate('driver', 'name email phone')
             .sort(sort)
             .skip(skip)
             .limit(parseInt(limit));
@@ -443,6 +449,421 @@ const getAllOrders = async (req, res, next) => {
             }
         });
 
+    } catch (error) {
+        next(error);
+    }
+};
+
+const getAvailableDrivers = async (req, res, next) => {
+    try {
+        const drivers = await User.find({
+            role: 'driver',
+            isActive: true
+        })
+            .select('_id name email phone driverProfile')
+            .sort({ createdAt: -1 });
+
+        res.json({
+            success: true,
+            count: drivers.length,
+            data: drivers
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const assignDriverToOrder = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { driverId, note } = req.body || {};
+
+        if (!driverId) {
+            return res.status(400).json({
+                success: false,
+                message: 'driverId is required'
+            });
+        }
+
+        const order = await Order.findById(id);
+        if (!order) {
+            return res.status(404).json({
+                success: false,
+                message: 'Order not found'
+            });
+        }
+
+        const driverUser = await User.findOne({ _id: driverId, role: 'driver', isActive: true });
+        if (!driverUser) {
+            return res.status(404).json({
+                success: false,
+                message: 'Active driver not found'
+            });
+        }
+
+        order.driver = driverUser._id;
+        order.driverWorkflow.assignmentStatus = 'accepted';
+        order.driverWorkflow.assignmentNote = note || 'Driver assigned by admin';
+        order.driverWorkflow.acceptedAt = new Date();
+        order.statusHistory.push({
+            status: order.orderStatus,
+            note: note || `Driver assigned: ${driverUser.name}`,
+            updatedBy: req.user?._id
+        });
+
+        await order.save();
+        await order.populate('driver', 'name email phone driverProfile');
+
+        res.json({
+            success: true,
+            message: 'Driver assigned successfully',
+            data: order
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const ensureDriverOwnership = (order, driverId) => {
+    if (!order.driver || order.driver.toString() !== driverId.toString()) {
+        return false;
+    }
+    return true;
+};
+
+// ==================== DRIVER WORKFLOW CONTROLLERS ====================
+
+const getAvailableDriverOrders = async (req, res, next) => {
+    try {
+        const orders = await Order.find({
+            orderStatus: { $in: ['confirmed', 'preparing'] },
+            $or: [{ driver: null }, { driver: { $exists: false } }]
+        })
+            .sort({ createdAt: -1 })
+            .limit(50)
+            .select('orderNumber deliveryAddress totalAmount deliveryFee orderStatus createdAt userDetails');
+
+        res.json({
+            success: true,
+            count: orders.length,
+            data: orders
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const getDriverOrders = async (req, res, next) => {
+    try {
+        const { status } = req.query;
+        const query = { driver: req.user._id };
+        if (status) query.orderStatus = status;
+
+        const orders = await Order.find(query)
+            .sort({ createdAt: -1 })
+            .populate('user', 'name email phone');
+
+        res.json({
+            success: true,
+            count: orders.length,
+            data: orders
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const acceptDeliveryRequest = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { note } = req.body || {};
+
+        const order = await Order.findById(id);
+        if (!order) {
+            return res.status(404).json({ success: false, message: 'Order not found' });
+        }
+
+        if (order.driver && order.driver.toString() !== req.user._id.toString()) {
+            return res.status(400).json({ success: false, message: 'Order already assigned to another driver' });
+        }
+
+        if (!['confirmed', 'preparing'].includes(order.orderStatus)) {
+            return res.status(400).json({ success: false, message: 'Order is not available for driver acceptance' });
+        }
+
+        order.driver = req.user._id;
+        order.driverWorkflow.assignmentStatus = 'accepted';
+        order.driverWorkflow.assignmentNote = note || 'Delivery accepted by driver';
+        order.driverWorkflow.acceptedAt = new Date();
+        order.statusHistory.push({
+            status: order.orderStatus,
+            note: note || 'Driver accepted the delivery request',
+            updatedBy: req.user._id
+        });
+
+        await order.save();
+
+        res.json({
+            success: true,
+            message: 'Delivery request accepted',
+            data: order
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const declineDeliveryRequest = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { note } = req.body || {};
+        const order = await Order.findById(id);
+
+        if (!order) {
+            return res.status(404).json({ success: false, message: 'Order not found' });
+        }
+
+        if (order.driver && order.driver.toString() !== req.user._id.toString()) {
+            return res.status(400).json({ success: false, message: 'Order already assigned to another driver' });
+        }
+
+        order.driverWorkflow.assignmentStatus = 'declined';
+        order.driverWorkflow.assignmentNote = note || 'Delivery declined by driver';
+        order.driverWorkflow.declinedAt = new Date();
+        order.statusHistory.push({
+            status: order.orderStatus,
+            note: note || 'Driver declined the delivery request',
+            updatedBy: req.user._id
+        });
+
+        await order.save();
+
+        res.json({
+            success: true,
+            message: 'Delivery request declined',
+            data: {
+                orderId: order._id,
+                assignmentStatus: order.driverWorkflow.assignmentStatus
+            }
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const checkInAtRestaurant = async (req, res, next) => {
+    try {
+        const order = await Order.findById(req.params.id);
+        if (!order) {
+            return res.status(404).json({ success: false, message: 'Order not found' });
+        }
+
+        if (!ensureDriverOwnership(order, req.user._id)) {
+            return res.status(403).json({ success: false, message: 'Not authorized for this delivery' });
+        }
+
+        order.driverWorkflow.checkedInAt = new Date();
+        order.statusHistory.push({
+            status: order.orderStatus,
+            note: 'Driver checked in at restaurant',
+            updatedBy: req.user._id
+        });
+
+        await order.save();
+
+        res.json({
+            success: true,
+            message: 'Checked in at restaurant',
+            data: order
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const markOrderPickedUp = async (req, res, next) => {
+    try {
+        const { verifyItems, verifyPackaging, verifyTamperSeal, note } = req.body || {};
+        const order = await Order.findById(req.params.id);
+
+        if (!order) {
+            return res.status(404).json({ success: false, message: 'Order not found' });
+        }
+
+        if (!ensureDriverOwnership(order, req.user._id)) {
+            return res.status(403).json({ success: false, message: 'Not authorized for this delivery' });
+        }
+
+        order.driverWorkflow.pickupVerified = {
+            items: Boolean(verifyItems),
+            packaging: Boolean(verifyPackaging),
+            tamperSeal: Boolean(verifyTamperSeal)
+        };
+        order.driverWorkflow.pickedUpAt = new Date();
+        order.orderStatus = 'out_for_delivery';
+        order.statusHistory.push({
+            status: 'out_for_delivery',
+            note: note || 'Order picked up and sealed for transit',
+            updatedBy: req.user._id
+        });
+
+        await order.save();
+
+        res.json({
+            success: true,
+            message: 'Order marked as picked up',
+            data: order
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const startDeliveryTransit = async (req, res, next) => {
+    try {
+        const { instructionsFollowed, note } = req.body || {};
+        const order = await Order.findById(req.params.id);
+
+        if (!order) {
+            return res.status(404).json({ success: false, message: 'Order not found' });
+        }
+
+        if (!ensureDriverOwnership(order, req.user._id)) {
+            return res.status(403).json({ success: false, message: 'Not authorized for this delivery' });
+        }
+
+        order.driverWorkflow.transitStartedAt = order.driverWorkflow.transitStartedAt || new Date();
+        order.driverWorkflow.deliveryInstructionsFollowed = Boolean(instructionsFollowed);
+        order.statusHistory.push({
+            status: 'out_for_delivery',
+            note: note || 'Driver is in transit for last-mile delivery',
+            updatedBy: req.user._id
+        });
+
+        await order.save();
+
+        res.json({
+            success: true,
+            message: 'Delivery transit started',
+            data: order
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const completeDelivery = async (req, res, next) => {
+    try {
+        const { handoffType = 'in_person', codCollected = false, codAmount = 0, note } = req.body || {};
+        const order = await Order.findById(req.params.id);
+
+        if (!order) {
+            return res.status(404).json({ success: false, message: 'Order not found' });
+        }
+
+        if (!ensureDriverOwnership(order, req.user._id)) {
+            return res.status(403).json({ success: false, message: 'Not authorized for this delivery' });
+        }
+
+        order.orderStatus = 'delivered';
+        order.actualDeliveryTime = new Date();
+        order.driverWorkflow.handoffType = handoffType;
+        order.driverWorkflow.codCollected = Boolean(codCollected);
+        order.driverWorkflow.codAmount = Number(codAmount || 0);
+        order.driverWorkflow.earnings = Number(order.deliveryFee || 0);
+
+        if (order.paymentMethod === 'cash_on_delivery' && codCollected) {
+            order.paymentStatus = 'paid';
+        }
+
+        order.statusHistory.push({
+            status: 'delivered',
+            note: note || 'Order delivered to customer',
+            updatedBy: req.user._id
+        });
+
+        await order.save();
+
+        res.json({
+            success: true,
+            message: 'Delivery completed successfully',
+            data: order
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const submitPostDeliveryReport = async (req, res, next) => {
+    try {
+        const { customerRating, issueType, issueDescription } = req.body || {};
+        const order = await Order.findById(req.params.id);
+
+        if (!order) {
+            return res.status(404).json({ success: false, message: 'Order not found' });
+        }
+
+        if (!ensureDriverOwnership(order, req.user._id)) {
+            return res.status(403).json({ success: false, message: 'Not authorized for this delivery' });
+        }
+
+        if (customerRating) {
+            order.driverWorkflow.customerRating = Number(customerRating);
+        }
+
+        if (issueType || issueDescription) {
+            order.driverWorkflow.issueReport = {
+                type: issueType || 'other',
+                description: issueDescription || '',
+                reportedAt: new Date()
+            };
+        }
+
+        await order.save();
+
+        res.json({
+            success: true,
+            message: 'Post-delivery report submitted',
+            data: order.driverWorkflow
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const submitDriverCompliance = async (req, res, next) => {
+    try {
+        const {
+            vehicleConditionOk = true,
+            trafficLawsFollowed = true,
+            hygieneStandardsMet = true,
+            uniformWorn = true
+        } = req.body || {};
+
+        const order = await Order.findById(req.params.id);
+        if (!order) {
+            return res.status(404).json({ success: false, message: 'Order not found' });
+        }
+
+        if (!ensureDriverOwnership(order, req.user._id)) {
+            return res.status(403).json({ success: false, message: 'Not authorized for this delivery' });
+        }
+
+        order.driverWorkflow.compliance = {
+            vehicleConditionOk: Boolean(vehicleConditionOk),
+            trafficLawsFollowed: Boolean(trafficLawsFollowed),
+            hygieneStandardsMet: Boolean(hygieneStandardsMet),
+            uniformWorn: Boolean(uniformWorn),
+            checkedAt: new Date()
+        };
+
+        await order.save();
+
+        res.json({
+            success: true,
+            message: 'Compliance checklist submitted',
+            data: order.driverWorkflow.compliance
+        });
     } catch (error) {
         next(error);
     }
@@ -695,6 +1116,20 @@ module.exports = {
     getMyOrders,
     getOrderById,
     cancelOrder,
+    // Driver
+    getAvailableDriverOrders,
+    getDriverOrders,
+    acceptDeliveryRequest,
+    declineDeliveryRequest,
+    checkInAtRestaurant,
+    markOrderPickedUp,
+    startDeliveryTransit,
+    completeDelivery,
+    submitPostDeliveryReport,
+    submitDriverCompliance,
+    // Admin Driver Assignment
+    getAvailableDrivers,
+    assignDriverToOrder,
     // Admin
     getAllOrders,
     updateOrderStatus,

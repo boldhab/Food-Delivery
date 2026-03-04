@@ -46,6 +46,22 @@ class AdminOrderService {
             }
         };
     }
+
+    async getAvailableDrivers() {
+        const response = await adminApi.get('/admin/drivers/available');
+        return {
+            success: response?.data?.success ?? true,
+            data: response?.data?.data || []
+        };
+    }
+
+    async assignDriver(orderId, driverId, note = 'Driver assigned by admin') {
+        const response = await adminApi.put(`/admin/orders/${orderId}/assign-driver`, {
+            driverId,
+            note
+        });
+        return response?.data?.data;
+    }
 }
 
 export default new AdminOrderService();

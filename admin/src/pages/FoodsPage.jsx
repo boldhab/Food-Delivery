@@ -269,7 +269,7 @@ const FoodsPage = ({ initialMode = null, initialFoodId = null }) => {
       align: "right",
       render: (value, record) => <div>
                     <div className="font-medium text-slate-900 dark:text-white">
-                        ${value.toFixed(2)}
+                        ${Number(value || 0).toFixed(2)}
                     </div>
                     {record.discount > 0 && <div className="text-xs text-green-500">
                             -{record.discount}% off
@@ -306,14 +306,14 @@ const FoodsPage = ({ initialMode = null, initialFoodId = null }) => {
       title: "Orders",
       sortable: true,
       align: "right",
-      render: (value) => value.toLocaleString()
+      render: (value) => Number(value || 0).toLocaleString()
     },
     {
       key: "preparationTime",
       title: "Prep Time",
       sortable: true,
       align: "right",
-      render: (value) => `${value} min`
+      render: (value) => `${Number(value || 0)} min`
     },
     {
       key: "createdAt",

@@ -2,6 +2,32 @@ const Food = require('../models/Food');
 const Order = require('../models/Order');
 
 /**
+ * @desc    Get single food item for admin
+ * @route   GET /api/admin/foods/:id
+ * @access  Private/Admin
+ */
+const getFoodByIdAdmin = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const food = await Food.findById(id);
+
+        if (!food) {
+            return res.status(404).json({
+                success: false,
+                message: 'Food item not found'
+            });
+        }
+
+        res.json({
+            success: true,
+            data: food
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
  * @desc    Get all foods with sales stats (Admin)
  * @route   GET /api/admin/foods
  * @access  Private/Admin
@@ -153,6 +179,7 @@ const getInventoryAlerts = async (req, res, next) => {
 };
 
 module.exports = {
+    getFoodByIdAdmin,
     getFoodsWithStats,
     getInventoryAlerts
 };

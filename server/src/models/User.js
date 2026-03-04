@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
     
     role: {
         type: String,
-        enum: ['user', 'admin'],
+        enum: ['user', 'admin', 'driver'],
         default: 'user'
     },
     
@@ -53,6 +53,13 @@ const userSchema = new mongoose.Schema({
     isActive: {
         type: Boolean,
         default: true
+    },
+
+    driverProfile: {
+        vehicleType: { type: String, default: '' },
+        plateNumber: { type: String, default: '' },
+        licenseNumber: { type: String, default: '' },
+        emergencyContact: { type: String, default: '' }
     }
     
 }, {

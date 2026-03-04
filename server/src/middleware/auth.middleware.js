@@ -54,4 +54,15 @@ const admin = (req, res, next) => {
     }
 };
 
-module.exports = { protect, admin };
+const driver = (req, res, next) => {
+    if (req.user && req.user.role === 'driver') {
+        next();
+    } else {
+        res.status(403).json({
+            success: false,
+            message: 'Not authorized as driver'
+        });
+    }
+};
+
+module.exports = { protect, admin, driver };

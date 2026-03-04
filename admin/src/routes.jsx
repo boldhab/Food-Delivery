@@ -38,7 +38,6 @@ const AppRoutes = () => {
                 <Route path="foods" element={<FoodsPage />} />
                 <Route path="foods/menu" element={<FoodsPage />} />
                 <Route path="foods/categories" element={<FoodsPage />} />
-                <Route path="foods/inventory" element={<FoodsPage />} />
                 <Route path="foods/add" element={<AddFoodPage />} />
                 <Route path="foods/edit/:id" element={<EditFoodPage />} />
                 <Route path="users" element={<UsersPage />} />

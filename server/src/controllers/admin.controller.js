@@ -2,6 +2,79 @@ const User = require('../models/User');
 const Order = require('../models/Order');
 
 /**
+ * @desc    Create user/driver/admin by admin
+ * @route   POST /api/admin/users
+ * @access  Private/Admin
+ */
+const createUser = async (req, res, next) => {
+    try {
+        const { name, email, password, phone, role = 'user', address, driverProfile } = req.body || {};
+
+        if (!name || !email || !password || !phone) {
+            return res.status(400).json({
+                success: false,
+                message: 'name, email, password and phone are required'
+            });
+        }
+
+        if (!['user', 'driver', 'admin'].includes(role)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid role'
+            });
+        }
+
+        const existing = await User.findOne({ email: email.toLowerCase() });
+        if (existing) {
+            return res.status(400).json({
+                success: false,
+                message: 'User already exists with this email'
+            });
+        }
+
+        const created = await User.create({
+            name: name.trim(),
+            email: email.toLowerCase().trim(),
+            password,
+            phone: phone.trim(),
+            role,
+            address,
+            driverProfile: role === 'driver' ? {
+                vehicleType: driverProfile?.vehicleType || '',
+                plateNumber: driverProfile?.plateNumber || '',
+                licenseNumber: driverProfile?.licenseNumber || '',
+                emergencyContact: driverProfile?.emergencyContact || ''
+            } : undefined
+        });
+
+        res.status(201).json({
+            success: true,
+            message: `${role} account created successfully`,
+            data: {
+                _id: created._id,
+                name: created.name,
+                email: created.email,
+                phone: created.phone,
+                role: created.role,
+                isActive: created.isActive,
+                driverProfile: created.driverProfile
+            },
+            credentials: {
+                username: created.email
+            }
+        });
+    } catch (error) {
+        if (error.code === 11000) {
+            return res.status(400).json({
+                success: false,
+                message: 'User already exists with this email'
+            });
+        }
+        next(error);
+    }
+};
+
+/**
  * @desc    Get all users with order stats (Admin)
  * @route   GET /api/admin/users
  * @access  Private/Admin
@@ -178,6 +251,7 @@ const updateUserStatus = async (req, res, next) => {
 };
 
 module.exports = {
+    createUser,
     getAllUsers,
     getUserDetails,
     updateUserStatus

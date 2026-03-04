@@ -1087,7 +1087,7 @@ const FoodForm = ({
                                     </button>
                                     <button
     onClick={() => {
-      onDelete?.(formData.id);
+      onDelete?.(formData._id || formData.id);
       setShowDeleteConfirm(false);
     }}
     className="flex-1 px-4 py-2 bg-red-500 text-white

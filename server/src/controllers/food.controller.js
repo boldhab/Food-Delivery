@@ -116,7 +116,7 @@ const updateFood = async (req, res, next) => {
     }
 };
 
-// @desc    Delete food item (soft delete)
+// @desc    Delete food item
 // @route   DELETE /api/foods/:id
 // @access  Private/Admin
 const deleteFood = async (req, res, next) => {
@@ -131,18 +131,26 @@ const deleteFood = async (req, res, next) => {
         }
 
         if (food.imagePublicId) {
-            await destroyByPublicId(food.imagePublicId);
-            food.image = '/assets/default-food.svg';
-            food.imagePublicId = undefined;
+            try {
+                await destroyByPublicId(food.imagePublicId);
+            } catch (cleanupError) {
+                // Do not block DB deletion if media cleanup fails
+                console.warn('Cloudinary cleanup failed for food:', food._id, cleanupError.message);
+            }
         }
 
-        // Soft delete - just mark as unavailable
-        food.isAvailable = false;
-        await food.save();
+        const deletedFood = await Food.findByIdAndDelete(req.params.id);
+        if (!deletedFood) {
+            return res.status(404).json({
+                success: false,
+                message: 'Food item not found'
+            });
+        }
 
         res.json({
             success: true,
-            message: 'Food item deleted successfully'
+            message: 'Food item deleted successfully',
+            data: { id: deletedFood._id }
         });
     } catch (error) {
         next(error);
