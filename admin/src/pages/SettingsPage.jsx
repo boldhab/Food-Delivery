@@ -40,14 +40,21 @@ const defaultSettings = {
   }
 };
 
+const mergeSettings = (incoming = {}) => ({
+  general: { ...defaultSettings.general, ...(incoming.general || {}) },
+  payment: { ...defaultSettings.payment, ...(incoming.payment || {}) },
+  notifications: { ...defaultSettings.notifications, ...(incoming.notifications || {}) }
+});
+
 const SettingsPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [settings, setSettings] = useState(() => {
     const stored = getStoredSettings();
-    return stored ? { ...defaultSettings, ...stored } : defaultSettings;
+    return mergeSettings(stored || {});
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
 
   const activeTab = useMemo(() => {
     if (location.pathname.endsWith("/payment")) return "payment";
@@ -71,31 +78,20 @@ const SettingsPage = () => {
     }));
   };
 
-  const saveSettings = () => {
-    return settings;
-  };
-
   useEffect(() => {
     const loadSettings = async () => {
       setIsLoading(true);
       try {
         const response = await adminSettingsService.getSettings();
-        const serverSettings = response?.data || {};
-        const merged = {
-          general: { ...defaultSettings.general, ...(serverSettings.general || {}) },
-          payment: { ...defaultSettings.payment, ...(serverSettings.payment || {}) },
-          notifications: { ...defaultSettings.notifications, ...(serverSettings.notifications || {}) }
-        };
+        const serverSettings = response?.data || response?.settings || {};
+        const merged = mergeSettings(serverSettings);
         setSettings(merged);
         localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
-      } catch {
+      } catch (error) {
+        toast.error(error?.response?.data?.message || "Failed to load settings from server");
         const local = getStoredSettings();
         if (local) {
-          setSettings({
-            general: { ...defaultSettings.general, ...(local.general || {}) },
-            payment: { ...defaultSettings.payment, ...(local.payment || {}) },
-            notifications: { ...defaultSettings.notifications, ...(local.notifications || {}) }
-          });
+          setSettings(mergeSettings(local));
         }
       } finally {
         setIsLoading(false);
@@ -108,7 +104,7 @@ const SettingsPage = () => {
   const resetSection = () => {
     setSettings((prev) => ({
       ...prev,
-      [activeTab]: defaultSettings[activeTab]
+      [activeTab]: { ...defaultSettings[activeTab] }
     }));
     toast.success("Section reset");
   };
@@ -256,19 +252,24 @@ const SettingsPage = () => {
           </button>
           <button
             onClick={async () => {
+              setIsSaving(true);
               try {
-                await adminSettingsService.updateSettings(saveSettings());
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+                const response = await adminSettingsService.updateSettings(settings);
+                const saved = mergeSettings(response?.data || {});
+                setSettings(saved);
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
                 toast.success("Settings saved");
-              } catch {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
-                toast.success("Saved locally (server unavailable)");
+              } catch (error) {
+                toast.error(error?.response?.data?.message || "Failed to save settings");
+              } finally {
+                setIsSaving(false);
               }
             }}
-            className="px-3 py-2 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-sm inline-flex items-center gap-2"
+            disabled={isSaving || isLoading}
+            className="px-3 py-2 rounded-lg bg-orange-500 hover:bg-orange-600 disabled:opacity-60 text-white text-sm inline-flex items-center gap-2"
           >
             <FiSave className="w-4 h-4" />
-            Save Changes
+            {isSaving ? "Saving..." : "Save Changes"}
           </button>
         </div>
       </div>

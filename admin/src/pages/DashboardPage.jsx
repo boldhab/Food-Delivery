@@ -18,7 +18,7 @@ import RevenueChart from "../charts/RevenueChart";
 import OrdersChart from "../charts/OrdersChart";
 import PopularItemsChart from "../charts/PopularItemsChart";
 import StatusBadge from "../components/common/StatusBadge";
-import { useAdminDataContext } from "../context/AdminDataContext";
+import { useAdminDataContext } from "../context/adminDataContextCore";
 import { format, subDays, startOfMonth } from "date-fns";
 import { toast } from "react-hot-toast";
 const containerVariants = {

@@ -19,7 +19,7 @@ import {
 import { useNavigate, useLocation } from "react-router-dom";
 import { format, subDays, startOfMonth, endOfMonth } from "date-fns";
 import { toast } from "react-hot-toast";
-import { useAdminDataContext } from "../context/AdminDataContext";
+import { useAdminDataContext } from "../context/adminDataContextCore";
 import StatusBadge from "../components/common/StatusBadge";
 import adminOrderService from "../services/adminOrderService";
 import adminNotificationService from "../services/adminNotificationService";

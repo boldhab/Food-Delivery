@@ -22,7 +22,7 @@ import {
 } from "react-icons/fi";
 import { format, formatDistanceToNow } from "date-fns";
 import { toast } from "react-hot-toast";
-import { useAdminDataContext } from "../context/AdminDataContext";
+import { useAdminDataContext } from "../context/adminDataContextCore";
 import StatusBadge from "../components/common/StatusBadge";
 import OrderStatusUpdate from "../components/orders/OrderStatusUpdate";
 import adminOrderService from "../services/adminOrderService";
@@ -528,7 +528,7 @@ const OrderDetailPage = () => {
                                                     {order.driver.name}
                                                 </p>
                                                 <p className="text-sm text-slate-500">
-                                                    {order.driver.driverProfile?.vehicleType || "Vehicle N/A"} • {order.driver.driverProfile?.plateNumber || "Plate N/A"}
+                                                    {order.driver.driverProfile?.vehicleType || "Vehicle N/A"} ï¿½ {order.driver.driverProfile?.plateNumber || "Plate N/A"}
                                                 </p>
                                             </div>
                                         </div>

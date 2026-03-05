@@ -1,9 +1,10 @@
-import { createContext, useState, useContext, useCallback, useEffect, useMemo, useReducer } from "react";
+import { useState, useCallback, useEffect, useMemo, useReducer } from "react";
 import { toast } from "react-hot-toast";
 import adminOrderService from "../services/adminOrderService";
 import adminFoodService from "../services/adminFoodService";
 import adminUserService from "../services/adminUserService";
 import adminStatsService from "../services/adminStatsService";
+import { AdminDataContext, useAdminDataContext } from "./adminDataContextCore";
 const initialState = {
   stats: null,
   orders: [],
@@ -159,19 +160,11 @@ function adminDataReducer(state, action) {
       return state;
   }
 }
-const AdminDataContext = createContext(void 0);
 const CACHE_DURATION = 5 * 60 * 1e3;
-const useAdminDataContext = () => {
-  const context = useContext(AdminDataContext);
-  if (!context) {
-    throw new Error("useAdminDataContext must be used within AdminDataProvider");
-  }
-  return context;
-};
 const AdminDataProvider = ({ children }) => {
   const [state, dispatch] = useReducer(adminDataReducer, initialState);
   const [subscribers, setSubscribers] = useState([]);
-  const isCacheValid = useCallback((type, id) => {
+  const isCacheValid = useCallback((type) => {
     const lastUpdated = state.lastUpdated[type];
     if (!lastUpdated) return false;
     return Date.now() - lastUpdated < CACHE_DURATION;
@@ -643,72 +636,72 @@ const AdminDataProvider = ({ children }) => {
       await adminOrderService.bulkUpdateOrders(ids, updates);
       await fetchOrders(state.filters, true);
       toast.success(`${ids.length} orders updated successfully`);
-    } catch (error) {
+    } catch {
       toast.error("Failed to update orders");
     } finally {
       setLoading("bulkUpdateOrders", false);
     }
-  }, [state.filters, fetchOrders]);
+  }, [state.filters, fetchOrders, setLoading]);
   const bulkDeleteOrders = useCallback(async (ids) => {
     setLoading("bulkDeleteOrders", true);
     try {
       await adminOrderService.bulkDeleteOrders(ids);
       await fetchOrders(state.filters, true);
       toast.success(`${ids.length} orders deleted successfully`);
-    } catch (error) {
+    } catch {
       toast.error("Failed to delete orders");
     } finally {
       setLoading("bulkDeleteOrders", false);
     }
-  }, [state.filters, fetchOrders]);
+  }, [state.filters, fetchOrders, setLoading]);
   const bulkUpdateFoods = useCallback(async (ids, updates) => {
     setLoading("bulkUpdateFoods", true);
     try {
       await adminFoodService.bulkUpdateFoods(ids, updates);
       await fetchFoods(state.filters, true);
       toast.success(`${ids.length} food items updated successfully`);
-    } catch (error) {
+    } catch {
       toast.error("Failed to update food items");
     } finally {
       setLoading("bulkUpdateFoods", false);
     }
-  }, [state.filters, fetchFoods]);
+  }, [state.filters, fetchFoods, setLoading]);
   const bulkDeleteFoods = useCallback(async (ids) => {
     setLoading("bulkDeleteFoods", true);
     try {
       await adminFoodService.bulkDeleteFoods(ids);
       await fetchFoods(state.filters, true);
       toast.success(`${ids.length} food items deleted successfully`);
-    } catch (error) {
+    } catch {
       toast.error("Failed to delete food items");
     } finally {
       setLoading("bulkDeleteFoods", false);
     }
-  }, [state.filters, fetchFoods]);
+  }, [state.filters, fetchFoods, setLoading]);
   const bulkUpdateUsers = useCallback(async (ids, updates) => {
     setLoading("bulkUpdateUsers", true);
     try {
       await adminUserService.bulkUpdateUsers(ids, updates);
       await fetchUsers(state.filters, true);
       toast.success(`${ids.length} users updated successfully`);
-    } catch (error) {
+    } catch {
       toast.error("Failed to update users");
     } finally {
       setLoading("bulkUpdateUsers", false);
     }
-  }, [state.filters, fetchUsers]);
+  }, [state.filters, fetchUsers, setLoading]);
   const bulkDeleteUsers = useCallback(async (ids) => {
     setLoading("bulkDeleteUsers", true);
     try {
       await adminUserService.bulkDeleteUsers(ids);
       await fetchUsers(state.filters, true);
       toast.success(`${ids.length} users deleted successfully`);
-    } catch (error) {
+    } catch {
       toast.error("Failed to delete users");
     } finally {
       setLoading("bulkDeleteUsers", false);
     }
-  }, [state.filters, fetchUsers]);
+  }, [state.filters, fetchUsers, setLoading]);
   const exportData = useCallback(async (type, format) => {
     setLoading(`export-${type}`, true);
     try {
@@ -719,7 +712,7 @@ const AdminDataProvider = ({ children }) => {
       a.download = `${type}-${(/* @__PURE__ */ new Date()).toISOString()}.${format}`;
       a.click();
       toast.success(`Data exported as ${format.toUpperCase()}`);
-    } catch (error) {
+    } catch {
       toast.error(`Failed to export ${type}`);
     } finally {
       setLoading(`export-${type}`, false);
@@ -868,9 +861,8 @@ const AdminDataProvider = ({ children }) => {
             {children}
         </AdminDataContext.Provider>;
 };
-var stdin_default = AdminDataContext;
 export {
   AdminDataProvider,
-  stdin_default as default,
+  AdminDataContext as default,
   useAdminDataContext
 };

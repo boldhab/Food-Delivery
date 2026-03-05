@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
-import { NavLink, useNavigate, useLocation } from "react-router-dom";
+/* eslint-disable react-refresh/only-export-components */
+import { useEffect, useMemo, useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   FiHome,
@@ -31,19 +32,27 @@ const Sidebar = ({
   setCollapsed,
   mobileOpen,
   setMobileOpen,
-  variant = "default",
   showUserProfile = true,
   showQuickActions = true,
   showRecentItems = true
 }) => {
   const { user, logout, hasPermission } = useAdminAuth();
   const navigate = useNavigate();
-  const location = useLocation();
-  const [isDesktop, setIsDesktop] = useState(true);
+  const [isDesktop, setIsDesktop] = useState(() => {
+    if (typeof window === "undefined") return true;
+    return window.matchMedia("(min-width: 768px)").matches;
+  });
   const [hoveredItem, setHoveredItem] = useState(null);
   const [expandedMenus, setExpandedMenus] = useState([]);
-  const [recentItems, setRecentItems] = useState([]);
-  const menuItems = [
+  const [recentItems, setRecentItems] = useState(() => {
+    try {
+      const saved = localStorage.getItem("recentAdminItems");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+  const menuItems = useMemo(() => [
     {
       path: "/admin",
       icon: FiHome,
@@ -117,34 +126,13 @@ const Sidebar = ({
         { path: "/admin/settings/notifications", icon: FiBell, label: "Notifications" }
       ]
     }
-  ];
-  useEffect(() => {
-    const saved = localStorage.getItem("recentAdminItems");
-    if (saved) {
-      setRecentItems(JSON.parse(saved));
-    }
-  }, []);
-  useEffect(() => {
-    if (location.pathname !== "/admin") {
-      const item = menuItems.find(
-        (m) => location.pathname.startsWith(m.path) && m.path !== "/admin"
-      );
-      if (item) {
-        const updated = [item.label, ...recentItems.filter((i) => i !== item.label)].slice(0, 3);
-        setRecentItems(updated);
-        localStorage.setItem("recentAdminItems", JSON.stringify(updated));
-      }
-    }
-  }, [location.pathname]);
+  ], []);
   useEffect(() => {
     const media = window.matchMedia("(min-width: 768px)");
-    const update = () => {
-      setIsDesktop(media.matches);
-      if (media.matches) {
-        setMobileOpen(false);
-      }
+    const update = (event) => {
+      setIsDesktop(event.matches);
+      if (event.matches) setMobileOpen(false);
     };
-    update();
     media.addEventListener("change", update);
     return () => media.removeEventListener("change", update);
   }, [setMobileOpen]);
@@ -158,10 +146,12 @@ const Sidebar = ({
       (prev) => prev.includes(label) ? prev.filter((l) => l !== label) : [...prev, label]
     );
   };
-  const hasActiveChild = (item) => {
-    if (!item.children) return false;
-    const current = `${location.pathname}${location.search || ""}`;
-    return item.children.some((child) => current === child.path);
+  const updateRecentItems = (label) => {
+    setRecentItems((prev) => {
+      const updated = [label, ...prev.filter((item) => item !== label)].slice(0, 3);
+      localStorage.setItem("recentAdminItems", JSON.stringify(updated));
+      return updated;
+    });
   };
   const visibleMenuItems = menuItems.filter(
     (item) => !item.permissions || item.permissions.every((p) => hasPermission(p))
@@ -208,7 +198,7 @@ const Sidebar = ({
                     ${collapsed ? "justify-center" : "justify-between"}
                 `}>
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500
+                        <div className="w-10 h-10 rounded-xl bg-linear-to-br from-orange-500 to-amber-500
                                       flex items-center justify-center text-white font-bold text-lg
                                       shadow-lg shadow-orange-500/25">
                             FH
@@ -249,7 +239,7 @@ const Sidebar = ({
   }
                 {showUserProfile && !collapsed && <div className="p-4 border-b border-slate-200 dark:border-slate-800">
                         <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500
+                            <div className="w-12 h-12 rounded-xl bg-linear-to-br from-orange-500 to-amber-500
                                           flex items-center justify-center text-white font-bold text-lg
                                           shadow-lg shadow-orange-500/25">
                                 {user?.name?.charAt(0) || "A"}
@@ -296,7 +286,6 @@ const Sidebar = ({
                 <nav className="flex-1 overflow-y-auto py-4 px-3">
                     <div className="space-y-1">
                         {visibleMenuItems.map((item) => {
-    const isActive = location.pathname === item.path || hasActiveChild(item);
     const isExpanded = expandedMenus.includes(item.label);
     const hasChildren = item.children && item.children.length > 0;
     return <div key={item.path}>
@@ -310,10 +299,11 @@ const Sidebar = ({
     >
                                         <NavLink
       to={item.path}
-      onClick={(e) => {
+      onClick={() => {
         if (hasChildren) {
           toggleSubmenu(item.label);
         }
+        updateRecentItems(item.label);
         if (!isDesktop) setMobileOpen(false);
       }}
       className={({ isActive: isActive2 }) => `

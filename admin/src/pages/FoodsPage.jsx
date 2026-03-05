@@ -17,7 +17,7 @@ import {
 } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { useAdminDataContext } from "../context/AdminDataContext";
+import { useAdminDataContext } from "../context/adminDataContextCore";
 import StatusBadge from "../components/common/StatusBadge";
 import DataTable from "../components/common/DataTable";
 import FoodForm from "../components/foods/FoodForm";

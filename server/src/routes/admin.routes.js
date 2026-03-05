@@ -49,6 +49,9 @@ const {
     getAdminSettings,
     updateAdminSettings
 } = require('../controllers/admin.setting.controller');
+const {
+    updateAdminSettingsRules
+} = require('../validations/admin.setting.validation');
 
 // All admin routes require authentication and admin role
 router.use(protect, admin);
@@ -77,7 +80,7 @@ router.delete('/promotions/:id', deletePromotionRules, validate, deletePromotion
 
 // ==================== SETTINGS MANAGEMENT ====================
 router.get('/settings', getAdminSettings);
-router.put('/settings', updateAdminSettings);
+router.put('/settings', updateAdminSettingsRules, validate, updateAdminSettings);
 
 // ==================== USER MANAGEMENT ====================
 router.post('/users', createUser);
