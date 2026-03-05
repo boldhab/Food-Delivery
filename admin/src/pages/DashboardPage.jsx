@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   FiDollarSign,
@@ -53,6 +53,7 @@ const cardVariants = {
   }
 };
 const DashboardPage = () => {
+  void motion;
   const {
     state,
     fetchStats,
@@ -73,23 +74,7 @@ const DashboardPage = () => {
   const [showQuickActions, setShowQuickActions] = useState(false);
   const [lastUpdated, setLastUpdated] = useState(/* @__PURE__ */ new Date());
   const [autoRefresh, setAutoRefresh] = useState(true);
-  useEffect(() => {
-    const unsubscribe = subscribeToUpdates((data) => {
-      handleRealTimeUpdate(data);
-    });
-    return unsubscribe;
-  }, [subscribeToUpdates]);
-  useEffect(() => {
-    if (!autoRefresh) return;
-    const interval = setInterval(() => {
-      refreshData();
-    }, 3e4);
-    return () => clearInterval(interval);
-  }, [autoRefresh]);
-  useEffect(() => {
-    loadDashboardData();
-  }, [selectedDateRange]);
-  const loadDashboardData = async () => {
+  const loadDashboardData = useCallback(async () => {
     await Promise.all([
       fetchStats(),
       fetchOrders({
@@ -103,12 +88,12 @@ const DashboardPage = () => {
       fetchUsers({ limit: 5, sortBy: "createdAt", sortOrder: "desc" })
     ]);
     setLastUpdated(/* @__PURE__ */ new Date());
-  };
-  const refreshData = async () => {
+  }, [fetchFoods, fetchOrders, fetchStats, fetchUsers, selectedDateRange.end, selectedDateRange.start]);
+  const refreshData = useCallback(async () => {
     await loadDashboardData();
     toast.success("Dashboard updated", { icon: "🔄" });
-  };
-  const handleRealTimeUpdate = (data) => {
+  }, [loadDashboardData]);
+  const handleRealTimeUpdate = useCallback((data) => {
     switch (data.type) {
       case "order_created":
         toast.success(`New order #${data.data.orderNumber} received!`, {
@@ -125,7 +110,23 @@ const DashboardPage = () => {
         break;
     }
     loadDashboardData();
-  };
+  }, [loadDashboardData]);
+  useEffect(() => {
+    const unsubscribe = subscribeToUpdates((data) => {
+      handleRealTimeUpdate(data);
+    });
+    return unsubscribe;
+  }, [handleRealTimeUpdate, subscribeToUpdates]);
+  useEffect(() => {
+    if (!autoRefresh) return;
+    const interval = setInterval(() => {
+      refreshData();
+    }, 3e4);
+    return () => clearInterval(interval);
+  }, [autoRefresh, refreshData]);
+  useEffect(() => {
+    loadDashboardData();
+  }, [loadDashboardData]);
   const handleExport = async (format2) => {
     await exportData("orders", format2);
   };
@@ -534,7 +535,7 @@ const DashboardPage = () => {
                                 </button>)}
                         </div>
                     </div>
-                    <div className="h-[350px]">
+                    <div className="h-87.5">
                         <RevenueChart
     data={state.stats?.revenueByDay || []}
     metric={selectedMetric}
@@ -550,7 +551,7 @@ const DashboardPage = () => {
                     <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6">
                         Order Distribution
                     </h2>
-                    <div className="h-[350px] w-full">
+                    <div className="h-87.5 w-full">
                         <OrdersChart
     data={normalizedOrdersByStatus}
     height={320}
@@ -718,7 +719,7 @@ const DashboardPage = () => {
                     <div className="space-y-3">
                         {normalizedRecentActivity.map((activity, index) => <div key={index} className="flex items-start gap-3">
                                 <div className={`
-                                    w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0
+                                    w-8 h-8 rounded-lg flex items-center justify-center shrink-0
                                     ${activity.type === "order" && "bg-blue-100 text-blue-500"}
                                     ${activity.type === "user" && "bg-green-100 text-green-500"}
                                     ${activity.type === "food" && "bg-orange-100 text-orange-500"}

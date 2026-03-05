@@ -179,7 +179,6 @@ const OrdersPage = () => {
     loadOrders();
   }, [loadOrders]);
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadOrderStats();
   }, [loadOrderStats]);
   const handleRefresh = async () => {

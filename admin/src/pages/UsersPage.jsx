@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiPlus, FiSearch } from "react-icons/fi";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -33,7 +33,7 @@ const UsersPage = () => {
   const [search, setSearch] = useState("");
   const roleFilter = useMemo(() => ROUTE_ROLE_MAP[location.pathname] || "", [location.pathname]);
 
-  const loadUsers = async () => {
+  const loadUsers = useCallback(async () => {
     setLoading(true);
     try {
       const response = await adminUserService.getUsers(roleFilter ? { role: roleFilter } : {});
@@ -44,11 +44,11 @@ const UsersPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [roleFilter]);
 
   useEffect(() => {
     loadUsers();
-  }, [roleFilter]);
+  }, [loadUsers]);
 
   const handleToggleBan = async (targetUser) => {
     setUpdatingUserId(targetUser._id);

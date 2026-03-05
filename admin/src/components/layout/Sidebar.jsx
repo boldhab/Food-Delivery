@@ -1,4 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
 import { useEffect, useMemo, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -36,6 +35,7 @@ const Sidebar = ({
   showQuickActions = true,
   showRecentItems = true
 }) => {
+  void motion;
   const { user, logout, hasPermission } = useAdminAuth();
   const navigate = useNavigate();
   const [isDesktop, setIsDesktop] = useState(() => {

@@ -14,6 +14,8 @@ const HeroBackground = ({
     const springConfig = { damping: 20, stiffness: 150 };
     const smoothMouseX = useSpring(mouseX, springConfig);
     const smoothMouseY = useSpring(mouseY, springConfig);
+    const interactiveX = useTransform(smoothMouseX, [-0.5, 0.5], [-20, 20]);
+    const interactiveY = useTransform(smoothMouseY, [-0.5, 0.5], [-20, 20]);
 
     // Intensity multipliers
     const intensityMap = {
@@ -101,10 +103,6 @@ const HeroBackground = ({
 
             {/* Animated Blobs */}
             {currentVariant.shapes.map((shape, index) => {
-                // Interactive transform based on mouse position
-                const x = useTransform(smoothMouseX, [-0.5, 0.5], [-20, 20]);
-                const y = useTransform(smoothMouseY, [-0.5, 0.5], [-20, 20]);
-
                 return (
                     <motion.div
                         key={index}
@@ -114,8 +112,8 @@ const HeroBackground = ({
                             left: shape.left,
                             right: shape.right,
                             bottom: shape.bottom,
-                            x: interactive ? x : 0,
-                            y: interactive ? y : 0,
+                            x: interactive ? interactiveX : 0,
+                            y: interactive ? interactiveY : 0,
                             willChange: 'transform',
                         }}
                     >

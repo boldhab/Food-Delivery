@@ -1,4 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
 import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import {
@@ -52,6 +51,7 @@ const OrdersChart = ({
   nameKey = "_id",
   variant = "default"
 }) => {
+  void motion;
   const [chartType, setChartType] = useState(type);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [selectedSegment, setSelectedSegment] = useState(null);

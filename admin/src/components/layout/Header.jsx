@@ -24,7 +24,7 @@ import { useAdminAuth } from "../../hooks/useAdminAuth";
 import { useNavigate } from "react-router-dom";
 const Header = ({
   toggleSidebar,
-  sidebarCollapsed = false,
+  sidebarCollapsed: _sidebarCollapsed = false,
   onThemeToggle,
   isDarkMode = false,
   title = "Admin Overview",
@@ -35,6 +35,7 @@ const Header = ({
   showFullscreen = true,
   onSearch
 }) => {
+  void motion;
   const { user, logout } = useAdminAuth();
   const navigate = useNavigate();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -414,7 +415,7 @@ const Header = ({
                                                     <div className="flex items-start gap-3">
                                                         <div className={`
                                                             w-8 h-8 rounded-full flex items-center justify-center
-                                                            flex-shrink-0
+                                                            shrink-0
                                                             ${notification.type === "success" && "bg-green-100 text-green-600"}
                                                             ${notification.type === "warning" && "bg-yellow-100 text-yellow-600"}
                                                             ${notification.type === "error" && "bg-red-100 text-red-600"}
@@ -433,7 +434,7 @@ const Header = ({
                                                                 {notification.time}
                                                             </p>
                                                         </div>
-                                                        {!notification.read && <span className="w-2 h-2 bg-orange-500 rounded-full flex-shrink-0" />}
+                                                        {!notification.read && <span className="w-2 h-2 bg-orange-500 rounded-full shrink-0" />}
                                                     </div>
                                                 </button>)}
                                     </div>
@@ -485,7 +486,7 @@ const Header = ({
                             </div>
                             
                             <div className="h-10 w-10 flex items-center justify-center
-                                          rounded-xl bg-gradient-to-br from-orange-500 to-amber-500
+                                          rounded-xl bg-linear-to-br from-orange-500 to-amber-500
                                           text-white shadow-lg ring-2 ring-white
                                           dark:ring-slate-800">
                                 {user?.avatar ? <img
