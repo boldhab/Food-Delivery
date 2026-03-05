@@ -1,16 +1,64 @@
-# React + Vite
+# Food Delivery - Admin Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A comprehensive and modern administrative interface for managing the Food Delivery platform. This dashboard allows administrators to monitor performance, manage users, handle orders, update the food menu, and run promotional campaigns.
 
-Currently, two official plugins are available:
+## ✨ Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 📊 **Dashboard Analytics**: Real-time sales charts, revenue tracking, and order statistics using Recharts.
+- 🛍️ **Order Management**: Detailed views for processing, tracking, and managing customer orders.
+- 🍕 **Menu Management**: Full CRUD operations for food items, categories, and inventory.
+- 👤 **User Management**: Admin control over customer accounts and permissions.
+- 🏷️ **Promotions & Offers**: Create and manage discount codes and promotional banners.
+- 📈 **Detailed Reports**: Exportable data and insights into business performance.
+- 📱 **Responsive Design**: Fully optimized for various screen sizes using Tailwind CSS 4.
+- ⚡ **Performance**: Powered by Vite for near-instant HMR and optimized builds.
 
-## React Compiler
+## 🛠️ Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Core**: React 18
+- **Build Tool**: Vite 7
+- **Styling**: Tailwind CSS 4
+- **Charts**: Recharts
+- **Icons**: React Icons
+- **Routing**: React Router 7
+- **Data Fetching**: Axios
+- **Forms**: React Hook Form
+- **Animations**: Framer Motion
+- **Toasts**: React Hot Toast
 
-## Expanding the ESLint configuration
+## 🚀 Getting Started
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Prerequisites
+
+- Node.js (v18 or higher)
+- npm or yarn
+
+### Installation
+
+1. Navigate to the admin directory:
+   ```bash
+   cd admin
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+## 📂 Directory Structure
+
+- `src/app`: Application-level configurations.
+- `src/charts`: Recharts components for analytics.
+- `src/components`: Reusable UI components (Common, Foods, Layout, Orders, Tables).
+- `src/context`: React context providers for global state.
+- `src/hooks`: Custom React hooks.
+- `src/pages`: Individual page components (Dashboard, Orders, Foods, etc.).
+- `src/services`: API communication logic using Axios.
+- `src/utils`: Utility functions and helpers.
+
+## 📄 License
+
+This project is private and for internal use only.
