@@ -5,7 +5,7 @@ import driverOrderService from "../services/driverOrderService";
 
 const MyDeliveriesPage = () => {
   const navigate = useNavigate();
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState("active");
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const previousOrderIdsRef = useRef(new Set());
@@ -14,13 +14,18 @@ const MyDeliveriesPage = () => {
   const loadOrders = async (silent = false) => {
     if (!silent) setLoading(true);
     try {
-      const data = await driverOrderService.getMyDeliveries(status);
-      setOrders(data);
-      const currentIds = new Set(data.map((order) => order._id));
+      const requestedStatus = status === "active" ? "" : status;
+      const data = await driverOrderService.getMyDeliveries(requestedStatus);
+      const filteredData = status === "active"
+        ? data.filter((order) => ["confirmed", "preparing", "out_for_delivery"].includes(order.orderStatus))
+        : data;
+
+      setOrders(filteredData);
+      const currentIds = new Set(filteredData.map((order) => order._id));
 
       if (!firstLoadRef.current) {
         const previousIds = previousOrderIdsRef.current;
-        const newOrders = data.filter((order) => !previousIds.has(order._id));
+        const newOrders = filteredData.filter((order) => !previousIds.has(order._id));
         newOrders.forEach((order) => {
           toast.success(`New assigned order: ${order.orderNumber}`);
         });
@@ -53,13 +58,15 @@ const MyDeliveriesPage = () => {
       <div className="titleRow">
         <h1>My Deliveries</h1>
         <select value={status} onChange={(e) => setStatus(e.target.value)}>
-          <option value="">All</option>
+          <option value="active">Active</option>
           <option value="out_for_delivery">Out for delivery</option>
-          <option value="delivered">Delivered</option>
           <option value="confirmed">Confirmed</option>
           <option value="preparing">Preparing</option>
         </select>
       </div>
+      <p style={{ marginTop: 8, color: "#64748b" }}>
+        Delivered orders are moved to Delivery History.
+      </p>
       {loading ? <p>Loading...</p> : null}
       {!loading && orders.length === 0 ? <p>No deliveries found.</p> : null}
       <div className="list">

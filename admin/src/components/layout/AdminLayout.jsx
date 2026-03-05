@@ -44,16 +44,18 @@ const AdminLayout = ({
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-  const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
+  const { notifications, unreadCount, markAsRead, markAllAsRead, refreshNotifications } = useNotifications();
   useEffect(() => {
     localStorage.setItem("sidebarCollapsed", JSON.stringify(sidebarCollapsed));
   }, [sidebarCollapsed]);
   useEffect(() => {
     if (isDarkMode) {
       document.documentElement.classList.add("dark");
+      document.body.classList.add("dark");
       localStorage.setItem("theme", "dark");
     } else {
       document.documentElement.classList.remove("dark");
+      document.body.classList.remove("dark");
       localStorage.setItem("theme", "light");
     }
   }, [isDarkMode]);
@@ -216,16 +218,26 @@ const AdminLayout = ({
     className="p-2 rounded-lg text-slate-500 hover:text-orange-500
                                                  hover:bg-slate-100 dark:hover:bg-slate-800
                                                  transition-colors"
+    title={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
   >
                                         {isDarkMode ? <FiSun className="w-5 h-5" /> : <FiMoon className="w-5 h-5" />}
                                     </button>
+                                    <span className="hidden lg:inline text-xs text-slate-500 dark:text-slate-400">
+                                        {isDarkMode ? "Dark" : "Light"}
+                                    </span>
 
                                     {
     /* Notifications */
   }
                                     <div className="relative">
                                         <button
-    onClick={() => setShowNotifications(!showNotifications)}
+    onClick={() => {
+      const nextState = !showNotifications;
+      setShowNotifications(nextState);
+      if (nextState) {
+        refreshNotifications();
+      }
+    }}
     className="relative p-2 rounded-lg text-slate-500
                                                      hover:text-orange-500 hover:bg-slate-100
                                                      dark:hover:bg-slate-800 transition-colors"

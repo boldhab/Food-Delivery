@@ -48,6 +48,29 @@ const orderItemSchema = new mongoose.Schema({
     }
 });
 
+const orderMessageSchema = new mongoose.Schema(
+    {
+        sender: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: true
+        },
+        senderRole: {
+            type: String,
+            enum: ['user', 'driver', 'admin'],
+            required: true
+        },
+        message: {
+            type: String,
+            required: true,
+            trim: true
+        }
+    },
+    {
+        timestamps: true
+    }
+);
+
 const orderSchema = new mongoose.Schema({
     // Order Identification
     orderNumber: {
@@ -138,6 +161,8 @@ const orderSchema = new mongoose.Schema({
             updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
         }
     ],
+
+    communications: [orderMessageSchema],
     
     // Timestamps
     estimatedDeliveryTime: Date,

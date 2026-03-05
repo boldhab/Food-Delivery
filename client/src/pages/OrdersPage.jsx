@@ -16,15 +16,17 @@ import {
     FiStar,
     FiRefreshCw,
     FiChevronDown,
-    FiChevronUp
+    FiChevronUp,
+    FiSend
 } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import orderService from '../services/order.service';
 import Loader from '../components/ui/Loader';
 
 const OrdersPage = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
@@ -32,6 +34,9 @@ const OrdersPage = () => {
     const [filter, setFilter] = useState('all');
     const [sortBy, setSortBy] = useState('newest');
     const [expandedOrders, setExpandedOrders] = useState(new Set());
+    const [orderMessages, setOrderMessages] = useState({});
+    const [messageInputs, setMessageInputs] = useState({});
+    const [sendingMessageFor, setSendingMessageFor] = useState('');
 
     // Load orders with error handling
     const loadOrders = useCallback(async (showRefreshing = false) => {
@@ -58,6 +63,24 @@ const OrdersPage = () => {
     useEffect(() => {
         loadOrders();
     }, [loadOrders]);
+
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const openOrderId = params.get('openOrder');
+        if (!openOrderId || orders.length === 0) return;
+
+        const exists = orders.some((order) => order._id === openOrderId);
+        if (!exists) return;
+
+        setExpandedOrders((prev) => {
+            const next = new Set(prev);
+            next.add(openOrderId);
+            return next;
+        });
+        if (!orderMessages[openOrderId]) {
+            loadOrderMessages(openOrderId);
+        }
+    }, [location.search, orders]);
 
     // Handle order cancellation
     const handleCancelOrder = async (orderId) => {
@@ -112,9 +135,41 @@ const OrdersPage = () => {
                 newSet.delete(orderId);
             } else {
                 newSet.add(orderId);
+                if (!orderMessages[orderId]) {
+                    loadOrderMessages(orderId);
+                }
             }
             return newSet;
         });
+    };
+
+    const loadOrderMessages = async (orderId) => {
+        try {
+            const response = await orderService.getOrderMessages(orderId);
+            setOrderMessages((prev) => ({
+                ...prev,
+                [orderId]: Array.isArray(response?.data) ? response.data : []
+            }));
+        } catch (error) {
+            toast.error(error?.response?.data?.message || 'Failed to load messages');
+        }
+    };
+
+    const handleSendOrderMessage = async (orderId) => {
+        const text = (messageInputs[orderId] || '').trim();
+        if (!text) return;
+
+        setSendingMessageFor(orderId);
+        try {
+            await orderService.sendOrderMessage(orderId, text);
+            setMessageInputs((prev) => ({ ...prev, [orderId]: '' }));
+            await loadOrderMessages(orderId);
+            toast.success('Message sent');
+        } catch (error) {
+            toast.error(error?.response?.data?.message || 'Failed to send message');
+        } finally {
+            setSendingMessageFor('');
+        }
     };
 
     // Filter orders
@@ -539,6 +594,56 @@ const OrdersPage = () => {
                                                                         <FiPrinter className="w-4 h-4" />
                                                                         <span className="text-sm">Print Receipt</span>
                                                                     </button>
+                                                                </div>
+
+                                                                {/* Communication */}
+                                                                <div className="p-4 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+                                                                    <h4 className="font-semibold text-slate-900 dark:text-white mb-3">
+                                                                        Message Driver
+                                                                    </h4>
+                                                                    <div className="max-h-40 overflow-y-auto space-y-2 mb-3">
+                                                                        {(orderMessages[order._id] || []).length === 0 ? (
+                                                                            <p className="text-sm text-slate-500">No messages yet.</p>
+                                                                        ) : (
+                                                                            (orderMessages[order._id] || []).map((entry) => (
+                                                                                <div
+                                                                                    key={entry._id}
+                                                                                    className={`p-2 rounded-lg text-sm ${
+                                                                                        entry.senderRole === 'user'
+                                                                                            ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200'
+                                                                                            : 'bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200'
+                                                                                    }`}
+                                                                                >
+                                                                                    <div className="font-medium capitalize">{entry.senderRole}</div>
+                                                                                    <div>{entry.message}</div>
+                                                                                    <div className="text-[11px] opacity-70 mt-1">
+                                                                                        {entry.createdAt ? new Date(entry.createdAt).toLocaleString() : ''}
+                                                                                    </div>
+                                                                                </div>
+                                                                            ))
+                                                                        )}
+                                                                    </div>
+                                                                    <div className="flex gap-2">
+                                                                        <input
+                                                                            type="text"
+                                                                            value={messageInputs[order._id] || ''}
+                                                                            onChange={(e) =>
+                                                                                setMessageInputs((prev) => ({
+                                                                                    ...prev,
+                                                                                    [order._id]: e.target.value
+                                                                                }))
+                                                                            }
+                                                                            placeholder="Write message for driver..."
+                                                                            className="flex-1 px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900 text-sm"
+                                                                        />
+                                                                        <button
+                                                                            onClick={() => handleSendOrderMessage(order._id)}
+                                                                            disabled={sendingMessageFor === order._id || !(messageInputs[order._id] || '').trim()}
+                                                                            className="px-3 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 disabled:opacity-50"
+                                                                        >
+                                                                            <FiSend className="w-4 h-4" />
+                                                                        </button>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>

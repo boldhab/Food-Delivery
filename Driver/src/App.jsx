@@ -3,6 +3,7 @@ import LoginPage from "./pages/LoginPage";
 import AvailableOrdersPage from "./pages/AvailableOrdersPage";
 import MyDeliveriesPage from "./pages/MyDeliveriesPage";
 import DeliveryDetailPage from "./pages/DeliveryDetailPage";
+import DeliveryHistoryPage from "./pages/DeliveryHistoryPage";
 import DriverLayout from "./components/DriverLayout";
 import ProtectedRoute from "./routes/ProtectedRoute";
 
@@ -21,7 +22,11 @@ const App = () => {
         <Route index element={<Navigate to="/driver/available" replace />} />
         <Route path="available" element={<AvailableOrdersPage />} />
         <Route path="my-deliveries" element={<MyDeliveriesPage />} />
+        <Route path="mydelivery" element={<Navigate to="/driver/my-deliveries" replace />} />
+        <Route path="my-delivery" element={<Navigate to="/driver/my-deliveries" replace />} />
+        <Route path="delivery-history" element={<DeliveryHistoryPage />} />
         <Route path="deliveries/:id" element={<DeliveryDetailPage />} />
+        <Route path="*" element={<Navigate to="/driver/my-deliveries" replace />} />
       </Route>
       <Route path="*" element={<Navigate to="/driver/login" replace />} />
     </Routes>

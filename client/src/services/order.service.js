@@ -21,6 +21,16 @@ const orderService = {
         return response.data;
     },
 
+    getOrderMessages: async (id) => {
+        const response = await api.get(`/orders/${id}/messages`);
+        return response.data;
+    },
+
+    sendOrderMessage: async (id, message) => {
+        const response = await api.post(`/orders/${id}/messages`, { message });
+        return response.data;
+    },
+
     getOrderStats: async () => {
         try {
             const response = await api.get('/orders/stats');

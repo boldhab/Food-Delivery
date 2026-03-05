@@ -17,6 +17,7 @@ const DriverLayout = () => {
         <nav>
           <NavLink to="/driver/available">Available Orders</NavLink>
           <NavLink to="/driver/my-deliveries">My Deliveries</NavLink>
+          <NavLink to="/driver/delivery-history">Delivery History</NavLink>
         </nav>
       </aside>
       <main className="content">

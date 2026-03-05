@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -14,11 +14,15 @@ import {
     FiChevronDown,
     FiSearch,
     FiMoon,
-    FiSun
+    FiSun,
+    FiCheckCircle,
+    FiInfo
 } from 'react-icons/fi';
+import { formatDistanceToNow } from 'date-fns';
 import useAuth from '../../hooks/useAuth';
 import useCart from '../../hooks/useCart';
 import { useTheme } from '../../context/ThemeContext';
+import notificationService from '../../services/notification.service';
 
 const Navbar = () => {
     const navigate = useNavigate();
@@ -29,8 +33,10 @@ const Navbar = () => {
     
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+    const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    const [notifications, setNotifications] = useState([]);
 
     // Handle scroll effect
     useEffect(() => {
@@ -45,7 +51,29 @@ const Navbar = () => {
     useEffect(() => {
         setIsMobileMenuOpen(false);
         setIsProfileMenuOpen(false);
+        setIsNotificationsOpen(false);
     }, [location]);
+
+    useEffect(() => {
+        if (!isAuthenticated) {
+            setNotifications([]);
+            return;
+        }
+
+        const loadNotifications = async () => {
+            try {
+                const response = await notificationService.getNotifications({ limit: 20 });
+                const items = response?.data?.notifications || [];
+                setNotifications(items);
+            } catch (error) {
+                setNotifications([]);
+            }
+        };
+
+        loadNotifications();
+        const intervalId = window.setInterval(loadNotifications, 30000);
+        return () => window.clearInterval(intervalId);
+    }, [isAuthenticated]);
 
     const handleLogout = () => {
         logout();
@@ -64,6 +92,37 @@ const Navbar = () => {
     };
 
     const cartItemCount = cart?.totalItems || 0;
+    const unreadCount = useMemo(
+        () => notifications.filter((item) => !item?.read).length,
+        [notifications]
+    );
+
+    const markNotificationAsRead = async (notification) => {
+        if (!notification?._id) return;
+        setNotifications((prev) =>
+            prev.map((item) =>
+                item._id === notification._id ? { ...item, read: true } : item
+            )
+        );
+        try {
+            await notificationService.markAsRead(notification._id);
+        } catch (error) {
+            // Best effort; list refresh will self-heal
+        }
+        if (notification?.link) {
+            navigate(notification.link);
+        }
+        setIsNotificationsOpen(false);
+    };
+
+    const markAllNotificationsAsRead = async () => {
+        setNotifications((prev) => prev.map((item) => ({ ...item, read: true })));
+        try {
+            await notificationService.markAllAsRead();
+        } catch (error) {
+            // Best effort; list refresh will self-heal
+        }
+    };
 
     return (
         <>
@@ -201,14 +260,101 @@ const Navbar = () => {
 
                             {/* Notifications (if authenticated) */}
                             {isAuthenticated && (
-                                <button className="p-2 rounded-lg text-slate-600 dark:text-slate-300 
+                                <div className="relative">
+                                    <button
+                                        onClick={async () => {
+                                            const nextOpen = !isNotificationsOpen;
+                                            setIsNotificationsOpen(nextOpen);
+                                            if (nextOpen) {
+                                                try {
+                                                    const response = await notificationService.getNotifications({ limit: 20 });
+                                                    setNotifications(response?.data?.notifications || []);
+                                                } catch (error) {
+                                                    // ignore
+                                                }
+                                            }
+                                        }}
+                                        className="p-2 rounded-lg text-slate-600 dark:text-slate-300 
                                                  hover:text-green-500 hover:bg-slate-50 
                                                  dark:hover:bg-slate-800 transition-all duration-200
-                                                 relative">
-                                    <FiBell className="w-5 h-5" />
-                                    <span className="absolute top-1 right-1 w-2 h-2 
-                                                   bg-green-500 rounded-full" />
-                                </button>
+                                                 relative"
+                                    >
+                                        <FiBell className="w-5 h-5" />
+                                        {unreadCount > 0 && (
+                                            <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px]
+                                                           px-1 bg-green-500 text-white text-[10px]
+                                                           rounded-full flex items-center justify-center">
+                                                {unreadCount > 99 ? '99+' : unreadCount}
+                                            </span>
+                                        )}
+                                    </button>
+
+                                    <AnimatePresence>
+                                        {isNotificationsOpen && (
+                                            <motion.div
+                                                initial={{ opacity: 0, y: 8 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                exit={{ opacity: 0, y: 8 }}
+                                                className="absolute right-0 mt-2 w-80 bg-white dark:bg-slate-800
+                                                         rounded-xl shadow-xl border border-slate-200 dark:border-slate-700
+                                                         overflow-hidden z-50"
+                                            >
+                                                <div className="p-3 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                                                    <p className="text-sm font-semibold text-slate-900 dark:text-white">
+                                                        Notifications
+                                                    </p>
+                                                    {unreadCount > 0 && (
+                                                        <button
+                                                            onClick={markAllNotificationsAsRead}
+                                                            className="text-xs text-green-600 hover:text-green-700"
+                                                        >
+                                                            Mark all as read
+                                                        </button>
+                                                    )}
+                                                </div>
+                                                <div className="max-h-80 overflow-y-auto">
+                                                    {notifications.length === 0 ? (
+                                                        <div className="p-6 text-center text-sm text-slate-500">
+                                                            No notifications
+                                                        </div>
+                                                    ) : (
+                                                        notifications.map((notification) => (
+                                                            <button
+                                                                key={notification._id}
+                                                                onClick={() => markNotificationAsRead(notification)}
+                                                                className={`w-full text-left px-4 py-3 border-b last:border-b-0
+                                                                          border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700
+                                                                          ${notification.read ? '' : 'bg-green-50/70 dark:bg-green-900/10'}`}
+                                                            >
+                                                                <div className="flex items-start gap-2">
+                                                                    <span className="mt-0.5 text-green-600">
+                                                                        {notification.type === 'success' ? <FiCheckCircle className="w-4 h-4" /> : <FiInfo className="w-4 h-4" />}
+                                                                    </span>
+                                                                    <div className="flex-1 min-w-0">
+                                                                        <p className="text-sm font-medium text-slate-900 dark:text-white">
+                                                                            {notification.title}
+                                                                        </p>
+                                                                        <p className="text-xs text-slate-600 dark:text-slate-300 mt-0.5 line-clamp-2">
+                                                                            {notification.message}
+                                                                        </p>
+                                                                        <p className="text-[11px] text-slate-400 mt-1">
+                                                                            {notification.createdAt
+                                                                                ? formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true })
+                                                                                : 'just now'}
+                                                                        </p>
+                                                                    </div>
+                                                                    {!notification.read && (
+                                                                        <span className="w-2 h-2 rounded-full bg-green-500 mt-2" />
+                                                                    )}
+                                                                </div>
+                                                            </button>
+                                                        ))
+                                                    )}
+                                                </div>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                </div>
                             )}
 
                             {/* Profile / Auth */}

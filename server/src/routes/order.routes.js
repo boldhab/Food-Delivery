@@ -17,6 +17,9 @@ const {
     completeDelivery,
     submitPostDeliveryReport,
     submitDriverCompliance,
+    assignDriverToOrder,
+    getOrderMessages,
+    sendOrderConversationMessage,
     
     // Admin
     getAllOrders,
@@ -51,6 +54,8 @@ router.put('/driver/:id/transit', driver, startDeliveryTransit);
 router.put('/driver/:id/delivered', driver, completeDelivery);
 router.put('/driver/:id/post-delivery', driver, submitPostDeliveryReport);
 router.put('/driver/:id/compliance', driver, submitDriverCompliance);
+router.get('/:id/messages', getOrderMessages);
+router.post('/:id/messages', sendOrderConversationMessage);
 
 router.get('/:id', orderIdParamRules, validate, getOrderById);
 router.put('/:id/cancel', cancelOrderRules, validate, cancelOrder);
@@ -60,5 +65,6 @@ router.put('/:id/cancel', cancelOrderRules, validate, cancelOrder);
 
 router.get('/admin/all', admin, listOrdersQueryRules, validate, getAllOrders);
 router.put('/admin/:id/status', admin, updateStatusRules, validate, updateOrderStatus);
+router.put('/admin/:id/assign-driver', admin, assignDriverToOrder);
 
 module.exports = router;

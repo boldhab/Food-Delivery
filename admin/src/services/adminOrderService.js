@@ -48,19 +48,34 @@ class AdminOrderService {
     }
 
     async getAvailableDrivers() {
-        const response = await adminApi.get('/admin/drivers/available');
+        // Use stable users endpoint to avoid noisy 404s in mixed backend versions
+        const response = await adminApi.get('/admin/users', {
+            params: { role: 'driver', limit: 100 }
+        });
+        const users = response?.data?.data?.users || [];
         return {
-            success: response?.data?.success ?? true,
-            data: response?.data?.data || []
+            success: true,
+            data: users.filter((user) => user?.isActive)
         };
     }
 
     async assignDriver(orderId, driverId, note = 'Driver assigned by admin') {
-        const response = await adminApi.put(`/admin/orders/${orderId}/assign-driver`, {
-            driverId,
-            note
-        });
-        return response?.data?.data;
+        try {
+            const response = await adminApi.put(`/admin/orders/${orderId}/assign-driver`, {
+                driverId,
+                note
+            });
+            return response?.data?.data;
+        } catch (error) {
+            if (error?.response?.status !== 404) {
+                throw error;
+            }
+            const fallback = await adminApi.put(`/orders/admin/${orderId}/assign-driver`, {
+                driverId,
+                note
+            });
+            return fallback?.data?.data;
+        }
     }
 }
 

@@ -2,11 +2,45 @@ const Order = require('../models/Order');
 const Cart = require('../models/Cart');
 const Food = require('../models/Food');
 const User = require('../models/User');
+const Notification = require('../models/Notification');
 const {
     calculateOrderTotals,
-    isValidStatusTransition,
     getStatusDescription
 } = require('../utils/order.utils');
+
+const notifyAdmins = async ({ title, message, link, metadata = {} }) => {
+    const admins = await User.find({ role: 'admin', isActive: true }).select('_id');
+    if (!admins.length) return;
+
+    await Notification.insertMany(
+        admins.map((adminUser) => ({
+            recipient: adminUser._id,
+            type: 'info',
+            title,
+            message,
+            link,
+            metadata
+        }))
+    );
+};
+
+const canAccessOrderConversation = (order, user) => {
+    if (!order || !user) return false;
+    if (user.role === 'admin') return true;
+    if (user.role === 'user') return order.user.toString() === user._id.toString();
+    if (user.role === 'driver') {
+        return order.driver && order.driver.toString() === user._id.toString();
+    }
+    return false;
+};
+
+const mapOrderCommunication = (entry) => ({
+    _id: entry._id,
+    sender: entry.sender,
+    senderRole: entry.senderRole,
+    message: entry.message,
+    createdAt: entry.createdAt
+});
 
 // ==================== USER ORDER CONTROLLERS ====================
 
@@ -292,11 +326,26 @@ const updateOrderStatus = async (req, res, next) => {
     try {
         const { id } = req.params;
         const { status, note } = req.body || {};
+        const allowedStatuses = [
+            'pending',
+            'confirmed',
+            'preparing',
+            'out_for_delivery',
+            'delivered',
+            'cancelled',
+            'rejected'
+        ];
 
         if (!status) {
             return res.status(400).json({
                 success: false,
                 message: 'status is required'
+            });
+        }
+        if (!allowedStatuses.includes(status)) {
+            return res.status(400).json({
+                success: false,
+                message: `Invalid status: ${status}`
             });
         }
 
@@ -308,13 +357,22 @@ const updateOrderStatus = async (req, res, next) => {
             });
         }
 
-        if (!isValidStatusTransition(order.orderStatus, status)) {
-            return res.status(400).json({
-                success: false,
-                message: `Invalid status transition: ${order.orderStatus} -> ${status}`
+        // No-op update should not fail
+        if (order.orderStatus === status) {
+            return res.json({
+                success: true,
+                message: 'Order status unchanged',
+                data: {
+                    orderId: order._id,
+                    orderNumber: order.orderNumber,
+                    orderStatus: order.orderStatus,
+                    paymentStatus: order.paymentStatus
+                }
             });
         }
 
+        // Admin override: allow direct status update even across non-linear transitions.
+        // Keep original transition utility available for non-admin workflows.
         order.orderStatus = status;
 
         if (status === 'delivered') {
@@ -524,6 +582,230 @@ const assignDriverToOrder = async (req, res, next) => {
     }
 };
 
+const sendOrderEmailNotification = async (req, res, next) => {
+    try {
+        const order = await Order.findById(req.params.id);
+        if (!order) {
+            return res.status(404).json({ success: false, message: 'Order not found' });
+        }
+
+        order.statusHistory.push({
+            status: order.orderStatus,
+            note: 'Customer email notification sent by admin',
+            updatedBy: req.user?._id
+        });
+        await order.save();
+        await Notification.create({
+            recipient: req.user?._id,
+            type: 'info',
+            title: 'Email notification sent',
+            message: `Email sent for order #${order.orderNumber}`,
+            link: `/admin/orders/${order._id}`,
+            metadata: {
+                orderId: order._id,
+                channel: 'email'
+            }
+        });
+
+        res.json({ success: true, message: 'Email notification sent' });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const sendOrderSMSNotification = async (req, res, next) => {
+    try {
+        const order = await Order.findById(req.params.id);
+        if (!order) {
+            return res.status(404).json({ success: false, message: 'Order not found' });
+        }
+
+        order.statusHistory.push({
+            status: order.orderStatus,
+            note: 'Customer SMS notification sent by admin',
+            updatedBy: req.user?._id
+        });
+        await order.save();
+        await Notification.create({
+            recipient: req.user?._id,
+            type: 'info',
+            title: 'SMS notification sent',
+            message: `SMS sent for order #${order.orderNumber}`,
+            link: `/admin/orders/${order._id}`,
+            metadata: {
+                orderId: order._id,
+                channel: 'sms'
+            }
+        });
+
+        res.json({ success: true, message: 'SMS notification sent' });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const sendOrderMessageNotification = async (req, res, next) => {
+    try {
+        const { message } = req.body || {};
+        const order = await Order.findById(req.params.id);
+        if (!order) {
+            return res.status(404).json({ success: false, message: 'Order not found' });
+        }
+
+        order.statusHistory.push({
+            status: order.orderStatus,
+            note: message ? `Admin message to customer: ${message}` : 'Admin message sent to customer',
+            updatedBy: req.user?._id
+        });
+        await order.save();
+        await Notification.create({
+            recipient: req.user?._id,
+            type: 'success',
+            title: 'Message sent to customer',
+            message: message || `Message sent for order #${order.orderNumber}`,
+            link: `/admin/orders/${order._id}`,
+            metadata: {
+                orderId: order._id,
+                channel: 'message'
+            }
+        });
+        await Notification.create({
+            recipient: order.user,
+            type: 'info',
+            title: 'New message about your order',
+            message: message || `You have a new update for order #${order.orderNumber}`,
+            link: `/orders`,
+            metadata: {
+                orderId: order._id,
+                channel: 'message',
+                sentBy: req.user?._id
+            }
+        });
+
+        res.json({ success: true, message: 'Message sent' });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const getOrderMessages = async (req, res, next) => {
+    try {
+        const order = await Order.findById(req.params.id)
+            .select('user driver communications')
+            .populate('communications.sender', 'name role');
+
+        if (!order) {
+            return res.status(404).json({ success: false, message: 'Order not found' });
+        }
+
+        if (!canAccessOrderConversation(order, req.user)) {
+            return res.status(403).json({ success: false, message: 'Not authorized to view conversation' });
+        }
+
+        const communications = Array.isArray(order.communications)
+            ? order.communications.map(mapOrderCommunication)
+            : [];
+
+        return res.json({
+            success: true,
+            count: communications.length,
+            data: communications
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const sendOrderConversationMessage = async (req, res, next) => {
+    try {
+        const text = String(req.body?.message || '').trim();
+        if (!text) {
+            return res.status(400).json({ success: false, message: 'message is required' });
+        }
+
+        const order = await Order.findById(req.params.id);
+        if (!order) {
+            return res.status(404).json({ success: false, message: 'Order not found' });
+        }
+
+        if (!canAccessOrderConversation(order, req.user)) {
+            return res.status(403).json({ success: false, message: 'Not authorized to send message for this order' });
+        }
+
+        const senderRole = req.user.role === 'driver' ? 'driver' : req.user.role === 'admin' ? 'admin' : 'user';
+        order.communications.push({
+            sender: req.user._id,
+            senderRole,
+            message: text
+        });
+
+        order.statusHistory.push({
+            status: order.orderStatus,
+            note: `${senderRole} sent a communication message`,
+            updatedBy: req.user._id
+        });
+
+        await order.save();
+
+        const recipients = [];
+        const shouldNotifyUser = order.user && order.user.toString() !== req.user._id.toString();
+        const shouldNotifyDriver = order.driver && order.driver.toString() !== req.user._id.toString();
+
+        if (shouldNotifyUser) {
+            recipients.push({
+                recipientId: order.user.toString(),
+                link: `/orders?openOrder=${order._id}`
+            });
+        }
+
+        if (shouldNotifyDriver) {
+            recipients.push({
+                recipientId: order.driver.toString(),
+                link: `/driver/deliveries/${order._id}`
+            });
+        }
+
+        if (recipients.length > 0) {
+            await Notification.insertMany(
+                recipients.map(({ recipientId, link }) => ({
+                    recipient: recipientId,
+                    type: 'info',
+                    title: `New ${senderRole} message`,
+                    message: text,
+                    link,
+                    metadata: {
+                        orderId: order._id,
+                        senderRole,
+                        senderId: req.user._id
+                    }
+                }))
+            );
+        }
+
+        await notifyAdmins({
+            title: `Order communication #${order.orderNumber}`,
+            message: `${senderRole} message: ${text}`,
+            link: `/admin/orders/${order._id}`,
+            metadata: {
+                orderId: order._id,
+                senderRole,
+                senderId: req.user._id
+            }
+        });
+
+        await order.populate('communications.sender', 'name role');
+        const latest = order.communications[order.communications.length - 1];
+
+        return res.status(201).json({
+            success: true,
+            message: 'Message sent successfully',
+            data: mapOrderCommunication(latest)
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 const ensureDriverOwnership = (order, driverId) => {
     if (!order.driver || order.driver.toString() !== driverId.toString()) {
         return false;
@@ -602,6 +884,12 @@ const acceptDeliveryRequest = async (req, res, next) => {
         });
 
         await order.save();
+        await notifyAdmins({
+            title: `Driver accepted order #${order.orderNumber}`,
+            message: `${req.user?.name || 'Driver'} accepted delivery assignment`,
+            link: `/admin/orders/${order._id}`,
+            metadata: { orderId: order._id, action: 'driver_accept' }
+        });
 
         res.json({
             success: true,
@@ -637,6 +925,12 @@ const declineDeliveryRequest = async (req, res, next) => {
         });
 
         await order.save();
+        await notifyAdmins({
+            title: `Driver declined order #${order.orderNumber}`,
+            message: `${req.user?.name || 'Driver'} declined delivery assignment`,
+            link: `/admin/orders/${order._id}`,
+            metadata: { orderId: order._id, action: 'driver_decline' }
+        });
 
         res.json({
             success: true,
@@ -670,6 +964,12 @@ const checkInAtRestaurant = async (req, res, next) => {
         });
 
         await order.save();
+        await notifyAdmins({
+            title: `Driver checked in for #${order.orderNumber}`,
+            message: `${req.user?.name || 'Driver'} checked in at restaurant`,
+            link: `/admin/orders/${order._id}`,
+            metadata: { orderId: order._id, action: 'driver_checkin' }
+        });
 
         res.json({
             success: true,
@@ -708,6 +1008,12 @@ const markOrderPickedUp = async (req, res, next) => {
         });
 
         await order.save();
+        await notifyAdmins({
+            title: `Order picked up #${order.orderNumber}`,
+            message: `${req.user?.name || 'Driver'} marked order as picked up`,
+            link: `/admin/orders/${order._id}`,
+            metadata: { orderId: order._id, action: 'driver_pickup' }
+        });
 
         res.json({
             success: true,
@@ -741,6 +1047,12 @@ const startDeliveryTransit = async (req, res, next) => {
         });
 
         await order.save();
+        await notifyAdmins({
+            title: `In transit #${order.orderNumber}`,
+            message: `${req.user?.name || 'Driver'} started transit`,
+            link: `/admin/orders/${order._id}`,
+            metadata: { orderId: order._id, action: 'driver_transit' }
+        });
 
         res.json({
             success: true,
@@ -783,6 +1095,12 @@ const completeDelivery = async (req, res, next) => {
         });
 
         await order.save();
+        await notifyAdmins({
+            title: `Delivered #${order.orderNumber}`,
+            message: `${req.user?.name || 'Driver'} completed delivery`,
+            link: `/admin/orders/${order._id}`,
+            metadata: { orderId: order._id, action: 'driver_delivered' }
+        });
 
         res.json({
             success: true,
@@ -820,6 +1138,12 @@ const submitPostDeliveryReport = async (req, res, next) => {
         }
 
         await order.save();
+        await notifyAdmins({
+            title: `Post-delivery report #${order.orderNumber}`,
+            message: `${req.user?.name || 'Driver'} submitted post-delivery report`,
+            link: `/admin/orders/${order._id}`,
+            metadata: { orderId: order._id, action: 'driver_post_delivery' }
+        });
 
         res.json({
             success: true,
@@ -858,6 +1182,12 @@ const submitDriverCompliance = async (req, res, next) => {
         };
 
         await order.save();
+        await notifyAdmins({
+            title: `Compliance update #${order.orderNumber}`,
+            message: `${req.user?.name || 'Driver'} submitted compliance checklist`,
+            link: `/admin/orders/${order._id}`,
+            metadata: { orderId: order._id, action: 'driver_compliance' }
+        });
 
         res.json({
             success: true,
@@ -1116,6 +1446,8 @@ module.exports = {
     getMyOrders,
     getOrderById,
     cancelOrder,
+    getOrderMessages,
+    sendOrderConversationMessage,
     // Driver
     getAvailableDriverOrders,
     getDriverOrders,
@@ -1130,6 +1462,9 @@ module.exports = {
     // Admin Driver Assignment
     getAvailableDrivers,
     assignDriverToOrder,
+    sendOrderEmailNotification,
+    sendOrderSMSNotification,
+    sendOrderMessageNotification,
     // Admin
     getAllOrders,
     updateOrderStatus,

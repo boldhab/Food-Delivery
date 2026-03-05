@@ -9,7 +9,10 @@ const {
     getDashboardStats,
     getSalesReport,
     getAvailableDrivers,
-    assignDriverToOrder
+    assignDriverToOrder,
+    sendOrderEmailNotification,
+    sendOrderSMSNotification,
+    sendOrderMessageNotification
 } = require('../controllers/order.controller');
 const { deleteFood } = require('../controllers/food.controller');
 
@@ -25,6 +28,11 @@ const {
     getFoodsWithStats,
     getInventoryAlerts
 } = require('../controllers/admin.food.controller');
+const {
+    getMyNotifications,
+    markNotificationRead,
+    markAllNotificationsRead
+} = require('../controllers/notification.controller');
 
 // All admin routes require authentication and admin role
 router.use(protect, admin);
@@ -38,6 +46,12 @@ router.get('/orders', getAllOrders);
 router.put('/orders/:id/status', updateOrderStatus);
 router.get('/drivers/available', getAvailableDrivers);
 router.put('/orders/:id/assign-driver', assignDriverToOrder);
+router.post('/orders/:id/notify/email', sendOrderEmailNotification);
+router.post('/orders/:id/notify/sms', sendOrderSMSNotification);
+router.post('/orders/:id/notify/message', sendOrderMessageNotification);
+router.get('/notifications', getMyNotifications);
+router.put('/notifications/:id/read', markNotificationRead);
+router.put('/notifications/read-all', markAllNotificationsRead);
 
 // ==================== USER MANAGEMENT ====================
 router.post('/users', createUser);

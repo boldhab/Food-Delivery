@@ -38,6 +38,14 @@ const driverOrderService = {
   },
   async submitCompliance(id, payload) {
     return driverApi.put(`/orders/driver/${id}/compliance`, payload);
+  },
+  async getOrderMessages(id) {
+    const response = await driverApi.get(`/orders/${id}/messages`);
+    return response?.data?.data || [];
+  },
+  async sendOrderMessage(id, message) {
+    const response = await driverApi.post(`/orders/${id}/messages`, { message });
+    return response?.data?.data;
   }
 };
 
