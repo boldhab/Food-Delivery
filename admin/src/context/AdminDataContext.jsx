@@ -28,6 +28,16 @@ const initialState = {
   },
   lastUpdated: {}
 };
+const normalizePaginationPayload = (pagination, fallback) => {
+  const source = pagination || {};
+  const base = fallback || {};
+  return {
+    currentPage: Number(source.currentPage ?? source.page ?? base.currentPage ?? 1),
+    totalPages: Number(source.totalPages ?? source.pages ?? base.totalPages ?? 1),
+    totalItems: Number(source.totalItems ?? source.total ?? base.totalItems ?? 0),
+    itemsPerPage: Number(source.itemsPerPage ?? source.limit ?? base.itemsPerPage ?? 10)
+  };
+};
 function adminDataReducer(state, action) {
   switch (action.type) {
     case "SET_STATS":
@@ -43,7 +53,7 @@ function adminDataReducer(state, action) {
         orders: Array.isArray(action.payload.data) ? action.payload.data : [],
         pagination: {
           ...state.pagination,
-          orders: action.payload.pagination || state.pagination.orders
+          orders: normalizePaginationPayload(action.payload.pagination, state.pagination.orders)
         }
       };
     case "ADD_ORDER":
@@ -69,7 +79,7 @@ function adminDataReducer(state, action) {
         foods: Array.isArray(action.payload.data) ? action.payload.data : [],
         pagination: {
           ...state.pagination,
-          foods: action.payload.pagination || state.pagination.foods
+          foods: normalizePaginationPayload(action.payload.pagination, state.pagination.foods)
         }
       };
     case "ADD_FOOD":
@@ -95,7 +105,7 @@ function adminDataReducer(state, action) {
         users: Array.isArray(action.payload.data) ? action.payload.data : [],
         pagination: {
           ...state.pagination,
-          users: action.payload.pagination || state.pagination.users
+          users: normalizePaginationPayload(action.payload.pagination, state.pagination.users)
         }
       };
     case "ADD_USER":

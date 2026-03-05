@@ -13,6 +13,7 @@ const paymentRoutes = require('./routes/payment.routes');
 const adminRoutes = require('./routes/admin.routes');
 const reviewRoutes = require('./routes/review.routes');
 const notificationRoutes = require('./routes/notification.routes');
+const promotionRoutes = require('./routes/promotion.routes');
 
 const app = express();
 
@@ -46,6 +47,7 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/promotions', promotionRoutes);
 
 // Error handler
 app.use(errorMiddleware);

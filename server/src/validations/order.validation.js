@@ -48,7 +48,18 @@ const cancelOrderRules = [
 const updateStatusRules = [
     ...orderIdParamRules,
     body('status')
-        .isIn(['pending', 'confirmed', 'preparing', 'out_for_delivery', 'delivered', 'cancelled', 'rejected'])
+        .isIn([
+            'pending',
+            'confirmed',
+            'preparing',
+            'out_for_delivery',
+            'delivered',
+            'complete',
+            'completed',
+            'cancelled',
+            'canceled',
+            'rejected'
+        ])
         .withMessage('status is invalid'),
     body('note')
         .optional()

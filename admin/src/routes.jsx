@@ -12,6 +12,7 @@ import UsersPage from "./pages/UsersPage";
 import ReportsPage from "./pages/ReportsPage";
 import SettingsPage from "./pages/SettingsPage";
 import MessagesPage from "./pages/MessagesPage";
+import PromotionsPage from "./pages/PromotionsPage";
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAdminAuth();
   if (loading) {
@@ -32,7 +33,9 @@ const AppRoutes = () => {
                 <Route index element={<DashboardPage />} />
                 <Route path="orders" element={<OrdersPage />} />
                 <Route path="orders/pending" element={<OrdersPage />} />
+                <Route path="orders/complete" element={<OrdersPage />} />
                 <Route path="orders/completed" element={<OrdersPage />} />
+                <Route path="orders/canceled" element={<OrdersPage />} />
                 <Route path="orders/cancelled" element={<OrdersPage />} />
                 <Route path="orders/:id" element={<OrderDetailPage />} />
                 <Route path="foods" element={<FoodsPage />} />
@@ -50,6 +53,7 @@ const AppRoutes = () => {
                 <Route path="reports/users" element={<ReportsPage />} />
                 <Route path="messages" element={<MessagesPage />} />
                 <Route path="notifications" element={<MessagesPage />} />
+                <Route path="promotions" element={<PromotionsPage />} />
                 <Route path="settings" element={<SettingsPage />} />
                 <Route path="settings/general" element={<SettingsPage />} />
                 <Route path="settings/payment" element={<SettingsPage />} />

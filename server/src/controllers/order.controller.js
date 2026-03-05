@@ -42,6 +42,29 @@ const mapOrderCommunication = (entry) => ({
     createdAt: entry.createdAt
 });
 
+const normalizeOrderStatus = (status) => {
+    if (!status || typeof status !== 'string') return status;
+    const normalized = status.trim().toLowerCase();
+    if (normalized === 'complete' || normalized === 'completed') return 'delivered';
+    if (normalized === 'canceled') return 'cancelled';
+    return normalized;
+};
+
+const buildOrderStatusFilter = (status) => {
+    const normalized = normalizeOrderStatus(status);
+    if (!normalized) return null;
+
+    if (normalized === 'delivered') {
+        return { $in: ['delivered', 'completed', 'complete'] };
+    }
+
+    if (normalized === 'cancelled') {
+        return { $in: ['cancelled', 'canceled'] };
+    }
+
+    return normalized;
+};
+
 // ==================== USER ORDER CONTROLLERS ====================
 
 /**
@@ -325,7 +348,8 @@ const cancelOrder = async (req, res, next) => {
 const updateOrderStatus = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { status, note } = req.body || {};
+        const { status: rawStatus, note } = req.body || {};
+        const status = normalizeOrderStatus(rawStatus);
         const allowedStatuses = [
             'pending',
             'confirmed',
@@ -419,7 +443,7 @@ const getAllOrders = async (req, res, next) => {
         const {
             page = 1,
             limit = 10,
-            status,
+            status: rawStatus,
             paymentStatus,
             driver,
             startDate,
@@ -428,11 +452,12 @@ const getAllOrders = async (req, res, next) => {
             sortBy = 'createdAt',
             sortOrder = 'desc'
         } = req.query;
+        const statusFilter = buildOrderStatusFilter(rawStatus);
 
         // Build filter query
         const query = {};
         
-        if (status) query.orderStatus = status;
+        if (statusFilter) query.orderStatus = statusFilter;
         if (paymentStatus) query.paymentStatus = paymentStatus;
         if (driver) query.driver = driver;
         

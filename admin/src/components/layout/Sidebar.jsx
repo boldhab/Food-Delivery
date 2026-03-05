@@ -60,7 +60,7 @@ const Sidebar = ({
       children: [
         { path: "/admin/orders/pending", icon: FiActivity, label: "Pending" },
         { path: "/admin/orders/completed", icon: FiCheckCircle, label: "Completed" },
-        { path: "/admin/orders/cancelled", icon: FiXCircle, label: "Cancelled" }
+        { path: "/admin/orders/canceled", icon: FiXCircle, label: "Cancelled" }
       ]
     },
     {

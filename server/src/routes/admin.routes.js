@@ -33,6 +33,22 @@ const {
     markNotificationRead,
     markAllNotificationsRead
 } = require('../controllers/notification.controller');
+const {
+    getAdminPromotions,
+    createPromotion,
+    updatePromotion,
+    deletePromotion
+} = require('../controllers/promotion.controller');
+const validate = require('../middleware/validate.middleware');
+const {
+    createPromotionRules,
+    updatePromotionRules,
+    deletePromotionRules
+} = require('../validations/promotion.validation');
+const {
+    getAdminSettings,
+    updateAdminSettings
+} = require('../controllers/admin.setting.controller');
 
 // All admin routes require authentication and admin role
 router.use(protect, admin);
@@ -52,6 +68,16 @@ router.post('/orders/:id/notify/message', sendOrderMessageNotification);
 router.get('/notifications', getMyNotifications);
 router.put('/notifications/:id/read', markNotificationRead);
 router.put('/notifications/read-all', markAllNotificationsRead);
+
+// ==================== PROMOTION MANAGEMENT ====================
+router.get('/promotions', getAdminPromotions);
+router.post('/promotions', createPromotionRules, validate, createPromotion);
+router.put('/promotions/:id', updatePromotionRules, validate, updatePromotion);
+router.delete('/promotions/:id', deletePromotionRules, validate, deletePromotion);
+
+// ==================== SETTINGS MANAGEMENT ====================
+router.get('/settings', getAdminSettings);
+router.put('/settings', updateAdminSettings);
 
 // ==================== USER MANAGEMENT ====================
 router.post('/users', createUser);

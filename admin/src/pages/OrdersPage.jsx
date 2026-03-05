@@ -44,8 +44,17 @@ const itemVariants = {
 };
 const ORDER_STATUS_ROUTES = {
   "/admin/orders/pending": "pending",
+  "/admin/orders/complete": "delivered",
   "/admin/orders/completed": "delivered",
+  "/admin/orders/canceled": "cancelled",
   "/admin/orders/cancelled": "cancelled"
+};
+const normalizeOrderStatus = (status) => {
+  if (!status) return "";
+  const normalized = status.toLowerCase().trim();
+  if (normalized === "complete" || normalized === "completed") return "delivered";
+  if (normalized === "canceled") return "cancelled";
+  return normalized;
 };
 const ORDER_VIEW_META = {
   "": {
@@ -102,7 +111,7 @@ const OrdersPage = () => {
     const fromPath = ORDER_STATUS_ROUTES[location.pathname];
     if (fromPath) return fromPath;
 
-    const fromQuery = new URLSearchParams(location.search).get("status");
+    const fromQuery = normalizeOrderStatus(new URLSearchParams(location.search).get("status"));
     const validStatuses = new Set(["pending", "delivered", "cancelled"]);
     return validStatuses.has(fromQuery) ? fromQuery : "";
   }, [location.pathname, location.search]);
@@ -694,7 +703,7 @@ const OrdersPage = () => {
     status: "delivered"
   }, {
     label: "Cancelled",
-    path: "/admin/orders/cancelled",
+    path: "/admin/orders/canceled",
     status: "cancelled"
   }].map((view) => <button
     key={view.path}

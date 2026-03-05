@@ -6,25 +6,31 @@ import foodService from '../services/food.service';
 import FoodList from '../components/food/FoodList';
 import Loader from '../components/ui/Loader';
 import SearchBar from '../components/home/SearchBar';
+import promotionService from '../services/promotion.service';
 
 const HomePage = () => {
     const [featuredFoods, setFeaturedFoods] = useState([]);
+    const [promotions, setPromotions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
-        const fetchFeaturedFoods = async () => {
+        const fetchPageData = async () => {
             try {
-                const response = await foodService.getFeaturedFoods();
-                setFeaturedFoods(response.data || []);
+                const [featuredResponse, promotionResponse] = await Promise.all([
+                    foodService.getFeaturedFoods(),
+                    promotionService.getActivePromotions()
+                ]);
+                setFeaturedFoods(featuredResponse.data || []);
+                setPromotions(Array.isArray(promotionResponse) ? promotionResponse : []);
             } catch (error) {
-                console.error('Failed to fetch featured foods:', error);
+                console.error('Failed to fetch homepage data:', error);
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchFeaturedFoods();
+        fetchPageData();
     }, []);
 
     // Main categories for food delivery
@@ -161,7 +167,73 @@ const HomePage = () => {
                 </div>
             </section>
 
-            
+            {promotions.length > 0 && (
+                <section className="py-10 bg-slate-50 dark:bg-slate-900 border-y border-slate-200 dark:border-slate-800">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="flex items-center justify-between mb-5">
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Today's Promotions</h2>
+                            <Link to="/menu" className="text-sm text-green-600 hover:text-green-700 font-medium">
+                                View all dishes
+                            </Link>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {promotions.slice(0, 6).map((promo) => {
+                                const ctaHref = promo.ctaLink || '/menu';
+                                const isExternalCta = /^https?:\/\//i.test(ctaHref);
+                                const discountLabel = promo.type === 'fixed'
+                                    ? `$${Number(promo.value || 0).toFixed(2)} off`
+                                    : `${Number(promo.value || 0)}% off`;
+                                return (
+                                    <article
+                                        key={promo._id}
+                                        className="rounded-2xl border border-green-200/70 dark:border-green-900/40 bg-white dark:bg-slate-800 overflow-hidden"
+                                    >
+                                        {promo.bannerImage ? (
+                                            <img
+                                                src={promo.bannerImage}
+                                                alt={promo.title || promo.code}
+                                                className="h-36 w-full object-cover"
+                                                loading="lazy"
+                                            />
+                                        ) : (
+                                            <div className="h-36 bg-gradient-to-r from-green-500 to-emerald-500" />
+                                        )}
+                                        <div className="p-4">
+                                            <p className="text-xs font-semibold tracking-wide text-green-600 mb-2">{promo.code}</p>
+                                            <h3 className="text-lg font-semibold text-slate-900 dark:text-white">{promo.title}</h3>
+                                            <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
+                                                {promo.description || `${discountLabel} on eligible orders.`}
+                                            </p>
+                                            <div className="mt-3 flex items-center justify-between">
+                                                <span className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
+                                                    {discountLabel}
+                                                </span>
+                                                {isExternalCta ? (
+                                                    <a
+                                                        href={ctaHref}
+                                                        target="_blank"
+                                                        rel="noreferrer"
+                                                        className="px-3 py-1.5 rounded-lg bg-green-500 text-white text-sm font-medium hover:bg-green-600"
+                                                    >
+                                                        {promo.ctaLabel || 'Shop now'}
+                                                    </a>
+                                                ) : (
+                                                    <Link
+                                                        to={ctaHref}
+                                                        className="px-3 py-1.5 rounded-lg bg-green-500 text-white text-sm font-medium hover:bg-green-600"
+                                                    >
+                                                        {promo.ctaLabel || 'Shop now'}
+                                                    </Link>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </article>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </section>
+            )}
 
             
            
