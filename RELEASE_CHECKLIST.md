@@ -12,10 +12,10 @@ Use this checklist to close the project with clear go/no-go criteria.
 - [ ] No blocking API 4xx/5xx errors in critical flows
 
 ## 2) Quality Gates
-- [ ] `server`: `npm test` passes
-- [ ] `admin`: `npm run lint` and `npm run build` pass
-- [ ] `client`: `npm run lint` and `npm run build` pass
-- [ ] `Driver`: `npm run lint` and `npm run build` pass
+- [x] `server`: `npm test` passes
+- [x] `admin`: `npm run lint` and `npm run build` pass
+- [x] `client`: `npm run lint` and `npm run build` pass
+- [x] `Driver`: `npm run lint` and `npm run build` pass
 
 ## 3) Lint/Code Quality Hardening (Pre-Release Recommended)
 - [ ] Review temporary relaxed ESLint rules
@@ -43,7 +43,7 @@ Use this checklist to close the project with clear go/no-go criteria.
 - [ ] Post-deploy critical smoke run completed
 
 ## 7) Documentation & Handoff
-- [ ] README includes local run steps for all apps
+- [x] README includes local run steps for all apps
 - [ ] README includes deploy/environment setup
 - [ ] Final release notes/changelog prepared
 - [ ] Known limitations/issues list documented
@@ -51,4 +51,12 @@ Use this checklist to close the project with clear go/no-go criteria.
 ## 8) Release Decision
 - [ ] All must-have items above are checked
 - [ ] Final go-live approval recorded
+
+## Verification Notes (Auto-Checked)
+- [x] Backend health endpoint reachable: `GET /api/test` returned `200` with `{"message":"Server & MongoDB connected!"}`.
+- [x] Quality gate commands executed successfully on `2026-03-05`:
+  - `server`: `npm test`
+  - `admin`: `npm run lint` and `npm run build`
+  - `client`: `npm run lint` and `npm run build`
+  - `Driver`: `npm run lint` and `npm run build`
 
