@@ -97,7 +97,7 @@ const HeroBackground = ({
         >
             {/* Background Gradient Base */}
             <div 
-                className="absolute inset-0 bg-gradient-to-br from-green-50/30 via-emerald-50/20 to-transparent 
+                className="absolute inset-0 bg-linear-to-br from-green-50/30 via-emerald-50/20 to-transparent 
                            dark:from-green-950/20 dark:via-emerald-950/10 dark:to-transparent"
             />
 
