@@ -1,6 +1,19 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+const DEFAULT_PRODUCTION_API_URL = 'https://food-delivery-9b1c.onrender.com/api';
+
+const resolveApiUrl = () => {
+    const configuredUrl = import.meta.env.VITE_API_BASE_URL?.trim();
+    if (configuredUrl) return configuredUrl;
+
+    if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
+        return DEFAULT_PRODUCTION_API_URL;
+    }
+
+    return 'http://localhost:5000/api';
+};
+
+const API_URL = resolveApiUrl();
 
 const adminApi = axios.create({
     baseURL: API_URL
