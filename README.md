@@ -70,7 +70,3 @@ To run the entire ecosystem locally, you will need to set up and start each comp
    ```
 
 > **Note**: For detailed instructions on each specific application, please refer to their individual `README.md` files located in their respective directories.
-
-## 📄 License
-
-This project is private and for internal use only.
