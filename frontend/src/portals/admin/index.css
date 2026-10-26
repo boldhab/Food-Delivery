@@ -1,0 +1,374 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Space Grotesk", "Noto Sans Ethiopic", "Nyala", "Abyssinica SIL", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --text-2xs: 0.6875rem;
+  --text-2xs--line-height: 0.875rem;
+
+  --color-primary: #059669;
+  --color-primary-50: #ecfdf5;
+  --color-primary-100: #d1fae5;
+  --color-primary-200: #a7f3d0;
+  --color-primary-300: #6ee7b7;
+  --color-primary-400: #34d399;
+  --color-primary-500: #10b981;
+  --color-primary-600: #059669;
+  --color-primary-700: #047857;
+  --color-primary-800: #065f46;
+  --color-primary-900: #064e3b;
+  --color-primary-950: #022c22;
+
+  --color-secondary: #42156a;
+  --color-secondary-50: #faf5ff;
+  --color-secondary-100: #f3e8ff;
+  --color-secondary-200: #e9d5ff;
+  --color-secondary-300: #d8b4fe;
+  --color-secondary-400: #c084fc;
+  --color-secondary-500: #a855f7;
+  --color-secondary-600: #7e22ce;
+  --color-secondary-700: #581c87;
+  --color-secondary-800: #42156a;
+  --color-secondary-900: #3b0764;
+  --color-secondary-950: #21023a;
+  --color-danger: #e94b3c;
+  --color-surface: var(--surface);
+  --color-background: var(--background);
+  --color-card: var(--card);
+  --color-popover: var(--popover);
+  --color-foreground: var(--foreground);
+  --color-on-surface: var(--on-surface);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-secondary-container: var(--secondary-container);
+  --color-border: var(--border);
+  --color-outline-variant: var(--outline-variant);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+
+  /* Slate scale tuned to Material 3 OKLCH palette for universal dark/light mode fidelity */
+  --color-slate-50: oklch(0.97 0.008 303.3);
+  --color-slate-100: oklch(0.94 0.008 303.3);
+  --color-slate-200: oklch(0.90 0.01 303.3);
+  --color-slate-300: oklch(0.82 0.01 303.3);
+  --color-slate-400: oklch(0.72 0.014 303.3);
+  --color-slate-500: oklch(0.58 0.014 303.3);
+  --color-slate-600: oklch(0.46 0.016 303.3);
+  --color-slate-700: oklch(0.33 0.02 303.3);
+  --color-slate-800: oklch(0.205 0.016 303.3);
+  --color-slate-900: oklch(0.17 0.012 303.3);
+  --color-slate-950: oklch(0.14 0.01 303.3);
+}
+
+:root {
+  /* 3. Light ("White") Mode (:root) */
+  --background: oklch(0.97 0.008 303.3);
+  --card: oklch(1 0 0);
+  --popover: oklch(1 0 0);
+  --surface: oklch(1 0 0);
+  --foreground: oklch(0.17 0.01 303.3);
+  --on-surface: oklch(0.17 0.01 303.3);
+  --muted-foreground: oklch(0.46 0.016 303.3);
+  --primary: #059669;
+  --secondary: #42156a;
+  --color-purple-100: #f3e8ff;
+  --color-purple-600: #9333ea;
+  --color-purple-900: #581c87;
+  --secondary-container: var(--color-purple-100);
+  --border: oklch(0.9 0.01 303.3);
+  --outline-variant: oklch(0.9 0.01 303.3);
+
+  /* Elevation Shadows */
+  --elevation-1: 0 1px 3px 0 hsl(270 15% 15% / 0.06), 0 1px 2px -1px hsl(270 15% 15% / 0.06);
+  --elevation-2: 0 4px 6px -1px hsl(270 15% 15% / 0.08), 0 2px 4px -2px hsl(270 15% 15% / 0.08);
+  --elevation-3: 0 10px 15px -3px hsl(270 15% 15% / 0.10), 0 4px 6px -4px hsl(270 15% 15% / 0.10);
+  --elevation-shadow: 0 4px 20px -2px hsl(270 15% 15% / 0.08);
+
+  /* Compatibility Aliases */
+  --text-primary: var(--foreground);
+  --text-secondary: var(--muted-foreground);
+  --sidebar: var(--card);
+  --sidebar-foreground: var(--muted-foreground);
+  --sidebar-accent: var(--background);
+}
+
+.dark {
+  /* 4. Dark Mode (.dark) */
+  --background: oklch(0.17 0.012 303.3);
+  --surface: oklch(0.17 0.012 303.3);
+  --card: oklch(0.205 0.016 303.3);
+  --surface-container-low: oklch(0.205 0.016 303.3);
+  --popover: oklch(0.225 0.018 303.3);
+  --surface-container: oklch(0.225 0.018 303.3);
+  --foreground: oklch(0.94 0.005 303.3);
+  --on-surface: oklch(0.94 0.005 303.3);
+  --muted-foreground: oklch(0.72 0.014 303.3);
+  --primary: #10b981;
+  --secondary: var(--color-purple-600);
+  --secondary-container: var(--color-purple-900);
+  --border: oklch(0.33 0.02 303.3);
+  --outline-variant: oklch(0.33 0.02 303.3);
+
+  /* Elevation Shadows */
+  --elevation-1: 0 1px 3px 0 hsl(0 0% 0% / 0.4), 0 1px 2px -1px hsl(0 0% 0% / 0.4);
+  --elevation-2: 0 4px 6px -1px hsl(0 0% 0% / 0.4), 0 2px 4px -2px hsl(0 0% 0% / 0.4);
+  --elevation-3: 0 10px 15px -3px hsl(0 0% 0% / 0.4), 0 4px 6px -4px hsl(0 0% 0% / 0.4);
+  --elevation-shadow: 0 4px 20px -2px hsl(0 0% 0% / 0.4);
+
+  /* Compatibility Aliases */
+  --text-primary: var(--foreground);
+  --text-secondary: var(--muted-foreground);
+  --sidebar: oklch(0.19 0.014 303.3);
+  --sidebar-foreground: var(--foreground);
+  --sidebar-accent: oklch(0.225 0.018 303.3);
+}
+
+html {
+  color-scheme: light;
+  background-color: var(--background);
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+@layer base {
+  body {
+    @apply bg-[var(--background)] text-[var(--text-primary)] font-sans antialiased;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    background-image:
+      radial-gradient(1200px 600px at 80% -10%, rgba(5, 150, 105, 0.08), transparent),
+      radial-gradient(1000px 500px at -10% 10%, rgba(66, 21, 106, 0.06), transparent);
+  }
+}
+
+.text-2xs {
+  font-size: 0.6875rem;
+  line-height: 0.875rem;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-200 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-300;
+}
+
+/* =====================================================
+   PRINT / PDF STYLES
+   Activated when user prints or saves as PDF.
+   Hides admin chrome, shows only report content cleanly.
+   ===================================================== */
+@media print {
+  /* --- Force light mode for printing --- */
+  :root,
+  html.dark,
+  .dark {
+    --background: #ffffff !important;
+    --card: #ffffff !important;
+    --foreground: #0f172a !important;
+    --muted-foreground: #64748b !important;
+    --border: #e2e8f0 !important;
+    --primary: #059669 !important;
+    color-scheme: light !important;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    background-image: none !important;
+    font-size: 11pt;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* --- Hide everything that is NOT the main report content --- */
+
+  /* Sidebar */
+  [data-sidebar],
+  aside,
+  nav,
+  .sidebar,
+  [class*="sidebar"],
+  [class*="Sidebar"] {
+    display: none !important;
+  }
+
+  /* Top header bar */
+  header,
+  [class*="header"],
+  [class*="Header"] {
+    display: none !important;
+  }
+
+  /* Footer */
+  footer,
+  [class*="footer"],
+  [class*="Footer"] {
+    display: none !important;
+  }
+
+  /* Buttons: export, refresh, filter toggle, share, schedule */
+  button:not(.print-keep),
+  [role="button"]:not(.print-keep) {
+    display: none !important;
+  }
+
+  /* Dropdowns and modals */
+  [class*="dropdown"],
+  [class*="modal"],
+  [class*="Modal"],
+  [class*="Dropdown"],
+  [data-radix-popper-content-wrapper],
+  [data-state="open"][role="dialog"] {
+    display: none !important;
+  }
+
+  /* Tab switcher (Analytics vs Operations) */
+  [class*="tab-switcher"],
+  [class*="TabSwitcher"] {
+    display: none !important;
+  }
+
+  /* Quick Actions bar and Quick Report Insights cards section only show KPIs, not buttons */
+  [class*="QuickActions"],
+  [class*="quick-actions"] {
+    display: none !important;
+  }
+
+  /* Toast notifications */
+  [class*="toast"],
+  [class*="Toast"],
+  [id*="toast"] {
+    display: none !important;
+  }
+
+  /* Live pulse strip (websocket indicator) */
+  [class*="LiveOperation"],
+  [class*="live-operation"] {
+    display: none !important;
+  }
+
+  /* --- Layout: make main content fill full width --- */
+  .flex.h-screen {
+    display: block !important;
+    height: auto !important;
+  }
+
+  /* Main scrollable area: remove overflow, fill page */
+  main,
+  [class*="main-content"],
+  [class*="mainContent"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    height: auto !important;
+  }
+
+  /* Animate wrappers: ensure full visibility, no clipping */
+  [data-framer-motion],
+  [style*="transform"],
+  [style*="opacity"] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* --- Report content: good page breaks --- */
+  .space-y-6 > *,
+  .space-y-8 > * {
+    break-inside: avoid;
+  }
+
+  /* Charts should not break across pages */
+  .recharts-wrapper,
+  [class*="recharts"] {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Tables: ensure header repeats and no mid-row breaks */
+  table {
+    break-inside: auto;
+    page-break-inside: auto;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tr {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Cards should not break mid-card */
+  .rounded-xl,
+  .rounded-2xl {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* --- Print header: show report title at top --- */
+  body::before {
+    content: "Food Hub Admin — Report Export";
+    display: block;
+    font-size: 18pt;
+    font-weight: 800;
+    color: #059669;
+    margin-bottom: 4pt;
+    font-family: "Space Grotesk", system-ui, sans-serif;
+  }
+
+  body::after {
+    content: "Generated: " attr(data-print-date);
+    display: block;
+    font-size: 8pt;
+    color: #64748b;
+    margin-bottom: 16pt;
+    font-family: "Space Grotesk", system-ui, sans-serif;
+  }
+
+  /* --- Page setup --- */
+  @page {
+    size: A4 landscape;
+    margin: 12mm 14mm 12mm 14mm;
+  }
+
+  /* --- Dark backgrounds become white for print --- */
+  [class*="bg-slate-800"],
+  [class*="bg-slate-900"],
+  [class*="bg-slate-950"],
+  [class*="dark:bg"] {
+    background-color: #ffffff !important;
+    border-color: #e2e8f0 !important;
+  }
+
+  /* Text colors: normalize dark-mode text for print */
+  [class*="dark:text-white"],
+  [class*="dark:text-slate"] {
+    color: #0f172a !important;
+  }
+
+  /* Borders: keep visible */
+  [class*="border-slate-700"],
+  [class*="border-slate-800"] {
+    border-color: #e2e8f0 !important;
+  }
+}
