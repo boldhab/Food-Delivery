@@ -15,7 +15,7 @@ Use this checklist to close the project with clear go/no-go criteria.
 - [x] `server`: `npm test` passes
 - [x] `admin`: `npm run lint` and `npm run build` pass
 - [x] `client`: `npm run lint` and `npm run build` pass
-- [x] `Driver`: `npm run lint` and `npm run build` pass
+- [x] `driver`: `npm run lint` and `npm run build` pass
 
 ## 3) Lint/Code Quality Hardening (Pre-Release Recommended)
 - [ ] Review temporary relaxed ESLint rules
@@ -58,5 +58,5 @@ Use this checklist to close the project with clear go/no-go criteria.
   - `server`: `npm test`
   - `admin`: `npm run lint` and `npm run build`
   - `client`: `npm run lint` and `npm run build`
-  - `Driver`: `npm run lint` and `npm run build`
+  - `driver`: `npm run lint` and `npm run build`
 
