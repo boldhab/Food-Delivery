@@ -1,0 +1,59 @@
+.payment-success-page {
+    min-height: 70vh;
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+}
+
+.success-card {
+    max-width: 520px;
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    padding: 2rem;
+    text-align: center;
+    background: var(--card);
+    color: var(--foreground);
+    box-shadow: var(--elevation-2);
+}
+
+.success-icon {
+    font-size: 48px;
+    color: var(--primary);
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+}
+
+.order-number {
+    font-weight: 600;
+    margin-top: 0.5rem;
+    color: var(--foreground);
+}
+
+.action-buttons {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+.action-buttons button {
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    padding: 0.6rem 1.1rem;
+    cursor: pointer;
+    background: var(--card);
+    color: var(--foreground);
+    font-size: 0.875rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.action-buttons button:hover {
+    background: var(--accent);
+    color: var(--accent-foreground);
+}

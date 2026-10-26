@@ -1,0 +1,277 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  user
+  admin
+  driver
+}
+
+model User {
+  id               String   @id @default(uuid())
+  name             String
+  email            String   @unique
+  password         String
+  role             Role     @default(user)
+  phone            String
+  street           String?
+  city             String?
+  state            String?
+  zipCode          String?
+  stripeCustomerId String?
+  isActive         Boolean  @default(true)
+  resetPasswordToken   String?
+  resetPasswordExpire  DateTime?
+  failedLoginAttempts  Int      @default(0)
+  lockoutUntil         DateTime?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  driverProfile        DriverProfile?
+  cart                 Cart?
+  customerOrders       Order[]              @relation("CustomerOrders")
+  driverOrders         Order[]              @relation("DriverOrders")
+  reviews              Review[]
+  notifications        Notification[]
+  orderStatusUpdates   OrderStatusHistory[]
+  sentCommunications   OrderCommunication[]
+
+  @@index([role])
+  @@index([isActive])
+}
+
+model DriverProfile {
+  id                  String   @id @default(uuid())
+  userId              String   @unique
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vehicleType         String   @default("")
+  plateNumber         String   @default("")
+  licenseNumber       String   @default("")
+  isAvailable         Boolean  @default(true)
+  rating              Float    @default(5.0)
+  completedDeliveries Int      @default(0)
+  activeOrderId       String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model Food {
+  id              String   @id @default(uuid())
+  name            String   @unique
+  description     String
+  price           Float
+  category        String
+  image           String   @default("/assets/default-food.svg")
+  imagePublicId   String?
+  isAvailable     Boolean  @default(true)
+  isVegetarian    Boolean  @default(false)
+  isPopular       Boolean  @default(false)
+  isFeatured      Boolean  @default(false)
+  rating          Float    @default(0)
+  numReviews      Int      @default(0)
+  preparationTime Int      @default(20)
+  ingredients     String[] @default([])
+  allergens       String[] @default([])
+  calories        Int?
+  trackStock      Boolean  @default(true)
+  stockQuantity   Int      @default(50)
+  lowStockThreshold Int    @default(10)
+  dailyQuota      Int?     @default(50)
+  createdById     String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  cartItems  CartItem[]
+  orderItems OrderItem[]
+  reviews    Review[]
+
+  @@index([category])
+  @@index([isAvailable])
+  @@index([rating])
+  @@index([stockQuantity])
+}
+
+model Cart {
+  id         String   @id @default(uuid())
+  userId     String   @unique
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subtotal   Float    @default(0)
+  totalItems Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  items CartItem[]
+}
+
+model CartItem {
+  id        String   @id @default(uuid())
+  cartId    String
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  foodId    String
+  food      Food     @relation(fields: [foodId], references: [id], onDelete: Cascade)
+  name      String
+  quantity  Int      @default(1)
+  price     Float
+  snapshot  Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([cartId])
+  @@index([foodId])
+}
+
+model Order {
+  id                   String    @id @default(uuid())
+  orderNumber          String    @unique
+  userId               String
+  user                 User      @relation("CustomerOrders", fields: [userId], references: [id], onDelete: Cascade)
+  driverId             String?
+  driver               User?     @relation("DriverOrders", fields: [driverId], references: [id], onDelete: SetNull)
+  customerName         String
+  customerEmail        String
+  customerPhone        String
+  deliveryStreet       String
+  deliveryCity         String
+  deliveryState        String
+  deliveryZipCode      String
+  deliveryInstructions String?
+  subtotal             Float
+  tax                  Float     @default(0)
+  deliveryFee          Float     @default(0)
+  totalAmount          Float
+  paymentMethod        String    @default("cash_on_delivery")
+  paymentStatus        String    @default("pending")
+  paymentId            String?
+  orderStatus          String    @default("pending")
+  driverWorkflow       Json?
+  specialInstructions  String?
+  estimatedDeliveryTime DateTime?
+  actualDeliveryTime   DateTime?
+  cancelledAt          DateTime?
+  cancellationReason   String?
+  cancelledById        String?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  items           OrderItem[]
+  statusHistory   OrderStatusHistory[]
+  communications  OrderCommunication[]
+
+  @@index([userId])
+  @@index([driverId])
+  @@index([orderStatus])
+  @@index([paymentStatus])
+  @@index([createdAt])
+}
+
+model OrderItem {
+  id         String   @id @default(uuid())
+  orderId    String
+  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  foodId     String?
+  food       Food?    @relation(fields: [foodId], references: [id], onDelete: SetNull)
+  name       String
+  quantity   Int
+  price      Float
+  totalPrice Float
+  snapshot   Json?
+
+  @@index([orderId])
+}
+
+model OrderStatusHistory {
+  id          String   @id @default(uuid())
+  orderId     String
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  status      String
+  note        String?
+  updatedById String?
+  updatedBy   User?    @relation(fields: [updatedById], references: [id], onDelete: SetNull)
+  timestamp   DateTime @default(now())
+
+  @@index([orderId])
+}
+
+model OrderCommunication {
+  id         String   @id @default(uuid())
+  orderId    String
+  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  senderId   String
+  sender     User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  senderRole String
+  message    String
+  createdAt  DateTime @default(now())
+
+  @@index([orderId])
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  foodId    String
+  food      Food     @relation(fields: [foodId], references: [id], onDelete: Cascade)
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, foodId])
+  @@index([foodId])
+}
+
+model Notification {
+  id          String   @id @default(uuid())
+  recipientId String
+  recipient   User     @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+  type        String   @default("info")
+  title       String
+  message     String
+  link        String   @default("/admin")
+  read        Boolean  @default(false)
+  metadata    Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([recipientId, read])
+  @@index([createdAt])
+}
+
+model Promotion {
+  id             String    @id @default(uuid())
+  code           String    @unique
+  title          String
+  description    String    @default("")
+  type           String    @default("percent")
+  value          Float     @default(0)
+  minOrderAmount Float     @default(0)
+  maxUses        Int?
+  usedCount      Int       @default(0)
+  startDate      DateTime?
+  endDate        DateTime?
+  isActive       Boolean   @default(true)
+  bannerImage    String    @default("")
+  ctaLabel       String    @default("Claim Offer")
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([code])
+  @@index([isActive])
+}
+
+model AdminSetting {
+  id            String   @id @default(uuid())
+  key           String   @unique @default("admin")
+  general       Json?
+  payment       Json?
+  notifications Json?
+  updatedById   String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}

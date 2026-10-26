@@ -1,0 +1,45 @@
+# Logs & Linters
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+*-lint.log
+*-eslint.json
+
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build Outputs
+dist/
+dist-ssr/
+build/
+coverage/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+!.env.example
+!*/.env.example
+
+# OS & Editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Uploads & Temporary files
+uploads/
+tmp/
+scratch/

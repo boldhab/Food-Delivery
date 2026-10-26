@@ -1,0 +1,57 @@
+/* Enterprise Data Table Styles */
+
+.data-table-container {
+  position: relative;
+  width: 100%;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+/* 2px Indeterminate Progress Bar */
+@keyframes table-indeterminate {
+  0% {
+    transform: translateX(-100%) scaleX(0.2);
+  }
+  50% {
+    transform: translateX(0%) scaleX(0.5);
+  }
+  100% {
+    transform: translateX(100%) scaleX(0.2);
+  }
+}
+
+.animate-table-indeterminate {
+  animation: table-indeterminate 1.5s infinite linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-table-indeterminate {
+    animation: none;
+    width: 100%;
+  }
+}
+
+/* Horizontal scroll styling */
+.data-table-scroll-container {
+  overflow-x: auto;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.data-table-scroll-container::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+
+.data-table-scroll-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.data-table-scroll-container::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.4);
+  border-radius: 9999px;
+}
+
+.data-table-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.6);
+}

@@ -1,0 +1,35 @@
+{
+  "name": "food-delivery-ecosystem",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Full-stack food delivery application with unified backend and frontend",
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "dev:backend": "npm run dev --workspace=backend",
+    "dev:frontend": "npm run dev --workspace=frontend",
+    "dev": "npm run dev --workspace=frontend",
+    "build": "npm run build --workspace=frontend",
+    "test": "npm run test:unit --workspace=backend",
+    "test:unit": "npm run test:unit --workspace=backend",
+    "test:backend": "npm run test:unit --workspace=backend",
+    "test:integration": "npm run test:integration --workspace=backend",
+    "test:all": "npm run test:all --workspace=backend",
+    "test:e2e": "npm run test:e2e --workspace=frontend",
+    "db:push": "npm run prisma:push --workspace=backend",
+    "db:migrate": "npm run prisma:migrate --workspace=backend",
+    "db:seed": "npm run prisma:seed --workspace=backend",
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down"
+  },
+  "allowScripts": {
+    "@parcel/watcher": true,
+    "@prisma/client": true,
+    "@prisma/engines": true,
+    "esbuild": true,
+    "prisma": true,
+    "unrs-resolver": true
+  }
+}

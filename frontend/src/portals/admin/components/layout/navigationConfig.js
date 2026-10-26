@@ -1,0 +1,232 @@
+import {
+  LayoutDashboard,
+  Activity,
+  ShoppingBag,
+  Package,
+  Users,
+  Gift,
+  BarChart3,
+  MessageSquare,
+  Settings,
+  Clock,
+  CheckCircle2,
+  XCircle,
+  Grid,
+  Truck,
+  UserCheck,
+  CreditCard,
+  Bell,
+  TrendingUp,
+  DollarSign,
+  FileText,
+} from "lucide-react";
+
+/**
+ * Reusable, maintainable configuration for Admin Dashboard Navigation
+ * Separates data structure and route mapping from rendering logic.
+ */
+export const adminNavigationSections = [
+  {
+    id: "operations",
+    title: "Operations & Live",
+    items: [
+      {
+        id: "dashboard",
+        path: "/admin",
+        exact: true,
+        icon: LayoutDashboard,
+        label: "Dashboard",
+      },
+      {
+        id: "dispatch",
+        path: "/admin/dispatch",
+        exact: true,
+        icon: Activity,
+        label: "Order Dispatch Center",
+        badgeKey: "activeDeliveries",
+        badgeType: "live",
+      },
+      {
+        id: "orders",
+        path: "/admin/orders",
+        icon: ShoppingBag,
+        label: "Orders",
+        badgeKey: "pendingOrders",
+        badgeType: "amber",
+        children: [
+          {
+            id: "orders-all",
+            path: "/admin/orders",
+            exact: true,
+            icon: Grid,
+            label: "All Orders",
+          },
+          {
+            id: "orders-completed",
+            path: "/admin/orders/completed",
+            exact: true,
+            icon: CheckCircle2,
+            label: "Completed",
+          },
+          {
+            id: "orders-canceled",
+            path: "/admin/orders/canceled",
+            exact: true,
+            icon: XCircle,
+            label: "Cancelled",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: "catalog",
+    title: "Catalog & Fleet",
+    items: [
+      {
+        id: "foods",
+        path: "/admin/foods",
+        icon: Package,
+        label: "Food Items",
+        children: [
+          {
+            id: "foods-menu",
+            path: "/admin/foods/menu",
+            exact: true,
+            icon: Grid,
+            label: "Menu Items",
+          },
+          {
+            id: "foods-categories",
+            path: "/admin/foods/categories",
+            exact: true,
+            icon: Grid,
+            label: "Categories",
+          },
+        ],
+      },
+      {
+        id: "users",
+        path: "/admin/users",
+        icon: Users,
+        label: "Users & Fleet",
+        children: [
+          {
+            id: "users-customers",
+            path: "/admin/users/customers",
+            exact: true,
+            icon: UserCheck,
+            label: "Customers",
+          },
+          {
+            id: "users-drivers",
+            path: "/admin/users/drivers",
+            exact: true,
+            icon: Truck,
+            label: "Couriers / Drivers",
+          },
+          {
+            id: "users-admins",
+            path: "/admin/users/admins",
+            exact: true,
+            icon: Users,
+            label: "System Admins",
+          },
+        ],
+      },
+      {
+        id: "promotions",
+        path: "/admin/promotions",
+        icon: Gift,
+        label: "Promotions & Deals",
+        permissions: ["manage_promotions"],
+      },
+    ],
+  },
+  {
+    id: "insights",
+    title: "Insights & System",
+    items: [
+      {
+        id: "reports",
+        path: "/admin/reports",
+        icon: BarChart3,
+        label: "Analytics",
+        children: [
+          {
+            id: "reports-sales",
+            path: "/admin/reports/sales",
+            exact: true,
+            icon: DollarSign,
+            label: "Sales & Revenue",
+          },
+          {
+            id: "reports-inventory",
+            path: "/admin/reports/inventory",
+            exact: true,
+            icon: Package,
+            label: "Inventory & Stock",
+          },
+          {
+            id: "reports-drivers",
+            path: "/admin/reports/drivers",
+            exact: true,
+            icon: Truck,
+            label: "Driver Analytics",
+          },
+          {
+            id: "reports-sla",
+            path: "/admin/reports/sla",
+            exact: true,
+            icon: Clock,
+            label: "Delivery SLA & Logistics",
+          },
+          {
+            id: "reports-financial",
+            path: "/admin/reports/financial",
+            exact: true,
+            icon: FileText,
+            label: "Financial & COD Reconciliation",
+          },
+        ],
+      },
+      {
+        id: "messages",
+        path: "/admin/messages",
+        icon: MessageSquare,
+        label: "Messages & Support",
+        badge: 8,
+        badgeType: "purple",
+      },
+      {
+        id: "settings",
+        path: "/admin/settings",
+        icon: Settings,
+        label: "Settings",
+        children: [
+          {
+            id: "settings-general",
+            path: "/admin/settings/general",
+            exact: true,
+            icon: Settings,
+            label: "General Config",
+          },
+          {
+            id: "settings-payment",
+            path: "/admin/settings/payment",
+            exact: true,
+            icon: CreditCard,
+            label: "Payment Gateways",
+          },
+          {
+            id: "settings-notifications",
+            path: "/admin/settings/notifications",
+            exact: true,
+            icon: Bell,
+            label: "Notification Rules",
+          },
+        ],
+      },
+    ],
+  },
+];
