@@ -118,8 +118,8 @@ const SalesReport = ({
                 ${avgOrderValue}
               </p>
             </div>
-            <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
-              <FiTrendingUp className="w-6 h-6 text-purple-600" />
+            <div className="w-12 h-12 bg-slate-100 dark:bg-slate-700/60 rounded-lg flex items-center justify-center">
+              <FiTrendingUp className="w-6 h-6 text-slate-700 dark:text-slate-300" />
             </div>
           </div>
           {renderTrend(kpis.avgOrderValueChange)}

@@ -178,7 +178,7 @@ const TrackOrderPage = () => {
                     </p>
                     <Link
                         to="/orders"
-                        className="inline-flex items-center gap-2 px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl font-medium transition-colors"
+                        className="inline-flex items-center gap-2 px-6 py-3 bg-[var(--primary)] hover:opacity-90 text-white rounded-xl font-medium transition-opacity"
                     >
                         <FiArrowLeft className="w-5 h-5" />
                         Back to Orders
@@ -204,7 +204,7 @@ const TrackOrderPage = () => {
                 <div className="flex items-center justify-between mb-6">
                     <button
                         onClick={() => navigate('/orders')}
-                        className="inline-flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-green-500 dark:hover:text-green-400 transition-colors"
+                        className="inline-flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-[var(--primary)] transition-colors"
                     >
                         <FiArrowLeft className="w-4 h-4" />
                         <span>Back to Orders</span>
@@ -227,7 +227,7 @@ const TrackOrderPage = () => {
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-100 dark:border-slate-800">
                         <div>
                             <div className="flex items-center gap-2.5">
-                                <span className="text-xs uppercase font-semibold tracking-wider text-green-500">
+                                <span className="text-xs uppercase font-semibold tracking-wider text-[var(--primary)]">
                                     Live Order Tracking
                                 </span>
                                 <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-2xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
@@ -241,7 +241,7 @@ const TrackOrderPage = () => {
                         </div>
                         <div className="text-left sm:text-right">
                             <span className="text-sm text-slate-500 dark:text-slate-400">Total Amount</span>
-                            <div className="text-2xl font-bold tracking-tight text-green-500 tabular-nums">
+                            <div className="text-2xl font-bold tracking-tight text-[var(--primary)] tabular-nums">
                                 ${Number(order.totalAmount || 0).toFixed(2)}
                             </div>
                         </div>
@@ -264,7 +264,7 @@ const TrackOrderPage = () => {
                                 {/* Connector Line */}
                                 <div className="absolute top-6 left-6 right-6 h-1 bg-slate-200 dark:bg-slate-800 -z-0">
                                     <div
-                                        className="h-full bg-green-500 transition-all duration-500"
+                                        className="h-full bg-[var(--primary)] transition-all duration-500"
                                         style={{ width: `${(currentStepIndex / (TRACKING_STEPS.length - 1)) * 100}%` }}
                                     />
                                 </div>
@@ -285,7 +285,7 @@ const TrackOrderPage = () => {
                                                     }}
                                                     className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-colors shadow-sm ${
                                                         isCompleted
-                                                            ? 'bg-green-500 text-white shadow-green-500/20'
+                                                            ? 'bg-[var(--primary)] text-white shadow-[var(--primary)]/20'
                                                             : 'bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-slate-400'
                                                     }`}
                                                 >
@@ -393,7 +393,7 @@ const TrackOrderPage = () => {
                                 Delivery Address
                             </h3>
                             <div className="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-400">
-                                <FiMapPin className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
+                                <FiMapPin className="w-5 h-5 text-[var(--primary)] shrink-0 mt-0.5" />
                                 <div>
                                     <p className="font-medium text-slate-900 dark:text-white">
                                         {formattedAddress}

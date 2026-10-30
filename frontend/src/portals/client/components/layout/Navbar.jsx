@@ -171,7 +171,7 @@ const Navbar = () => {
                                 alt="Food Hub Logo" 
                                 className="h-9 sm:h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
                             />
-                            <span className="text-2xl font-bold bg-gradient-to-r from-[var(--primary)] to-amber-500 
+                            <span className="text-2xl font-bold bg-gradient-to-r from-[var(--primary)] to-orange-500 
                                          bg-clip-text text-transparent">
                                 Food Hub
                             </span>
@@ -432,7 +432,7 @@ const Navbar = () => {
                             {user?.role === 'driver' && (
                                 <Link
                                     to="/driver/available"
-                                    className="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 text-xs font-bold hover:bg-emerald-500/20 transition-all"
+                                    className="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[var(--primary)]/10 text-[var(--primary)] border border-[var(--primary)]/30 text-xs font-bold hover:bg-[var(--primary)]/20 transition-all"
                                 >
                                     <span>🛵</span>
                                     <span>Driver Portal</span>
@@ -503,7 +503,7 @@ const Navbar = () => {
                                                         to="/driver/available"
                                                         className="flex items-center gap-3 px-4 py-3
                                                                  hover:bg-[var(--background)]
-                                                                 text-emerald-600 dark:text-emerald-400 font-semibold
+                                                                 text-[var(--primary)] font-semibold
                                                                  transition-colors duration-150 border-t border-[var(--border)]"
                                                         onClick={() => setIsProfileMenuOpen(false)}
                                                     >
@@ -531,17 +531,17 @@ const Navbar = () => {
                                     <Link
                                         to="/login"
                                         className="px-4 py-2 text-sm font-medium text-slate-600 
-                                                 dark:text-slate-300 hover:text-green-500
+                                                 dark:text-slate-300 hover:text-[var(--primary)]
                                                  transition-colors duration-200 cursor-pointer"
                                     >
                                         Login
                                     </Link>
                                     <Link
                                         to="/register"
-                                        className="px-4 py-2 bg-green-500 hover:bg-green-600
-                                                 text-white text-sm font-medium rounded-lg
-                                                 transition-colors duration-200
-                                                 shadow-lg shadow-green-500/25 cursor-pointer"
+                                        className="px-4 py-2 bg-[var(--primary)] hover:opacity-90
+                                                 text-white text-sm font-semibold rounded-xl
+                                                 transition-all duration-200
+                                                 shadow-md shadow-[var(--primary)]/25 cursor-pointer"
                                     >
                                         Sign up
                                     </Link>
@@ -713,7 +713,7 @@ const Navbar = () => {
                                             {user?.role === 'driver' && (
                                                 <Link
                                                     to="/driver/available"
-                                                    className="flex items-center gap-3 px-4 py-3 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold text-sm"
+                                                    className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[var(--primary)]/10 text-[var(--primary)] font-bold text-sm"
                                                     onClick={() => setIsMobileMenuOpen(false)}
                                                 >
                                                     <span className="text-lg">🛵</span>

@@ -99,8 +99,8 @@ const FoodCard = ({ food, variant = 'grid', onQuickView }) => {
                 className="group relative bg-white dark:bg-slate-800 
                          rounded-2xl overflow-hidden
                          border border-slate-200 dark:border-slate-700
-                         hover:border-green-200 dark:hover:border-green-800
-                         hover:shadow-xl hover:shadow-green-500/5
+                         hover:border-[var(--primary)]/30 dark:hover:border-[var(--primary)]/40
+                         hover:shadow-xl hover:shadow-[var(--primary)]/5
                          transition-all duration-300
                          cursor-pointer"
                 onHoverStart={() => setIsHovered(true)}
@@ -138,7 +138,7 @@ const FoodCard = ({ food, variant = 'grid', onQuickView }) => {
                     {/* Badges */}
                     <div className="absolute top-3 left-3 flex flex-col gap-2">
                         {food.isPopular && (
-                            <span className="px-2 py-1 bg-green-500 text-white text-xs font-bold
+                            <span className="px-2 py-1 bg-[var(--primary)] text-white text-xs font-bold
                                            rounded-full shadow-lg flex items-center gap-1">
                                 🔥 Popular
                             </span>
@@ -193,7 +193,7 @@ const FoodCard = ({ food, variant = 'grid', onQuickView }) => {
                                 className="absolute bottom-3 left-1/2 -translate-x-1/2
                                          px-4 py-2 bg-white text-slate-700
                                          rounded-full shadow-lg
-                                         hover:bg-green-500 hover:text-white
+                                         hover:bg-[var(--primary)] hover:text-white
                                          transition-colors duration-200
                                          flex items-center gap-2 text-sm font-medium
                                          z-10"
@@ -259,7 +259,7 @@ const FoodCard = ({ food, variant = 'grid', onQuickView }) => {
                     {/* Price and Add to cart row */}
                     <div className="flex items-center justify-between mt-2">
                         <div className="flex items-baseline gap-2">
-                            <span className="text-xl font-bold tracking-tight text-green-500 tabular-nums">
+                            <span className="text-xl font-bold tracking-tight text-[var(--primary)] tabular-nums">
                                 {displayPrice.toFixed(2)} ETB
                             </span>
                             {discountedPrice && (
@@ -272,15 +272,15 @@ const FoodCard = ({ food, variant = 'grid', onQuickView }) => {
                         <motion.button
                             onClick={handleAdd}
                             disabled={isAdding}
-                            className="relative px-4 py-2 bg-green-500 hover:bg-green-600
-                                     disabled:bg-green-300 disabled:cursor-not-allowed
+                            className="relative px-4 py-2 bg-[var(--primary)] hover:opacity-90
+                                     disabled:opacity-50 disabled:cursor-not-allowed
                                      text-white rounded-xl
-                                     transition-colors duration-200
+                                     transition-all duration-200
                                      flex items-center gap-2 text-sm font-medium
-                                     shadow-lg shadow-green-500/25
-                                     hover:shadow-green-500/35
+                                     shadow-lg shadow-[var(--primary)]/25
+                                     hover:shadow-[var(--primary)]/35
                                      overflow-hidden
-                                     group/add"
+                                     group/add cursor-pointer"
                             whileTap={{ scale: 0.95 }}
                         >
                             <AnimatePresence mode="wait">
@@ -321,14 +321,14 @@ const FoodCard = ({ food, variant = 'grid', onQuickView }) => {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            className="absolute inset-0 bg-green-500/10 pointer-events-none
+                            className="absolute inset-0 bg-[var(--primary)]/10 pointer-events-none
                                      flex items-center justify-center"
                         >
                             <motion.div
                                 initial={{ scale: 0 }}
                                 animate={{ scale: 1 }}
                                 exit={{ scale: 0 }}
-                                className="w-16 h-16 bg-green-500 rounded-full
+                                className="w-16 h-16 bg-[var(--primary)] rounded-full
                                          flex items-center justify-center text-white text-2xl"
                             >
                                 <FiCheck />
@@ -347,7 +347,7 @@ const FoodCard = ({ food, variant = 'grid', onQuickView }) => {
                 className="group relative bg-white dark:bg-slate-800 
                          rounded-2xl overflow-hidden
                          border border-slate-200 dark:border-slate-700
-                         hover:border-green-200 dark:hover:border-green-800
+                         hover:border-[var(--primary)]/30 dark:hover:border-[var(--primary)]/40
                          hover:shadow-xl transition-all duration-300
                          flex flex-col sm:flex-row
                          cursor-pointer"
@@ -369,7 +369,7 @@ const FoodCard = ({ food, variant = 'grid', onQuickView }) => {
                     {/* Badges */}
                     <div className="absolute top-2 left-2 flex gap-1">
                         {food.isPopular && (
-                            <span className="px-2 py-0.5 bg-green-500 text-white text-xs font-bold rounded-full">
+                            <span className="px-2 py-0.5 bg-[var(--primary)] text-white text-xs font-bold rounded-full">
                                 🔥
                             </span>
                         )}
@@ -423,7 +423,7 @@ const FoodCard = ({ food, variant = 'grid', onQuickView }) => {
                     {/* Price and action */}
                     <div className="flex items-center justify-between mt-4">
                         <div className="flex items-baseline gap-2">
-                            <span className="text-2xl font-bold tracking-tight text-green-500 tabular-nums">
+                            <span className="text-2xl font-bold tracking-tight text-[var(--primary)] tabular-nums">
                                 {displayPrice.toFixed(2)} ETB
                             </span>
                             {discountedPrice && (
@@ -436,11 +436,11 @@ const FoodCard = ({ food, variant = 'grid', onQuickView }) => {
                         <button
                             onClick={handleAdd}
                             disabled={isAdding}
-                            className="px-6 py-2 bg-green-500 hover:bg-green-600
-                                     disabled:bg-green-300
+                            className="px-6 py-2 bg-[var(--primary)] hover:opacity-90
+                                     disabled:opacity-50
                                      text-white rounded-xl
-                                     transition-colors duration-200
-                                     flex items-center gap-2 font-medium"
+                                     transition-all duration-200
+                                     flex items-center gap-2 font-medium cursor-pointer shadow-md shadow-[var(--primary)]/20"
                         >
                             {isAdding ? (
                                 <>Adding...</>
@@ -484,9 +484,9 @@ const FoodCard = ({ food, variant = 'grid', onQuickView }) => {
             </div>
             <button
                 onClick={handleAdd}
-                className="p-2 bg-green-500 hover:bg-green-600
+                className="p-2 bg-[var(--primary)] hover:opacity-90
                          text-white rounded-lg
-                         transition-colors duration-200"
+                         transition-all duration-200 cursor-pointer shadow-sm shadow-[var(--primary)]/20"
             >
                 <FiPlus className="w-4 h-4" />
             </button>

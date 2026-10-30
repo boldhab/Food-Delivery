@@ -116,7 +116,7 @@ const DetailsTab = ({
               className="w-4 h-4 text-primary-600 rounded accent-orange-500"
             />
             <span className="flex items-center gap-1 text-sm font-medium text-slate-700 dark:text-slate-300">
-              <FiStar className="w-4 h-4 text-purple-500" />
+              <FiStar className="w-4 h-4 text-amber-500" />
               Featured On Home
             </span>
           </label>

@@ -66,12 +66,12 @@ const AboutPage = () => {
     return (
         <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] py-8 px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 space-y-16">
             {/* Hero Section */}
-            <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-950 text-white p-8 sm:p-12 lg:p-16 shadow-2xl">
-                <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
+            <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-800 to-rose-950 text-white p-8 sm:p-12 lg:p-16 shadow-2xl">
+                <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 rounded-full bg-[var(--primary)]/15 blur-3xl pointer-events-none" />
                 <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 rounded-full bg-amber-500/10 blur-3xl pointer-events-none" />
                 
                 <div className="relative max-w-3xl space-y-6">
-                    <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                    <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-[var(--primary)]/20 text-rose-400 border border-[var(--primary)]/30">
                         ✨ Our Mission & Story
                     </span>
                     <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight">
@@ -83,7 +83,7 @@ const AboutPage = () => {
                     <div className="flex flex-wrap items-center gap-4 pt-2">
                         <Link
                             to="/menu"
-                            className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold text-sm shadow-lg shadow-emerald-500/25 transition-all flex items-center gap-2 active:scale-95"
+                            className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-[var(--primary)] to-orange-500 hover:opacity-95 text-white font-bold text-sm shadow-lg shadow-[var(--primary)]/25 transition-all flex items-center gap-2 active:scale-95"
                         >
                             <span>Explore Our Menu</span>
                             <FiArrowRight className="w-4 h-4" />
@@ -92,7 +92,7 @@ const AboutPage = () => {
                             to="/driver/apply"
                             className="px-6 py-3.5 rounded-2xl bg-white/10 hover:bg-white/15 text-white font-bold text-sm border border-white/20 backdrop-blur-sm transition-all flex items-center gap-2 active:scale-95"
                         >
-                            <FiTruck className="w-4 h-4 text-emerald-400" />
+                            <FiTruck className="w-4 h-4 text-orange-400" />
                             <span>Become a Delivery Partner</span>
                         </Link>
                     </div>
@@ -189,9 +189,9 @@ const AboutPage = () => {
 
             {/* Partner & Courier Call to Action */}
             <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="p-8 rounded-3xl bg-gradient-to-br from-emerald-500/10 to-teal-500/5 border border-emerald-500/20 flex flex-col justify-between space-y-6">
+                <div className="p-8 rounded-3xl bg-gradient-to-br from-[var(--primary)]/10 to-orange-500/5 border border-[var(--primary)]/20 flex flex-col justify-between space-y-6">
                     <div className="space-y-3">
-                        <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+                        <span className="text-xs font-bold uppercase tracking-wider text-[var(--primary)] flex items-center gap-1.5">
                             <FiTruck className="w-4 h-4" /> Drive & Earn
                         </span>
                         <h3 className="text-xl sm:text-2xl font-bold text-[var(--foreground)]">
@@ -204,7 +204,7 @@ const AboutPage = () => {
                     <div>
                         <Link
                             to="/driver/apply"
-                            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-600/20 transition-all"
+                            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm bg-[var(--primary)] hover:opacity-90 text-white shadow-md shadow-[var(--primary)]/20 transition-all"
                         >
                             <span>Apply in 5 Minutes</span>
                             <FiArrowRight className="w-4 h-4" />

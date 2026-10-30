@@ -23,8 +23,8 @@ const OrderHistoryTab = ({ onNavigateOrders }) => {
                 <p>View your full order history in the Orders section</p>
                 <button
                     onClick={onNavigateOrders}
-                    className="mt-4 px-6 py-2 bg-green-500 text-white rounded-lg
-                             hover:bg-green-600 transition-colors"
+                    className="mt-4 px-6 py-2 bg-[var(--primary)] text-white rounded-lg
+                             hover:opacity-90 transition-colors"
                 >
                     Go to Orders
                 </button>

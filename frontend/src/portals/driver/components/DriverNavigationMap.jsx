@@ -35,8 +35,8 @@ const createDriverIcon = (heading = 0) => {
     className: 'driver-nav-marker',
     html: `
       <div style="position: relative; display: flex; align-items: center; justify-content: center; width: 44px; height: 44px;">
-        <span style="position: absolute; width: 44px; height: 44px; border-radius: 50%; background: rgba(16, 185, 129, 0.3); animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;"></span>
-        <div style="position: relative; width: 36px; height: 36px; border-radius: 50%; background: #10b981; border: 2.5px solid #ffffff; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.6); display: flex; align-items: center; justify-content: center; transform: rotate(${heading}deg);">
+        <span style="position: absolute; width: 44px; height: 44px; border-radius: 50%; background: rgba(225, 29, 72, 0.3); animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;"></span>
+        <div style="position: relative; width: 36px; height: 36px; border-radius: 50%; background: #e11d48; border: 2.5px solid #ffffff; box-shadow: 0 4px 14px rgba(225, 29, 72, 0.6); display: flex; align-items: center; justify-content: center; transform: rotate(${heading}deg);">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
             <polygon points="12 2 19 21 12 17 5 21 12 2"></polygon>
           </svg>
@@ -204,7 +204,7 @@ const DriverNavigationMap = ({
     // Route Polyline
     const polylineCoords = [initialDriverPos, targetWaypoint];
     const polyline = L.polyline(polylineCoords, {
-      color: '#10b981',
+      color: '#e11d48',
       weight: 4.5,
       opacity: 0.85,
       dashArray: '8, 8',

@@ -76,7 +76,7 @@ const CartPage = () => {
                     <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">
                         Your Cart 
                         {cart.items?.length > 0 && (
-                            <span className="ml-3 text-lg font-medium text-green-500 dark:text-emerald-400">
+                            <span className="ml-3 text-lg font-medium text-[var(--primary)]">
                                 ({cart.totalItems} {cart.totalItems === 1 ? 'item' : 'items'})
                             </span>
                         )}
@@ -129,11 +129,11 @@ const CartPage = () => {
                         </p>
                         <button 
                             onClick={() => navigate('/menu')}
-                            className="inline-flex items-center px-6 py-3 bg-green-500 hover:bg-green-600 
+                            className="inline-flex items-center px-6 py-3 bg-[var(--primary)] hover:opacity-90 
                                      text-white font-medium rounded-xl
                                      transition-all duration-200 ease-in-out
-                                     focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2
-                                     shadow-lg shadow-green-500/25 hover:shadow-green-500/35"
+                                     focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:ring-offset-2
+                                     shadow-lg shadow-[var(--primary)]/25 hover:shadow-[var(--primary)]/35"
                         >
                             Browse Restaurants
                             <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -179,7 +179,7 @@ const CartPage = () => {
                                 <button 
                                     onClick={() => navigate('/menu')}
                                     className="group inline-flex items-center text-sm font-medium text-slate-600 dark:text-slate-400 
-                                             hover:text-green-500 dark:hover:text-green-400
+                                             hover:text-[var(--primary)]
                                              transition-colors duration-150"
                                 >
                                     <svg className="mr-2 w-4 h-4 transform group-hover:-translate-x-1 transition-transform duration-150" 
@@ -206,11 +206,11 @@ const CartPage = () => {
                                     <button 
                                         type="button"
                                         onClick={() => navigate('/checkout')}
-                                        className="w-full px-6 py-4 bg-green-500 hover:bg-green-600 
+                                        className="w-full px-6 py-4 bg-[var(--primary)] hover:opacity-90 
                                                  text-white font-semibold rounded-xl
                                                  transition-all duration-200 ease-in-out
-                                                 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2
-                                                 shadow-lg shadow-green-500/25 hover:shadow-green-500/35
+                                                 focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:ring-offset-2
+                                                 shadow-lg shadow-[var(--primary)]/25 hover:shadow-[var(--primary)]/35
                                                  disabled:opacity-50 disabled:cursor-not-allowed
                                                  text-lg cursor-pointer"
                                         disabled={Object.values(busyItems).some(Boolean) || isClearing}

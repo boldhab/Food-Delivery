@@ -29,7 +29,7 @@ const AssignDriverModal = ({
             className="w-full max-w-md bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-xl border border-slate-200 dark:border-slate-700"
           >
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center text-purple-600">
+              <div className="w-10 h-10 bg-[var(--primary)]/10 rounded-xl flex items-center justify-center text-[var(--primary)]">
                 <FiTruck className="w-5 h-5" />
               </div>
               <div>

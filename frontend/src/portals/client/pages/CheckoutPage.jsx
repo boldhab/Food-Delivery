@@ -239,7 +239,7 @@ const CheckoutPage = () => {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
                     <Link
                         to="/cart"
-                        className="inline-flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-green-500 dark:hover:text-green-400 transition-colors"
+                        className="inline-flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-[var(--primary)] transition-colors"
                     >
                         <FiArrowLeft className="w-4 h-4" />
                         <span>Back to Cart</span>
@@ -248,13 +248,13 @@ const CheckoutPage = () => {
                     {/* Progress Pills */}
                     <div className="flex items-center gap-2 text-xs font-semibold">
                         <span className={`px-3 py-1 rounded-full ${
-                            step === 'details' ? 'bg-green-500 text-white' : 'bg-green-100 text-green-700 dark:bg-green-950/40 dark:text-green-300'
+                            step === 'details' ? 'bg-[var(--primary)] text-white' : 'bg-[var(--primary)]/10 text-[var(--primary)]'
                         }`}>
                             1. Details & Address
                         </span>
                         <span className="text-slate-400">→</span>
                         <span className={`px-3 py-1 rounded-full ${
-                            step === 'payment' ? 'bg-green-500 text-white' : 'bg-slate-200 dark:bg-slate-800 text-slate-500'
+                            step === 'payment' ? 'bg-[var(--primary)] text-white' : 'bg-slate-200 dark:bg-slate-800 text-slate-500'
                         }`}>
                             2. Payment
                         </span>
@@ -278,7 +278,7 @@ const CheckoutPage = () => {
                                     <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-sm">
                                         <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-xl bg-green-50 dark:bg-green-950/40 text-green-500 flex items-center justify-center">
+                                                <div className="w-10 h-10 rounded-xl bg-[var(--primary)]/10 text-[var(--primary)] flex items-center justify-center">
                                                     <FiMapPin className="w-5 h-5" />
                                                 </div>
                                                 <div>
@@ -311,7 +311,7 @@ const CheckoutPage = () => {
                                                         value={form.street}
                                                         onChange={(e) => setForm({ ...form, street: e.target.value })}
                                                         required
-                                                        className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-sm focus:outline-none focus:border-green-500"
+                                                        className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-sm focus:outline-none focus:border-[var(--primary)]"
                                                     />
                                                 </div>
                                             </div>
@@ -327,7 +327,7 @@ const CheckoutPage = () => {
                                                         value={form.city}
                                                         onChange={(e) => setForm({ ...form, city: e.target.value })}
                                                         required
-                                                        className="w-full px-3.5 py-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-sm focus:outline-none focus:border-green-500"
+                                                        className="w-full px-3.5 py-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-sm focus:outline-none focus:border-[var(--primary)]"
                                                     />
                                                 </div>
                                                 <div>
@@ -340,7 +340,7 @@ const CheckoutPage = () => {
                                                         value={form.state}
                                                         onChange={(e) => setForm({ ...form, state: e.target.value })}
                                                         required
-                                                        className="w-full px-3.5 py-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-sm focus:outline-none focus:border-green-500"
+                                                        className="w-full px-3.5 py-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-sm focus:outline-none focus:border-[var(--primary)]"
                                                     />
                                                 </div>
                                                 <div>
@@ -353,7 +353,7 @@ const CheckoutPage = () => {
                                                         value={form.zipCode}
                                                         onChange={(e) => setForm({ ...form, zipCode: e.target.value })}
                                                         required
-                                                        className="w-full px-3.5 py-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-sm focus:outline-none focus:border-green-500"
+                                                        className="w-full px-3.5 py-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-sm focus:outline-none focus:border-[var(--primary)]"
                                                     />
                                                 </div>
                                             </div>
@@ -369,7 +369,7 @@ const CheckoutPage = () => {
                                                         placeholder="Drop at front door, ring doorbell, gate code #1234..."
                                                         value={form.instructions}
                                                         onChange={(e) => setForm({ ...form, instructions: e.target.value })}
-                                                        className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-sm focus:outline-none focus:border-green-500"
+                                                        className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-sm focus:outline-none focus:border-[var(--primary)]"
                                                     />
                                                 </div>
                                             </div>
@@ -379,7 +379,7 @@ const CheckoutPage = () => {
                                                     type="checkbox"
                                                     checked={form.saveAddress}
                                                     onChange={(e) => setForm({ ...form, saveAddress: e.target.checked })}
-                                                    className="w-4 h-4 rounded text-green-500 focus:ring-green-400"
+                                                    className="w-4 h-4 rounded text-[var(--primary)] focus:ring-[var(--primary)]/30"
                                                 />
                                                 <span className="text-xs text-slate-600 dark:text-slate-400">
                                                     Save this address to my profile for future orders
@@ -413,8 +413,8 @@ const CheckoutPage = () => {
                                                     }}
                                                     className={`py-2.5 rounded-xl text-sm font-semibold transition-all ${
                                                         !isCustomTip && selectedTip === tip
-                                                            ? 'bg-green-500 text-white shadow-md shadow-green-500/20'
-                                                            : 'bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-green-400'
+                                                            ? 'bg-[var(--primary)] text-white shadow-md shadow-[var(--primary)]/20'
+                                                            : 'bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-[var(--primary)]/60'
                                                     }`}
                                                 >
                                                     {tip === 0 ? 'None' : `${tip} ETB`}
@@ -425,8 +425,8 @@ const CheckoutPage = () => {
                                                 onClick={() => setIsCustomTip(true)}
                                                 className={`py-2.5 rounded-xl text-sm font-semibold transition-all ${
                                                     isCustomTip
-                                                        ? 'bg-green-500 text-white shadow-md shadow-green-500/20'
-                                                        : 'bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-green-400'
+                                                        ? 'bg-[var(--primary)] text-white shadow-md shadow-[var(--primary)]/20'
+                                                        : 'bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-[var(--primary)]/60'
                                                 }`}
                                             >
                                                 Custom
@@ -443,7 +443,7 @@ const CheckoutPage = () => {
                                                     placeholder="Enter custom tip amount in ETB"
                                                     value={customTip}
                                                     onChange={(e) => setCustomTip(e.target.value)}
-                                                    className="w-full pl-12 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:border-green-500"
+                                                    className="w-full pl-12 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:border-[var(--primary)]"
                                                 />
                                             </div>
                                         )}
@@ -461,7 +461,7 @@ const CheckoutPage = () => {
                                                 onClick={() => setForm({ ...form, paymentMethod: 'cash_on_delivery' })}
                                                 className={`p-4 rounded-2xl border-2 cursor-pointer transition-all ${
                                                     form.paymentMethod === 'cash_on_delivery'
-                                                        ? 'border-green-500 bg-green-50/50 dark:bg-green-950/20'
+                                                        ? 'border-[var(--primary)] bg-[var(--primary)]/5'
                                                         : 'border-slate-200 dark:border-slate-800 hover:border-slate-300'
                                                 }`}
                                             >
@@ -471,7 +471,7 @@ const CheckoutPage = () => {
                                                     </div>
                                                     <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${
                                                         form.paymentMethod === 'cash_on_delivery'
-                                                            ? 'border-green-500 bg-green-500 text-white'
+                                                            ? 'border-[var(--primary)] bg-[var(--primary)] text-white'
                                                             : 'border-slate-300 dark:border-slate-600'
                                                     }`}>
                                                         {form.paymentMethod === 'cash_on_delivery' && <FiCheckCircle className="w-3.5 h-3.5" />}
@@ -490,7 +490,7 @@ const CheckoutPage = () => {
                                                 onClick={() => setForm({ ...form, paymentMethod: 'card' })}
                                                 className={`p-4 rounded-2xl border-2 cursor-pointer transition-all ${
                                                     form.paymentMethod === 'card'
-                                                        ? 'border-green-500 bg-green-50/50 dark:bg-green-950/20'
+                                                        ? 'border-[var(--primary)] bg-[var(--primary)]/5'
                                                         : 'border-slate-200 dark:border-slate-800 hover:border-slate-300'
                                                 }`}
                                             >
@@ -500,7 +500,7 @@ const CheckoutPage = () => {
                                                     </div>
                                                     <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${
                                                         form.paymentMethod === 'card'
-                                                            ? 'border-green-500 bg-green-500 text-white'
+                                                            ? 'border-[var(--primary)] bg-[var(--primary)] text-white'
                                                             : 'border-slate-300 dark:border-slate-600'
                                                     }`}>
                                                         {form.paymentMethod === 'card' && <FiCheckCircle className="w-3.5 h-3.5" />}
@@ -520,7 +520,7 @@ const CheckoutPage = () => {
                                     <button
                                         type="submit"
                                         disabled={submitting}
-                                        className="w-full py-4 px-6 bg-green-500 hover:bg-green-600 active:scale-[0.99] text-white font-bold rounded-2xl shadow-xl shadow-green-500/25 flex items-center justify-center gap-2 transition-all disabled:opacity-50 text-base"
+                                        className="w-full py-4 px-6 bg-[var(--primary)] hover:opacity-90 active:scale-[0.99] text-white font-bold rounded-2xl shadow-xl shadow-[var(--primary)]/25 flex items-center justify-center gap-2 transition-all disabled:opacity-50 text-base"
                                     >
                                         <FiLock className="w-5 h-5" />
                                         <span>
@@ -544,7 +544,7 @@ const CheckoutPage = () => {
                                     <button
                                         type="button"
                                         onClick={() => setStep('details')}
-                                        className="inline-flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 hover:text-green-500 transition-colors"
+                                        className="inline-flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 hover:text-[var(--primary)] transition-colors"
                                     >
                                         <FiArrowLeft className="w-4 h-4" />
                                         <span>Change delivery details</span>
@@ -592,7 +592,7 @@ const CheckoutPage = () => {
                         <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-sm">
                             <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
                                 <div className="flex items-center gap-2.5">
-                                    <FiShoppingBag className="w-5 h-5 text-green-500" />
+                                    <FiShoppingBag className="w-5 h-5 text-[var(--primary)]" />
                                     <h3 className="font-bold text-slate-900 dark:text-white text-lg">
                                         Order Summary
                                     </h3>
@@ -655,7 +655,7 @@ const CheckoutPage = () => {
                                             placeholder="e.g. WELCOME20"
                                             value={promoInput}
                                             onChange={(e) => setPromoInput(e.target.value)}
-                                            className="flex-1 px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl text-xs uppercase font-medium focus:outline-none focus:border-green-500"
+                                            className="flex-1 px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl text-xs uppercase font-medium focus:outline-none focus:border-[var(--primary)]"
                                         />
                                         <button
                                             type="submit"
@@ -695,7 +695,7 @@ const CheckoutPage = () => {
                                     <span>Delivery Fee</span>
                                     <span className="font-medium text-slate-900 dark:text-white">
                                         {totals.delivery === 0 ? (
-                                            <span className="text-green-500 font-bold uppercase text-xs">Free</span>
+                                            <span className="text-emerald-500 font-bold uppercase text-xs">Free</span>
                                         ) : (
                                             `${totals.delivery.toFixed(2)} ETB`
                                         )}
@@ -715,7 +715,7 @@ const CheckoutPage = () => {
                                     <span className="text-base font-bold text-slate-900 dark:text-white">
                                         Total
                                     </span>
-                                    <span className="text-2xl font-black text-green-500">
+                                    <span className="text-2xl font-black text-[var(--primary)]">
                                         {totals.total.toFixed(2)} ETB
                                     </span>
                                 </div>

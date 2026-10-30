@@ -62,7 +62,7 @@ const LoginPage = () => {
       ]}
       footer={
         <div className="flex items-center justify-between text-2xs text-[var(--muted-foreground)]">
-          <span className="flex items-center gap-1.5 font-mono text-teal-600 dark:text-teal-400">
+          <span className="flex items-center gap-1.5 font-mono text-[var(--primary)]">
             <FiTruck className="w-3.5 h-3.5" />
             <span>Authorized Food Courier Access Only</span>
           </span>
@@ -95,7 +95,7 @@ const LoginPage = () => {
                     state: { email: underReviewInfo.email, tab: "track" }
                   })
                 }
-                className="px-3 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-500 text-white text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5"
+                className="px-3 py-1.5 rounded-lg bg-[var(--primary)] hover:opacity-90 text-white text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5"
               >
                 <span>Track Application Status</span>
                 <FiArrowRight className="w-3.5 h-3.5" />
@@ -151,10 +151,10 @@ const LoginPage = () => {
           disabled={loading}
           className="
             w-full h-11 px-4 mt-2 rounded-xl
-            bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700
+            bg-gradient-to-r from-[var(--primary)] to-orange-500 hover:opacity-95
             text-white text-sm font-semibold tracking-wide
-            shadow-md shadow-teal-600/25 active:scale-[0.99]
-            focus:outline-none focus:ring-4 focus:ring-teal-500/25
+            shadow-md shadow-[var(--primary)]/25 active:scale-[0.99]
+            focus:outline-none focus:ring-4 focus:ring-[var(--primary)]/25
             transition-all duration-200
             disabled:opacity-60 disabled:cursor-not-allowed
             flex items-center justify-center gap-2 group cursor-pointer
@@ -181,7 +181,7 @@ const LoginPage = () => {
               setEmail("driver@foodiehub.com");
               setPassword("Driver@123456");
             }}
-            className="text-2xs font-mono text-[var(--muted-foreground)] hover:text-teal-600 dark:hover:text-teal-400 transition-colors cursor-pointer"
+            className="text-2xs font-mono text-[var(--muted-foreground)] hover:text-[var(--primary)] transition-colors cursor-pointer"
           >
             Autofill Default Driver Credentials
           </button>
@@ -192,7 +192,7 @@ const LoginPage = () => {
           <span>Want to drive with us? </span>
           <Link
             to="/driver/apply"
-            className="font-bold text-teal-600 dark:text-teal-400 hover:underline inline-flex items-center gap-1"
+            className="font-bold text-[var(--primary)] hover:underline inline-flex items-center gap-1"
           >
             Apply to become a Courier Partner
             <FiArrowRight className="w-3.5 h-3.5 inline" />

@@ -217,7 +217,7 @@ const CartDrawer = () => {
                             <div className="flex-1 overflow-y-auto p-5 space-y-4">
                                 {items.length === 0 ? (
                                     <div className="h-full flex flex-col items-center justify-center text-center py-12 px-4">
-                                        <div className="w-20 h-20 rounded-full bg-green-50 dark:bg-green-950/30 flex items-center justify-center text-3xl mb-4">
+                                        <div className="w-20 h-20 rounded-full bg-[var(--primary)]/10 text-[var(--primary)] flex items-center justify-center text-3xl mb-4">
                                             🛒
                                         </div>
                                         <h3 className="font-bold text-slate-900 dark:text-white text-lg mb-1">
@@ -228,7 +228,7 @@ const CartDrawer = () => {
                                         </p>
                                         <button
                                             onClick={handleBrowseMenu}
-                                            className="px-6 py-2.5 bg-green-500 hover:bg-green-600 text-white rounded-xl text-sm font-semibold shadow-md shadow-green-500/20 transition-all"
+                                            className="px-6 py-2.5 bg-[var(--primary)] hover:opacity-90 text-white rounded-xl text-sm font-semibold shadow-md shadow-[var(--primary)]/20 transition-all"
                                         >
                                             Browse Menu
                                         </button>
@@ -271,7 +271,7 @@ const CartDrawer = () => {
                                                     </div>
 
                                                     <div className="flex items-center justify-between mt-2">
-                                                        <span className="font-extrabold text-green-500 text-sm tabular-nums tracking-tight">
+                                                        <span className="font-extrabold text-[var(--primary)] text-sm tabular-nums tracking-tight">
                                                             {(itemPrice * item.quantity).toFixed(2)} ETB
                                                         </span>
 

@@ -133,8 +133,8 @@ const FoodFilter = ({
                                      rounded-xl
                                      text-slate-900 dark:text-white
                                      placeholder:text-slate-400 dark:placeholder:text-slate-500
-                                     focus:outline-none focus:border-green-500
-                                     focus:ring-2 focus:ring-green-500/20
+                                     focus:outline-none focus:border-[var(--primary)]
+                                     focus:ring-2 focus:ring-[var(--primary)]/20
                                      transition-all duration-200
                                      shadow-sm"
                         />
@@ -211,7 +211,7 @@ const FoodFilter = ({
                                  border border-slate-200 dark:border-slate-700
                                  rounded-xl text-slate-700 dark:text-slate-300
                                  flex items-center justify-center gap-2
-                                 hover:border-green-500 transition-colors
+                                 hover:border-[var(--primary)] transition-colors
                                  relative"
                     >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -221,7 +221,7 @@ const FoodFilter = ({
                         Filters
                         {activeFilterCount > 0 && (
                             <span className="absolute -top-2 -right-2 w-5 h-5 
-                                           bg-green-500 text-white text-xs
+                                           bg-[var(--primary)] text-white text-xs font-bold
                                            rounded-full flex items-center justify-center">
                                 {activeFilterCount}
                             </span>
@@ -239,8 +239,8 @@ const FoodFilter = ({
                             className="h-12 px-4 pr-10 bg-white dark:bg-slate-800
                                      border border-slate-200 dark:border-slate-700
                                      rounded-xl text-slate-700 dark:text-slate-300
-                                     focus:outline-none focus:border-green-500
-                                     focus:ring-2 focus:ring-green-500/20
+                                     focus:outline-none focus:border-[var(--primary)]
+                                     focus:ring-2 focus:ring-[var(--primary)]/20
                                      transition-all duration-200
                                      cursor-pointer min-w-[160px]
                                      appearance-none"
@@ -266,13 +266,13 @@ const FoodFilter = ({
                             className="h-12 px-4 bg-white dark:bg-slate-800
                                      border border-slate-200 dark:border-slate-700
                                      rounded-xl text-slate-700 dark:text-slate-300
-                                     hover:border-green-500 transition-colors
+                                     hover:border-[var(--primary)] transition-colors
                                      flex items-center gap-2
                                      relative"
                         >
                             <span>Price</span>
                             {(priceRange.min > minPrice || priceRange.max < maxPrice) && (
-                                <span className="w-2 h-2 bg-green-500 rounded-full" />
+                                <span className="w-2 h-2 bg-[var(--primary)] rounded-full" />
                             )}
                             <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -311,8 +311,8 @@ const FoodFilter = ({
                                                 className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900
                                                          border border-slate-200 dark:border-slate-700
                                                          rounded-lg text-slate-900 dark:text-white
-                                                         focus:outline-none focus:border-green-500
-                                                         focus:ring-2 focus:ring-green-500/20"
+                                                         focus:outline-none focus:border-[var(--primary)]
+                                                         focus:ring-2 focus:ring-[var(--primary)]/20"
                                             />
                                         </div>
                                         <span className="text-slate-400 mt-6">—</span>
@@ -329,8 +329,8 @@ const FoodFilter = ({
                                                 className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900
                                                          border border-slate-200 dark:border-slate-700
                                                          rounded-lg text-slate-900 dark:text-white
-                                                         focus:outline-none focus:border-green-500
-                                                         focus:ring-2 focus:ring-green-500/20"
+                                                         focus:outline-none focus:border-[var(--primary)]
+                                                         focus:ring-2 focus:ring-[var(--primary)]/20"
                                             />
                                         </div>
                                     </div>
@@ -354,7 +354,7 @@ const FoodFilter = ({
                                                 className="px-3 py-1 text-xs bg-slate-100 dark:bg-slate-700
                                                          text-slate-700 dark:text-slate-300
                                                          rounded-full hover:bg-slate-200 
-                                                         dark:hover:bg-slate-600 transition-colors"
+                                                         dark:hover:bg-slate-600 transition-colors cursor-pointer"
                                             >
                                                 {range.label}
                                             </button>
@@ -364,9 +364,9 @@ const FoodFilter = ({
                                     <div className="flex gap-2">
                                         <button
                                             onClick={applyPriceFilter}
-                                            className="flex-1 px-4 py-2 bg-green-500 text-white 
-                                                     rounded-lg hover:bg-green-600 transition-colors
-                                                     font-medium"
+                                            className="flex-1 px-4 py-2 bg-[var(--primary)] text-white 
+                                                     rounded-lg hover:opacity-90 transition-opacity
+                                                     font-medium cursor-pointer shadow-sm shadow-[var(--primary)]/20"
                                         >
                                             Apply
                                         </button>
@@ -374,7 +374,7 @@ const FoodFilter = ({
                                             onClick={resetPriceFilter}
                                             className="px-4 py-2 border border-slate-200 dark:border-slate-700
                                                      rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700
-                                                     transition-colors text-slate-600 dark:text-slate-400"
+                                                     transition-colors text-slate-600 dark:text-slate-400 cursor-pointer"
                                         >
                                             Reset
                                         </button>
@@ -400,8 +400,8 @@ const FoodFilter = ({
                             onClick={() => onDietaryFilterChange?.(opt.id)}
                             className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all shrink-0 flex items-center gap-1.5 shadow-xs cursor-pointer ${
                                 isActive
-                                    ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-green-500/20 shadow-md scale-105'
-                                    : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-green-500/50 hover:text-green-600'
+                                    ? 'bg-gradient-to-r from-[var(--primary)] to-orange-500 text-white shadow-[var(--primary)]/25 shadow-md scale-105'
+                                    : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-[var(--primary)]/50 hover:text-[var(--primary)]'
                             }`}
                         >
                             <span>{opt.icon}</span>
@@ -436,7 +436,7 @@ const FoodFilter = ({
                                     className="w-full h-12 px-4 bg-slate-50 dark:bg-slate-900
                                              border border-slate-200 dark:border-slate-700
                                              rounded-lg text-slate-900 dark:text-white
-                                             focus:outline-none focus:border-green-500"
+                                             focus:outline-none focus:border-[var(--primary)]"
                                 >
                                     <option value="">All Categories</option>
                                     {categories.map((cat) => (
@@ -456,7 +456,7 @@ const FoodFilter = ({
                                     className="w-full h-12 px-4 bg-slate-50 dark:bg-slate-900
                                              border border-slate-200 dark:border-slate-700
                                              rounded-lg text-slate-900 dark:text-white
-                                             focus:outline-none focus:border-green-500"
+                                             focus:outline-none focus:border-[var(--primary)]"
                                 >
                                     {sortOptions.map((option) => (
                                         <option key={option.value} value={option.value}>
@@ -480,7 +480,7 @@ const FoodFilter = ({
                                         className="flex-1 h-12 px-4 bg-slate-50 dark:bg-slate-900
                                                  border border-slate-200 dark:border-slate-700
                                                  rounded-lg text-slate-900 dark:text-white
-                                                 focus:outline-none focus:border-green-500"
+                                                 focus:outline-none focus:border-[var(--primary)]"
                                     />
                                     <span className="text-slate-400">—</span>
                                     <input
@@ -491,13 +491,13 @@ const FoodFilter = ({
                                         className="flex-1 h-12 px-4 bg-slate-50 dark:bg-slate-900
                                                  border border-slate-200 dark:border-slate-700
                                                  rounded-lg text-slate-900 dark:text-white
-                                                 focus:outline-none focus:border-green-500"
+                                                 focus:outline-none focus:border-[var(--primary)]"
                                     />
                                 </div>
                                 <button
                                     onClick={applyPriceFilter}
-                                    className="w-full mt-3 px-4 py-2 bg-green-500 text-white 
-                                             rounded-lg hover:bg-green-600 transition-colors
+                                    className="w-full mt-3 px-4 py-2 bg-[var(--primary)] text-white 
+                                             rounded-lg hover:opacity-90 transition-opacity
                                              font-medium"
                                 >
                                     Apply Price Filter
@@ -517,7 +517,7 @@ const FoodFilter = ({
                                                 onSortChange('popular');
                                                 resetPriceFilter();
                                             }}
-                                            className="text-sm text-green-500 hover:text-green-600"
+                                            className="text-sm text-[var(--primary)] hover:opacity-80"
                                         >
                                             Clear all
                                         </button>
@@ -525,8 +525,8 @@ const FoodFilter = ({
                                     <div className="flex flex-wrap gap-2">
                                         {category && (
                                             <span className="inline-flex items-center gap-1 px-3 py-1 
-                                                           bg-green-100 dark:bg-green-900/30 
-                                                           text-green-700 dark:text-green-300
+                                                           bg-[var(--primary)]/10 text-[var(--primary)] 
+                                                           border border-[var(--primary)]/20
                                                            rounded-full text-sm">
                                                 {category}
                                                 <button onClick={() => onCategoryChange('')}>×</button>
@@ -534,8 +534,8 @@ const FoodFilter = ({
                                         )}
                                         {(priceRange.min > minPrice || priceRange.max < maxPrice) && (
                                             <span className="inline-flex items-center gap-1 px-3 py-1 
-                                                           bg-green-100 dark:bg-green-900/30 
-                                                           text-green-700 dark:text-green-300 
+                                                           bg-[var(--primary)]/10 text-[var(--primary)] 
+                                                           border border-[var(--primary)]/20 
                                                            rounded-full text-sm">
                                                 {priceRange.min} - {priceRange.max} ETB
                                                 <button onClick={resetPriceFilter}>×</button>
@@ -553,13 +553,13 @@ const FoodFilter = ({
             <div className="hidden lg:flex flex-wrap gap-2">
                 {category && (
                     <span className="inline-flex items-center gap-1 px-3 py-1 
-                                   bg-green-100 dark:bg-green-900/30 
-                                   text-green-700 dark:text-green-300
+                                   bg-[var(--primary)]/10 text-[var(--primary)] 
+                                   border border-[var(--primary)]/20
                                    rounded-full text-sm">
                         {category}
                         <button 
                             onClick={() => onCategoryChange('')}
-                            className="hover:text-green-900 dark:hover:text-green-400"
+                            className="hover:opacity-70"
                         >
                             ×
                         </button>
@@ -567,13 +567,13 @@ const FoodFilter = ({
                 )}
                 {(priceRange.min > minPrice || priceRange.max < maxPrice) && (
                     <span className="inline-flex items-center gap-1 px-3 py-1 
-                                   bg-green-100 dark:bg-green-900/30 
-                                   text-green-700 dark:text-green-300
+                                   bg-[var(--primary)]/10 text-[var(--primary)] 
+                                   border border-[var(--primary)]/20
                                    rounded-full text-sm">
                         {priceRange.min} - {priceRange.max} ETB
                         <button 
                             onClick={resetPriceFilter}
-                            className="hover:text-green-900 dark:hover:text-green-400"
+                            className="hover:opacity-70"
                         >
                             ×
                         </button>

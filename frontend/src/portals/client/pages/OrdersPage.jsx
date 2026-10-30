@@ -225,8 +225,8 @@ const OrdersPage = () => {
             preparing: { 
                 color: 'orange', 
                 icon: FiPackage, 
-                bg: 'bg-green-100 dark:bg-green-900/30',
-                text: 'text-green-700 dark:text-green-300',
+                bg: 'bg-amber-100 dark:bg-amber-900/30',
+                text: 'text-amber-700 dark:text-amber-300',
                 label: 'Preparing'
             },
             out_for_delivery: { 

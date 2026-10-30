@@ -61,7 +61,7 @@ const PaymentForm = ({ orderId, amount, onSuccess, onError }) => {
     return (
         <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-sm">
             <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
-                <div className="w-10 h-10 rounded-xl bg-green-50 dark:bg-green-950/40 text-green-500 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-[var(--primary)]/10 text-[var(--primary)] flex items-center justify-center">
                     <FiCreditCard className="w-5 h-5" />
                 </div>
                 <div>
@@ -79,7 +79,7 @@ const PaymentForm = ({ orderId, amount, onSuccess, onError }) => {
                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                         Card Details
                     </label>
-                    <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 focus-within:border-green-500 transition-colors">
+                    <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 focus-within:border-[var(--primary)] transition-colors">
                         <CardElement options={CARD_ELEMENT_OPTIONS} />
                     </div>
                 </div>
@@ -87,12 +87,12 @@ const PaymentForm = ({ orderId, amount, onSuccess, onError }) => {
                 <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 space-y-2">
                     <div className="flex justify-between items-center text-sm font-medium">
                         <span className="text-slate-600 dark:text-slate-400">Total charge:</span>
-                        <span className="text-lg font-extrabold text-green-500">
+                        <span className="text-lg font-extrabold text-[var(--primary)]">
                             ${Number(amount || 0).toFixed(2)}
                         </span>
                     </div>
                     <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
-                        <FiLock className="w-3.5 h-3.5 text-green-500" />
+                        <FiLock className="w-3.5 h-3.5 text-[var(--primary)]" />
                         <span>256-bit encrypted secure checkout via Stripe</span>
                     </div>
                 </div>
@@ -107,7 +107,7 @@ const PaymentForm = ({ orderId, amount, onSuccess, onError }) => {
                 <button
                     type="submit"
                     disabled={!stripe || loading}
-                    className="w-full py-4 px-6 bg-green-500 hover:bg-green-600 active:scale-[0.99] text-white font-semibold rounded-2xl shadow-lg shadow-green-500/25 flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+                    className="w-full py-4 px-6 bg-[var(--primary)] hover:opacity-90 active:scale-[0.99] text-white font-semibold rounded-2xl shadow-lg shadow-[var(--primary)]/25 flex items-center justify-center gap-2 transition-all disabled:opacity-50"
                 >
                     <FiLock className="w-4 h-4" />
                     <span>{loading ? 'Processing Payment...' : `Authorize & Pay ${Number(amount || 0).toFixed(2)} ETB`}</span>

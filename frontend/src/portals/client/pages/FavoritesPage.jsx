@@ -87,7 +87,7 @@ const FavoritesPage = () => {
                         <div className="flex items-center gap-3">
                             <button
                                 onClick={handleAddAllToCart}
-                                className="px-5 py-2.5 rounded-xl font-bold text-sm bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-md shadow-green-500/20 transition-all flex items-center gap-2"
+                                className="px-5 py-2.5 rounded-xl font-bold text-sm bg-gradient-to-r from-[var(--primary)] to-orange-500 hover:opacity-95 text-white shadow-md shadow-[var(--primary)]/20 transition-all flex items-center gap-2"
                             >
                                 <FiShoppingBag className="w-4 h-4" />
                                 Add All to Cart
@@ -110,7 +110,7 @@ const FavoritesPage = () => {
                         </p>
                         <Link
                             to="/menu"
-                            className="px-6 py-3 rounded-xl font-bold text-sm bg-green-500 hover:bg-green-600 text-white transition-colors shadow-md shadow-green-500/20 inline-flex items-center gap-2"
+                            className="px-6 py-3 rounded-xl font-bold text-sm bg-[var(--primary)] hover:opacity-90 text-white transition-opacity shadow-md shadow-[var(--primary)]/20 inline-flex items-center gap-2"
                         >
                             Explore Our Menu
                         </Link>
@@ -129,7 +129,7 @@ const FavoritesPage = () => {
                                         exit={{ opacity: 0, scale: 0.9 }}
                                         transition={{ duration: 0.2 }}
                                         onClick={() => navigate(`/food/${foodId}`)}
-                                        className="group relative bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs hover:shadow-lg hover:border-green-500/30 transition-all duration-300 cursor-pointer flex flex-col"
+                                        className="group relative bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs hover:shadow-lg hover:border-[var(--primary)]/30 transition-all duration-300 cursor-pointer flex flex-col"
                                     >
                                         {/* Image Section */}
                                         <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100 dark:bg-slate-800">
@@ -187,7 +187,7 @@ const FavoritesPage = () => {
 
                                                 <button
                                                     onClick={(e) => handleAddToCart(food, e)}
-                                                    className="px-4 py-2 rounded-xl bg-green-500 hover:bg-green-600 text-white font-medium text-xs flex items-center gap-1.5 shadow-md shadow-green-500/20 transition-all"
+                                                    className="px-4 py-2 rounded-xl bg-[var(--primary)] hover:opacity-90 text-white font-medium text-xs flex items-center gap-1.5 shadow-md shadow-[var(--primary)]/20 transition-all"
                                                 >
                                                     <FiPlus className="w-4 h-4" />
                                                     Add to Cart

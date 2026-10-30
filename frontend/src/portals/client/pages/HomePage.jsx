@@ -113,10 +113,10 @@ const HomePage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 font-sans text-slate-900 dark:text-slate-100 selection:bg-emerald-500 selection:text-white">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 font-sans text-slate-900 dark:text-slate-100 selection:bg-[var(--primary)] selection:text-white">
             
             {/* HERO SECTION */}
-            <section className="relative overflow-hidden bg-linear-to-b from-emerald-50/80 via-white to-slate-50 dark:from-slate-900 dark:via-slate-950 dark:to-slate-950 pt-8 pb-16 lg:py-20 border-b border-slate-200/60 dark:border-slate-800/60">
+            <section className="relative overflow-hidden bg-linear-to-b from-rose-50/60 via-white to-slate-50 dark:from-slate-900 dark:via-slate-950 dark:to-slate-950 pt-8 pb-16 lg:py-20 border-b border-slate-200/60 dark:border-slate-800/60">
                 <div className="absolute inset-0 bg-grid-slate-200/50 dark:bg-grid-slate-800/20 mask-[radial-gradient(ellipse_at_center,white,transparent)] pointer-events-none" />
 
                 <div className="relative w-full px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12">
@@ -127,9 +127,9 @@ const HomePage = () => {
                             <motion.div 
                                 initial={{ opacity: 0, y: 15 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 text-xs font-bold border border-emerald-300 dark:border-emerald-800"
+                                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[var(--primary)]/10 text-[var(--primary)] text-xs font-bold border border-[var(--primary)]/20"
                             >
-                                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                                <span className="w-2 h-2 rounded-full bg-[var(--primary)] animate-pulse" />
                                 <span>Zero Delivery Fee on orders above 750 ETB • Use code: FREESHIP</span>
                             </motion.div>
 
@@ -140,7 +140,7 @@ const HomePage = () => {
                                 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 dark:text-white tracking-tight leading-[1.1]"
                             >
                                 Premium Food,
-                                <span className="block bg-linear-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent">
+                                <span className="block bg-linear-to-r from-[var(--primary)] to-orange-500 bg-clip-text text-transparent">
                                     Delivered Hot & Fast
                                 </span>
                             </motion.h1>
@@ -179,7 +179,7 @@ const HomePage = () => {
                             >
                                 <Link
                                     to="/menu"
-                                    className="px-7 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-2xl transition-all duration-200 shadow-xl shadow-emerald-600/25 flex items-center gap-2 group"
+                                    className="px-7 py-3.5 bg-[var(--primary)] hover:opacity-90 text-white font-extrabold rounded-2xl transition-all duration-200 shadow-xl shadow-[var(--primary)]/25 flex items-center gap-2 group cursor-pointer"
                                 >
                                     <span>Explore Full Menu</span>
                                     <FiArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -216,12 +216,12 @@ const HomePage = () => {
                                     className="bg-white dark:bg-slate-900 rounded-3xl p-4 shadow-2xl border border-slate-200/80 dark:border-slate-800 flex items-center gap-4 transition-all"
                                 >
                                     <img 
-                                        src="https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=300&q=80" 
+                                        src="/images/foods/doro_wat.jpg" 
                                         alt="Special Doro Wat"
                                         className="w-24 h-24 rounded-2xl object-cover shrink-0 shadow-md"
                                     />
                                     <div className="min-w-0 flex-1">
-                                        <span className="text-[10px] font-black uppercase tracking-wider text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
+                                        <span className="text-[10px] font-black uppercase tracking-wider text-[var(--primary)] bg-[var(--primary)]/10 px-2 py-0.5 rounded-full">
                                             Chef's Special
                                         </span>
                                         <h3 className="font-extrabold text-base text-slate-900 dark:text-white mt-1 truncate">
@@ -238,7 +238,7 @@ const HomePage = () => {
                                         </div>
                                         <div className="mt-2 flex items-center justify-between">
                                             <span className="font-black text-slate-900 dark:text-white">420 ETB</span>
-                                            <Link to="/menu" className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline">
+                                            <Link to="/menu" className="text-xs font-bold text-[var(--primary)] hover:underline">
                                                 Order Now →
                                             </Link>
                                         </div>
@@ -249,9 +249,9 @@ const HomePage = () => {
                                 <motion.div 
                                     whileHover={{ scale: 1.02, y: -4 }}
                                     className="bg-white dark:bg-slate-900 rounded-3xl p-4 shadow-2xl border border-slate-200/80 dark:border-slate-800 flex items-center gap-4 transition-all ml-8"
-                                >
+                                 >
                                     <img 
-                                        src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=300&q=80" 
+                                        src="/images/foods/shekla_tibs.jpg" 
                                         alt="Shekla Tibs"
                                         className="w-24 h-24 rounded-2xl object-cover shrink-0 shadow-md"
                                     />
@@ -273,7 +273,7 @@ const HomePage = () => {
                                         </div>
                                         <div className="mt-2 flex items-center justify-between">
                                             <span className="font-black text-slate-900 dark:text-white">450 ETB</span>
-                                            <Link to="/menu" className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline">
+                                            <Link to="/menu" className="text-xs font-bold text-[var(--primary)] hover:underline">
                                                 Order Now →
                                             </Link>
                                         </div>
@@ -281,19 +281,19 @@ const HomePage = () => {
                                 </motion.div>
 
                                 {/* Live Tracking Simulation Badge */}
-                                <div className="p-3 bg-emerald-600 text-white rounded-2xl shadow-xl flex items-center justify-between gap-3 text-xs font-bold">
+                                <div className="p-3 bg-[var(--primary)] text-white rounded-2xl shadow-xl flex items-center justify-between gap-3 text-xs font-bold">
                                     <div className="flex items-center gap-2">
                                         <span className="w-2.5 h-2.5 rounded-full bg-white animate-ping" />
                                         <span>Courier is 4 mins away with your meal!</span>
                                     </div>
-                                    <span className="px-2 py-0.5 rounded-lg bg-emerald-700 text-[10px] uppercase">
+                                    <span className="px-2 py-0.5 rounded-lg bg-black/20 text-[10px] uppercase">
                                         Live GPS
                                     </span>
                                 </div>
                             </div>
 
                             {/* Background ambient glow */}
-                            <div className="absolute -inset-4 bg-linear-to-r from-emerald-500/20 to-teal-500/20 blur-3xl -z-10 rounded-full" />
+                            <div className="absolute -inset-4 bg-linear-to-r from-[var(--primary)]/20 to-orange-500/20 blur-3xl -z-10 rounded-full" />
                         </div>
                     </div>
                 </div>
@@ -304,7 +304,7 @@ const HomePage = () => {
                 <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12">
                     <div className="flex items-center justify-between mb-8">
                         <div>
-                            <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 block">
+                            <span className="text-xs font-bold uppercase tracking-wider text-[var(--primary)] block">
                                 Quick Craving
                             </span>
                             <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
@@ -313,7 +313,7 @@ const HomePage = () => {
                         </div>
                         <Link 
                             to="/menu" 
-                            className="text-sm font-bold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1"
+                            className="text-sm font-bold text-[var(--primary)] hover:underline flex items-center gap-1"
                         >
                             <span>View All Menu</span>
                             <FiArrowRight className="w-4 h-4" />
@@ -325,12 +325,12 @@ const HomePage = () => {
                             <button
                                 key={cat.name}
                                 onClick={() => navigate(`/menu?category=${encodeURIComponent(cat.name)}`)}
-                                className="group p-4 rounded-3xl bg-slate-50 dark:bg-slate-800/80 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 border border-slate-200/70 dark:border-slate-700/60 hover:border-emerald-500/50 transition-all text-center flex flex-col items-center justify-center gap-2 shadow-xs hover:shadow-lg hover:-translate-y-1"
+                                className="group p-4 rounded-3xl bg-slate-50 dark:bg-slate-800/80 hover:bg-[var(--primary)]/5 dark:hover:bg-[var(--primary)]/10 border border-slate-200/70 dark:border-slate-700/60 hover:border-[var(--primary)]/40 transition-all text-center flex flex-col items-center justify-center gap-2 shadow-xs hover:shadow-lg hover:-translate-y-1 cursor-pointer"
                             >
                                 <span className="text-3xl sm:text-4xl group-hover:scale-110 transition-transform">
                                     {cat.icon}
                                 </span>
-                                <span className="text-xs font-black text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 tracking-tight">
+                                <span className="text-xs font-black text-slate-800 dark:text-slate-200 group-hover:text-[var(--primary)] tracking-tight">
                                     {cat.name}
                                 </span>
                             </button>
@@ -344,7 +344,7 @@ const HomePage = () => {
                 <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12">
                     <div className="flex items-center justify-between mb-8">
                         <div>
-                            <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 block">
+                            <span className="text-xs font-bold uppercase tracking-wider text-[var(--primary)] block">
                                 Highest Rated
                             </span>
                             <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
@@ -353,7 +353,7 @@ const HomePage = () => {
                         </div>
                         <Link 
                             to="/menu" 
-                            className="text-sm font-bold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1"
+                            className="text-sm font-bold text-[var(--primary)] hover:underline flex items-center gap-1"
                         >
                             <span>See All Dishes</span>
                             <FiArrowRight className="w-4 h-4" />
@@ -399,9 +399,9 @@ const HomePage = () => {
                             {promotions.slice(0, 3).map((promo) => (
                                 <div 
                                     key={promo._id || promo.id} 
-                                    className="rounded-3xl border border-emerald-500/20 bg-linear-to-br from-emerald-50/50 to-teal-50/50 dark:from-slate-800/80 dark:to-slate-800/40 p-6 shadow-sm relative overflow-hidden"
+                                    className="rounded-3xl border border-[var(--primary)]/20 bg-gradient-to-br from-rose-50/50 to-orange-50/50 dark:from-slate-800/80 dark:to-slate-800/40 p-6 shadow-sm relative overflow-hidden"
                                 >
-                                    <div className="inline-block px-3 py-1 rounded-full bg-emerald-500 text-slate-950 font-black text-xs uppercase tracking-wider mb-3">
+                                    <div className="inline-block px-3 py-1 rounded-full bg-[var(--primary)] text-white font-black text-xs uppercase tracking-wider mb-3">
                                         {promo.code}
                                     </div>
                                     <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">
@@ -412,7 +412,7 @@ const HomePage = () => {
                                     </p>
                                     <Link
                                         to="/menu"
-                                        className="inline-flex items-center gap-1.5 text-xs font-extrabold text-emerald-600 dark:text-emerald-400 hover:underline"
+                                        className="inline-flex items-center gap-1.5 text-xs font-extrabold text-[var(--primary)] hover:underline"
                                     >
                                         <span>{promo.ctaLabel || 'Claim Offer & Order'}</span>
                                         <FiArrowRight className="w-3.5 h-3.5" />
@@ -428,7 +428,7 @@ const HomePage = () => {
             <section className="py-16 bg-slate-50 dark:bg-slate-950">
                 <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12">
                     <div className="text-center max-w-2xl mx-auto mb-12 space-y-2">
-                        <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                        <span className="text-xs font-bold uppercase tracking-wider text-[var(--primary)]">
                             The FoodDelivery Standard
                         </span>
                         <h2 className="text-3xl font-black text-slate-900 dark:text-white">
@@ -447,10 +447,10 @@ const HomePage = () => {
                                     key={idx}
                                     className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-3"
                                 >
-                                    <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">
+                                    <div className="w-12 h-12 rounded-2xl bg-[var(--primary)]/10 text-[var(--primary)] flex items-center justify-center font-bold">
                                         <Icon className="w-6 h-6" />
                                     </div>
-                                    <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full inline-block">
+                                    <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--primary)] bg-[var(--primary)]/10 px-2 py-0.5 rounded-full inline-block">
                                         {prop.badge}
                                     </span>
                                     <h3 className="font-extrabold text-base text-slate-900 dark:text-white">
@@ -470,7 +470,7 @@ const HomePage = () => {
             <section className="py-16 bg-white dark:bg-slate-900 border-t border-slate-200/60 dark:border-slate-800/60">
                 <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12">
                     <div className="text-center max-w-xl mx-auto mb-12 space-y-2">
-                        <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                        <span className="text-xs font-bold uppercase tracking-wider text-[var(--primary)]">
                             Simple Process
                         </span>
                         <h2 className="text-3xl font-black text-slate-900 dark:text-white">
@@ -481,7 +481,7 @@ const HomePage = () => {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         {HOW_IT_WORKS.map((step) => (
                             <div key={step.step} className="relative p-6 rounded-3xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60">
-                                <span className="font-mono text-3xl font-black text-emerald-500/40 block mb-2">
+                                <span className="font-mono text-3xl font-black text-[var(--primary)]/40 block mb-2">
                                     {step.step}
                                 </span>
                                 <h3 className="text-lg font-black text-slate-900 dark:text-white mb-2">
@@ -497,7 +497,7 @@ const HomePage = () => {
             </section>
 
             {/* APP PROMO & CTA BANNER */}
-            <section className="py-16 bg-linear-to-r from-emerald-600 to-teal-700 text-white relative overflow-hidden">
+            <section className="py-16 bg-gradient-to-r from-[var(--primary)] to-orange-600 text-white relative overflow-hidden">
                 <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 relative z-10">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                         <div className="space-y-4">
@@ -507,19 +507,19 @@ const HomePage = () => {
                             <h2 className="text-3xl sm:text-4xl font-black tracking-tight">
                                 Hungry? Order Your Favorite Meal Right Now.
                             </h2>
-                            <p className="text-emerald-100 text-sm max-w-lg leading-relaxed">
+                            <p className="text-rose-100 text-sm max-w-lg leading-relaxed">
                                 Choose from our extensive menu of authentic Ethiopian dishes, stews, sizzling tibs, and fresh vegetarian platters. Experience live real-time delivery tracking directly on your phone.
                             </p>
                             <div className="pt-2 flex flex-wrap gap-4">
                                 <Link
                                     to="/menu"
-                                    className="px-6 py-3.5 bg-white text-emerald-900 font-black rounded-2xl hover:bg-emerald-50 transition-colors shadow-xl"
+                                    className="px-6 py-3.5 bg-white text-rose-950 font-black rounded-2xl hover:bg-rose-50 transition-colors shadow-xl cursor-pointer"
                                 >
                                     Browse Full Menu Now
                                 </Link>
                                 <Link
                                     to="/register"
-                                    className="px-6 py-3.5 bg-emerald-800/80 hover:bg-emerald-800 text-white font-bold rounded-2xl border border-white/20 transition-colors"
+                                    className="px-6 py-3.5 bg-black/25 hover:bg-black/35 text-white font-bold rounded-2xl border border-white/20 transition-colors cursor-pointer"
                                 >
                                     Create Free Account
                                 </Link>
@@ -528,9 +528,9 @@ const HomePage = () => {
 
                         <div className="hidden lg:flex justify-end">
                             <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-6 text-center max-w-sm space-y-3">
-                                <FiSmile className="w-12 h-12 mx-auto text-emerald-200" />
+                                <FiSmile className="w-12 h-12 mx-auto text-rose-200" />
                                 <h3 className="font-extrabold text-xl">100% Satisfaction Guarantee</h3>
-                                <p className="text-xs text-emerald-100">
+                                <p className="text-xs text-rose-100">
                                     If your meal isn't hot and delicious, or arrives late, our support team will instantly refund or credit your account.
                                 </p>
                             </div>

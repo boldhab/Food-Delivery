@@ -49,7 +49,7 @@ const RegisterProgressBar = ({ steps, currentStep }) => {
             {/* Progress bar line */}
             <div className="relative mt-3 h-1 bg-[var(--border)] rounded-full overflow-hidden">
                 <motion.div
-                    className="absolute top-0 left-0 h-full bg-gradient-to-r from-[var(--primary)] to-amber-500 rounded-full"
+                    className="absolute top-0 left-0 h-full bg-gradient-to-r from-[var(--primary)] to-orange-500 rounded-full"
                     initial={{ width: '0%' }}
                     animate={{ width: `${((currentStep - 1) / Math.max(steps.length - 1, 1)) * 100}%` }}
                     transition={{ duration: 0.3 }}

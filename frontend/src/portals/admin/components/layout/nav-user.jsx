@@ -57,7 +57,7 @@ export function NavUser({ user }) {
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground group hover:bg-sidebar-accent transition-colors"
             >
-              <div className="relative flex aspect-square size-8 items-center justify-center rounded-lg bg-gradient-to-tr from-primary to-amber-500 text-white font-bold text-xs shadow-xs">
+              <div className="relative flex aspect-square size-8 items-center justify-center rounded-lg bg-gradient-to-tr from-primary to-orange-500 text-white font-bold text-xs shadow-xs">
                 {initial}
                 <span className="absolute -bottom-0.5 -right-0.5 size-2 rounded-full bg-emerald-500 ring-2 ring-sidebar" />
               </div>
@@ -83,7 +83,7 @@ export function NavUser({ user }) {
           >
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-gradient-to-tr from-primary to-amber-500 text-white font-bold text-xs shadow-xs">
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-gradient-to-tr from-primary to-orange-500 text-white font-bold text-xs shadow-xs">
                   {initial}
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
@@ -110,7 +110,7 @@ export function NavUser({ user }) {
                 className="cursor-pointer gap-2.5"
               >
                 {resolvedTheme === "dark" ? (
-                  <Moon className="size-4 text-purple-400" />
+                  <Moon className="size-4 text-slate-400" />
                 ) : theme === "system" ? (
                   <Monitor className="size-4 text-blue-400" />
                 ) : (

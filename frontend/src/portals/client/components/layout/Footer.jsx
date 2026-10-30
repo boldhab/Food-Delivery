@@ -75,7 +75,7 @@ const Footer = () => {
                                 alt="Food Hub Logo" 
                                 className="h-9 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
                             />
-                            <span className="text-2xl font-bold bg-gradient-to-r from-[var(--primary)] to-amber-500 
+                            <span className="text-2xl font-bold bg-gradient-to-r from-[var(--primary)] to-orange-500 
                                          bg-clip-text text-transparent">
                                 Food Hub
                             </span>

@@ -206,8 +206,8 @@ const SearchBar = ({
                     {/* Search Icon */}
                     <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
                         {isLoading ? (
-                            <div className="w-5 h-5 border-2 border-green-500/30 
-                                          border-t-green-500 rounded-full animate-spin" />
+                            <div className="w-5 h-5 border-2 border-[var(--primary)]/30 
+                                          border-t-[var(--primary)] rounded-full animate-spin" />
                         ) : (
                             <FiSearch className={`${currentVariant.icon}`} />
                         )}
@@ -232,7 +232,7 @@ const SearchBar = ({
                             ${currentVariant.input}
                             pl-12 pr-12
                             ${isFocused 
-                                ? 'border-green-500 ring-2 ring-green-500/20' 
+                                ? 'border-[var(--primary)] ring-2 ring-[var(--primary)]/20' 
                                 : 'border-slate-200 dark:border-slate-700'
                             }
                         `}
@@ -304,7 +304,7 @@ const SearchBar = ({
                         {trendingSearches.length > 0 && internalValue.length === 0 && (
                             <div className="p-2 border-t border-slate-100 dark:border-slate-700">
                                 <div className="flex items-center gap-2 px-3 py-2">
-                                    <FiTrendingUp className="w-4 h-4 text-green-500" />
+                                    <FiTrendingUp className="w-4 h-4 text-[var(--primary)]" />
                                     <span className="text-xs font-medium text-slate-500 uppercase">
                                         Trending Now
                                     </span>
@@ -314,10 +314,10 @@ const SearchBar = ({
                                         <button
                                             key={index}
                                             onClick={() => handleSuggestionClick(search)}
-                                            className="px-3 py-1 bg-green-50 dark:bg-green-900/30
-                                                     text-green-700 dark:text-green-300
+                                            className="px-3 py-1 bg-[var(--primary)]/10
+                                                     text-[var(--primary)]
                                                      rounded-full text-sm
-                                                     hover:bg-green-100 dark:hover:bg-green-900/50
+                                                     hover:bg-[var(--primary)]/20
                                                      transition-colors duration-150"
                                         >
                                             {search}
@@ -342,7 +342,7 @@ const SearchBar = ({
                                             rounded-lg transition-colors duration-150
                                             flex items-center gap-3
                                             ${selectedIndex === index
-                                                ? 'bg-green-50 dark:bg-green-900/30'
+                                                ? 'bg-[var(--primary)]/10 text-[var(--primary)]'
                                                 : 'hover:bg-slate-100 dark:hover:bg-slate-700'
                                             }
                                         `}

@@ -73,7 +73,7 @@ const LoginPage = () => {
       ]}
       footer={
         <div className="flex items-center justify-between text-2xs text-[var(--muted-foreground)]">
-          <span className="flex items-center gap-1.5 font-mono text-emerald-600 dark:text-emerald-400">
+          <span className="flex items-center gap-1.5 font-mono text-[var(--primary)]">
             <FiShield className="w-3.5 h-3.5" />
             <span>Authorized Personnel Only</span>
           </span>
@@ -148,10 +148,10 @@ const LoginPage = () => {
           disabled={submitting}
           className="
             w-full h-11 px-4 mt-2 rounded-xl
-            bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800
+            bg-gradient-to-r from-[var(--primary)] to-orange-500 hover:opacity-95
             text-white text-sm font-bold tracking-wide
-            shadow-md shadow-emerald-600/25 active:scale-[0.99]
-            focus:outline-none focus:ring-4 focus:ring-emerald-500/25
+            shadow-md shadow-[var(--primary)]/25 active:scale-[0.99]
+            focus:outline-none focus:ring-4 focus:ring-[var(--primary)]/25
             transition-all duration-200
             disabled:opacity-60 disabled:cursor-not-allowed
             flex items-center justify-center gap-2 group cursor-pointer
@@ -179,7 +179,7 @@ const LoginPage = () => {
               setPassword("Admin@123456");
               setError("");
             }}
-            className="text-2xs font-mono text-[var(--muted-foreground)] hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors cursor-pointer"
+            className="text-2xs font-mono text-[var(--muted-foreground)] hover:text-[var(--primary)] transition-colors cursor-pointer"
           >
             Autofill Default Admin Credentials
           </button>

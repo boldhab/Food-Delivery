@@ -279,9 +279,9 @@ const DashboardPage = ({ defaultTab = "analytics" }) => {
         subText: "Door-to-door delivery",
         icon: FiClock,
         change: 3.2,
-        color: "#8b5cf6",
-        bgColor: "bg-purple-50 dark:bg-purple-900/20",
-        textColor: "text-purple-600 dark:text-purple-400"
+        color: "#475569",
+        bgColor: "bg-slate-100 dark:bg-slate-800",
+        textColor: "text-slate-700 dark:text-slate-300"
       }
     ];
   }, [state.stats, onlineCouriersCount, outForDeliveryCount]);

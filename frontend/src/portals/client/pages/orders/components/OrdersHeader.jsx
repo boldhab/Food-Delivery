@@ -11,7 +11,7 @@ const OrdersHeader = ({
     refreshing
 }) => {
     return (
-        <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-slate-900 dark:to-slate-800 border-b border-slate-200 dark:border-slate-800">
+        <div className="bg-gradient-to-br from-rose-50/50 to-orange-50/40 dark:from-slate-900 dark:to-slate-800 border-b border-slate-200 dark:border-slate-800">
             <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 py-8">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div>
@@ -31,7 +31,7 @@ const OrdersHeader = ({
                                  bg-white dark:bg-slate-800
                                  border border-slate-200 dark:border-slate-700
                                  rounded-lg text-slate-700 dark:text-slate-300
-                                 hover:border-green-500 transition-colors
+                                 hover:border-[var(--primary)] transition-colors
                                  disabled:opacity-50"
                     >
                         <FiRefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
@@ -47,7 +47,7 @@ const OrdersHeader = ({
                         className="px-4 py-2 bg-white dark:bg-slate-800
                                  border border-slate-200 dark:border-slate-700
                                  rounded-lg text-slate-700 dark:text-slate-300
-                                 focus:outline-none focus:border-green-500"
+                                 focus:outline-none focus:border-[var(--primary)]"
                     >
                         <option value="all">All Orders</option>
                         <option value="pending">Pending</option>
@@ -64,7 +64,7 @@ const OrdersHeader = ({
                         className="px-4 py-2 bg-white dark:bg-slate-800
                                  border border-slate-200 dark:border-slate-700
                                  rounded-lg text-slate-700 dark:text-slate-300
-                                 focus:outline-none focus:border-green-500"
+                                 focus:outline-none focus:border-[var(--primary)]"
                     >
                         <option value="newest">Newest First</option>
                         <option value="oldest">Oldest First</option>
