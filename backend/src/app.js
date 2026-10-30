@@ -76,6 +76,7 @@ app.use('/api/payments/webhook', express.raw({ type: 'application/json' }));
 app.use(express.json());
 app.use('/assets', express.static(path.join(__dirname, '../public/assets')));
 app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
+app.use('/images', express.static(path.join(__dirname, '../public/images')));
 
 // Sanitize request
 app.use(sanitizeRequest);

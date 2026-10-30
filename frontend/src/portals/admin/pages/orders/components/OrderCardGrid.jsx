@@ -105,7 +105,7 @@ const OrderCardGrid = ({
                                 </button>
                                 <button
                                     onClick={() => onPrintOrder(order)}
-                                    className="p-1.5 text-slate-500 hover:text-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded transition-colors"
+                                    className="p-1.5 text-slate-500 hover:text-[var(--primary)] hover:bg-[var(--primary)]/10 rounded transition-colors"
                                     title="Print Order"
                                 >
                                     <FiPrinter className="w-4 h-4" />

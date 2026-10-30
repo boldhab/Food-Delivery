@@ -546,7 +546,7 @@ export const Sidebar = ({
                                     {badgeValue}
                                   </span>
                                 ) : (
-                                  <span className="px-1.5 py-0.5 rounded-full text-2xs font-semibold tabular-nums bg-purple-500/15 text-purple-600 dark:text-purple-400 border border-purple-500/25">
+                                  <span className="px-1.5 py-0.5 rounded-full text-2xs font-semibold tabular-nums bg-[var(--primary)]/15 text-[var(--primary)] border border-[var(--primary)]/25">
                                     {badgeValue}
                                   </span>
                                 )}
@@ -580,7 +580,7 @@ export const Sidebar = ({
                                     {badgeValue}
                                   </span>
                                 ) : (
-                                  <span className="px-1.5 py-0.5 rounded-full text-2xs font-semibold tabular-nums bg-purple-500/15 text-purple-600 dark:text-purple-400 border border-purple-500/25">
+                                  <span className="px-1.5 py-0.5 rounded-full text-2xs font-semibold tabular-nums bg-[var(--primary)]/15 text-[var(--primary)] border border-[var(--primary)]/25">
                                     {badgeValue}
                                   </span>
                                 )}

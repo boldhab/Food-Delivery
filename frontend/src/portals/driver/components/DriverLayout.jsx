@@ -127,7 +127,7 @@ const DriverLayout = () => {
             <Link to="/driver/available" className="flex items-center gap-2 shrink-0 group" title="Food Hub Courier">
               <img src="/LOGO.png" alt="Food Hub Courier" className="h-8 sm:h-9 w-auto object-contain transition-transform group-hover:scale-105" />
             </Link>
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white shadow-lg shadow-emerald-500/20 font-bold shrink-0">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-orange-500 flex items-center justify-center text-white shadow-lg shadow-[var(--primary)]/20 font-bold shrink-0">
               <FiTruck className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
             <div className="min-w-0">
@@ -135,7 +135,7 @@ const DriverLayout = () => {
                 <span className="font-bold text-xs sm:text-sm tracking-wide text-slate-900 dark:text-white truncate max-w-[120px] sm:max-w-[200px]">
                   {user?.name || "Delivery Courier"}
                 </span>
-                <span className="text-[9px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 rounded-full font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 shrink-0">
+                <span className="text-[9px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 rounded-full font-bold uppercase tracking-wider bg-[var(--primary)]/15 text-[var(--primary)] border border-[var(--primary)]/30 shrink-0">
                   Driver
                 </span>
               </div>
@@ -158,7 +158,7 @@ const DriverLayout = () => {
               className={({ isActive }) =>
                 `flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
                   isActive
-                    ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30 shadow-xs"
+                    ? "bg-[var(--primary)]/15 text-[var(--primary)] border border-[var(--primary)]/30 shadow-xs"
                     : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
                 }`
               }
@@ -166,7 +166,7 @@ const DriverLayout = () => {
               <FiRadio className="w-4 h-4" />
               <span>Available</span>
               {availableCount > 0 && (
-                <span className="px-1.5 py-0.2 rounded-full text-[10px] font-black bg-emerald-500 text-slate-950">
+                <span className="px-1.5 py-0.2 rounded-full text-[10px] font-black bg-[var(--primary)] text-white">
                   {availableCount}
                 </span>
               )}
@@ -177,7 +177,7 @@ const DriverLayout = () => {
               className={({ isActive }) =>
                 `flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
                   isActive
-                    ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30 shadow-xs"
+                    ? "bg-[var(--primary)]/15 text-[var(--primary)] border border-[var(--primary)]/30 shadow-xs"
                     : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
                 }`
               }
@@ -196,7 +196,7 @@ const DriverLayout = () => {
               className={({ isActive }) =>
                 `flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
                   isActive
-                    ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30 shadow-xs"
+                    ? "bg-[var(--primary)]/15 text-[var(--primary)] border border-[var(--primary)]/30 shadow-xs"
                     : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
                 }`
               }
@@ -269,7 +269,7 @@ const DriverLayout = () => {
 
             <Link
               to="/driver/delivery-history"
-              className="text-[10px] sm:text-xs font-bold text-slate-600 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors flex items-center gap-1"
+              className="text-[10px] sm:text-xs font-bold text-slate-600 dark:text-slate-400 hover:text-[var(--primary)] transition-colors flex items-center gap-1"
             >
               <span>Shift Details</span>
               <FiChevronRight className="w-3 h-3 text-slate-400 dark:text-slate-500" />
@@ -305,7 +305,7 @@ const DriverLayout = () => {
             to="/driver/available"
             className={({ isActive }) =>
               `relative flex flex-col items-center justify-center gap-1 transition-colors ${
-                isActive ? "text-emerald-600 dark:text-emerald-400 font-bold" : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200"
+                isActive ? "text-[var(--primary)] font-bold" : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200"
               }`
             }
           >
@@ -314,14 +314,14 @@ const DriverLayout = () => {
                 <div className="relative">
                   <FiRadio className="w-5 h-5" />
                   {availableCount > 0 && (
-                    <span className="absolute -top-1 -right-2 px-1.5 py-0.2 rounded-full text-[10px] font-black bg-emerald-500 text-slate-950">
+                    <span className="absolute -top-1 -right-2 px-1.5 py-0.2 rounded-full text-[10px] font-black bg-[var(--primary)] text-white">
                       {availableCount}
                     </span>
                   )}
                 </div>
                 <span className="text-[11px] tracking-tight">Available</span>
                 {isActive && (
-                  <span className="absolute bottom-1 w-6 h-1 rounded-full bg-emerald-500 dark:bg-emerald-400" />
+                  <span className="absolute bottom-1 w-6 h-1 rounded-full bg-[var(--primary)]" />
                 )}
               </>
             )}
@@ -332,7 +332,7 @@ const DriverLayout = () => {
             to="/driver/my-deliveries"
             className={({ isActive }) =>
               `relative flex flex-col items-center justify-center gap-1 transition-colors ${
-                isActive ? "text-emerald-600 dark:text-emerald-400 font-bold" : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200"
+                isActive ? "text-[var(--primary)] font-bold" : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200"
               }`
             }
           >
@@ -348,7 +348,7 @@ const DriverLayout = () => {
                 </div>
                 <span className="text-[11px] tracking-tight">My Trips</span>
                 {isActive && (
-                  <span className="absolute bottom-1 w-6 h-1 rounded-full bg-emerald-500 dark:bg-emerald-400" />
+                  <span className="absolute bottom-1 w-6 h-1 rounded-full bg-[var(--primary)]" />
                 )}
               </>
             )}
@@ -359,7 +359,7 @@ const DriverLayout = () => {
             to="/driver/delivery-history"
             className={({ isActive }) =>
               `relative flex flex-col items-center justify-center gap-1 transition-colors ${
-                isActive ? "text-emerald-600 dark:text-emerald-400 font-bold" : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200"
+                isActive ? "text-[var(--primary)] font-bold" : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200"
               }`
             }
           >
@@ -368,7 +368,7 @@ const DriverLayout = () => {
                 <FiClock className="w-5 h-5" />
                 <span className="text-[11px] tracking-tight">History</span>
                 {isActive && (
-                  <span className="absolute bottom-1 w-6 h-1 rounded-full bg-emerald-500 dark:bg-emerald-400" />
+                  <span className="absolute bottom-1 w-6 h-1 rounded-full bg-[var(--primary)]" />
                 )}
               </>
             )}

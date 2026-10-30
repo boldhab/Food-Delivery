@@ -17,16 +17,16 @@ const ProfileSidebar = ({
                 <div className="text-center">
                     {/* Avatar */}
                     <div className="relative inline-block mb-4">
-                        <div className="w-24 h-24 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 
+                        <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[var(--primary)] to-orange-500 
                                       flex items-center justify-center text-white text-3xl font-bold
-                                      shadow-lg shadow-green-500/25">
+                                      shadow-lg shadow-[var(--primary)]/25">
                             {user?.name?.charAt(0) || 'U'}
                         </div>
                         <label 
                             htmlFor="avatar-upload" 
                             className="absolute bottom-0 right-0 w-8 h-8 bg-white dark:bg-slate-700
                                      rounded-full shadow-lg flex items-center justify-center
-                                     cursor-pointer hover:bg-green-500 hover:text-white
+                                     cursor-pointer hover:bg-[var(--primary)] hover:text-white
                                      transition-colors duration-200
                                      border-2 border-white dark:border-slate-800"
                         >
@@ -51,7 +51,7 @@ const ProfileSidebar = ({
                     {/* Stats */}
                     <div className="grid grid-cols-3 gap-2 p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl">
                         <div className="text-center">
-                            <div className="text-xl font-bold text-green-500">
+                            <div className="text-xl font-bold text-[var(--primary)]">
                                 {orderStats.total || 0}
                             </div>
                             <div className="text-xs text-slate-500 dark:text-slate-400">
@@ -59,7 +59,7 @@ const ProfileSidebar = ({
                             </div>
                         </div>
                         <div className="text-center">
-                            <div className="text-xl font-bold text-green-500">
+                            <div className="text-xl font-bold text-[var(--primary)]">
                                 {orderStats.delivered || 0}
                             </div>
                             <div className="text-xs text-slate-500 dark:text-slate-400">
@@ -88,7 +88,7 @@ const ProfileSidebar = ({
                             w-full flex items-center gap-3 px-4 py-3 rounded-xl
                             transition-all duration-200
                             ${activeTab === tab.id
-                                ? 'bg-green-500 text-white'
+                                ? 'bg-[var(--primary)] text-white'
                                 : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'
                             }
                         `}

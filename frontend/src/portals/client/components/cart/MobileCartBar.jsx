@@ -27,7 +27,7 @@ const MobileCartBar = () => {
                 >
                     <button
                         onClick={openCart}
-                        className="w-full py-3.5 px-5 bg-green-500 hover:bg-green-600 active:scale-[0.98] text-white font-bold rounded-2xl shadow-xl shadow-green-500/30 flex items-center justify-between transition-all"
+                        className="w-full py-3.5 px-5 bg-[var(--primary)] hover:opacity-90 active:scale-[0.98] text-white font-bold rounded-2xl shadow-xl shadow-[var(--primary)]/30 flex items-center justify-between transition-all"
                     >
                         <div className="flex items-center gap-3">
                             <div className="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center text-xs font-black">

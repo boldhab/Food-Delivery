@@ -54,7 +54,7 @@ const PreferencesTab = ({ profile, setProfile }) => {
                     {/* Email Notifications */}
                     <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl">
                         <div className="flex items-start gap-3">
-                            <FiMail className="w-5 h-5 text-green-500 mt-0.5" />
+                            <FiMail className="w-5 h-5 text-[var(--primary)] mt-0.5" />
                             <div>
                                 <h3 className="font-medium text-slate-900 dark:text-white">
                                     Email Notifications
@@ -84,14 +84,14 @@ const PreferencesTab = ({ profile, setProfile }) => {
                                           after:absolute after:top-[2px] after:left-[2px] 
                                           after:bg-white after:border-slate-300 after:border 
                                           after:rounded-full after:h-5 after:w-5 after:transition-all
-                                          peer-checked:bg-green-500"></div>
+                                          peer-checked:bg-[var(--primary)]"></div>
                         </label>
                     </div>
 
                     {/* Push Notifications */}
                     <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl">
                         <div className="flex items-start gap-3">
-                            <FiSmartphone className="w-5 h-5 text-green-500 mt-0.5" />
+                            <FiSmartphone className="w-5 h-5 text-[var(--primary)] mt-0.5" />
                             <div>
                                 <h3 className="font-medium text-slate-900 dark:text-white">
                                     Push Notifications
@@ -121,14 +121,14 @@ const PreferencesTab = ({ profile, setProfile }) => {
                                           after:absolute after:top-[2px] after:left-[2px] 
                                           after:bg-white after:border-slate-300 after:border 
                                           after:rounded-full after:h-5 after:w-5 after:transition-all
-                                          peer-checked:bg-green-500"></div>
+                                          peer-checked:bg-[var(--primary)]"></div>
                         </label>
                     </div>
 
                     {/* SMS Notifications */}
                     <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl">
                         <div className="flex items-start gap-3">
-                            <FiPhone className="w-5 h-5 text-green-500 mt-0.5" />
+                            <FiPhone className="w-5 h-5 text-[var(--primary)] mt-0.5" />
                             <div>
                                 <h3 className="font-medium text-slate-900 dark:text-white">
                                     SMS Notifications
@@ -158,7 +158,7 @@ const PreferencesTab = ({ profile, setProfile }) => {
                                           after:absolute after:top-[2px] after:left-[2px] 
                                           after:bg-white after:border-slate-300 after:border 
                                           after:rounded-full after:h-5 after:w-5 after:transition-all
-                                          peer-checked:bg-green-500"></div>
+                                          peer-checked:bg-[var(--primary)]"></div>
                         </label>
                     </div>
                 </div>
@@ -169,7 +169,7 @@ const PreferencesTab = ({ profile, setProfile }) => {
                         onClick={() => {
                             toast.success('Preferences saved!');
                         }}
-                        className="w-full px-6 py-3 bg-green-500 hover:bg-green-600
+                        className="w-full px-6 py-3 bg-[var(--primary)] hover:opacity-90
                                  text-white font-medium rounded-xl
                                  transition-colors duration-200"
                     >

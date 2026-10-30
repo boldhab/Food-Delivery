@@ -50,7 +50,7 @@ const AuthSplitLayout = ({
     <div className="min-h-screen w-full flex flex-col lg:flex-row bg-[var(--background)] text-[var(--foreground)] relative overflow-x-hidden transition-colors duration-200">
       {/* 1. Soft Ambient Lighting Glows */}
       <div
-        className="absolute -top-36 -left-36 w-96 h-96 bg-gradient-to-br from-[var(--primary)]/15 via-amber-500/10 to-transparent rounded-full blur-3xl pointer-events-none"
+        className="absolute -top-36 -left-36 w-96 h-96 bg-gradient-to-br from-[var(--primary)]/15 via-orange-500/10 to-transparent rounded-full blur-3xl pointer-events-none"
         aria-hidden="true"
       />
       <div
@@ -62,7 +62,7 @@ const AuthSplitLayout = ({
       <aside className="hidden lg:flex lg:w-5/12 xl:w-1/2 flex-col justify-between p-10 xl:p-14 relative z-10 bg-gradient-to-br from-[var(--card)]/90 via-[var(--surface)]/70 to-[var(--muted)]/50 border-r border-[var(--border)]/70 backdrop-blur-md overflow-hidden select-none">
         {/* Ambient background glow behind the logo */}
         <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-tr from-[var(--primary)]/20 via-amber-500/15 to-transparent rounded-full blur-3xl pointer-events-none"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-tr from-[var(--primary)]/20 via-orange-500/15 to-transparent rounded-full blur-3xl pointer-events-none"
           aria-hidden="true"
         />
 
@@ -91,7 +91,7 @@ const AuthSplitLayout = ({
           {/* Large Borderless Free-Standing Brand Logo */}
           <div className="relative group mb-8 flex items-center justify-center">
             <div
-              className="absolute -inset-8 bg-gradient-to-tr from-[var(--primary)]/25 via-amber-500/20 to-transparent rounded-full blur-3xl opacity-75 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+              className="absolute -inset-8 bg-gradient-to-tr from-[var(--primary)]/25 via-orange-500/20 to-transparent rounded-full blur-3xl opacity-75 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
               aria-hidden="true"
             />
             <img

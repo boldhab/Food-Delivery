@@ -63,8 +63,8 @@ const createMarkerIcon = (type) => {
     className: 'custom-map-marker-driver',
     html: `
       <div style="position: relative; display: flex; align-items: center; justify-content: center;">
-        <span style="position: absolute; width: 48px; height: 48px; border-radius: 50%; background: rgba(16, 185, 129, 0.35); animation: ping 1.4s cubic-bezier(0, 0, 0.2, 1) infinite;"></span>
-        <div style="position: relative; width: 42px; height: 42px; border-radius: 50%; background: #10b981; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 18px rgba(16, 185, 129, 0.5); border: 2.5px solid white;">
+        <span style="position: absolute; width: 48px; height: 48px; border-radius: 50%; background: rgba(225, 29, 72, 0.35); animation: ping 1.4s cubic-bezier(0, 0, 0.2, 1) infinite;"></span>
+        <div style="position: relative; width: 42px; height: 42px; border-radius: 50%; background: #e11d48; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 18px rgba(225, 29, 72, 0.5); border: 2.5px solid white;">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="18.5" cy="17.5" r="3.5"></circle>
             <circle cx="5.5" cy="17.5" r="3.5"></circle>
@@ -155,7 +155,7 @@ const LiveDeliveryMap = ({ order, driverLocation }) => {
     // 4. Delivery Route Line
     const routeCoords = [restaurant, initialDriverPos, customer];
     const polyline = L.polyline(routeCoords, {
-      color: '#10b981',
+      color: '#e11d48',
       weight: 4,
       opacity: 0.75,
       dashArray: '8, 8',
@@ -241,10 +241,10 @@ const LiveDeliveryMap = ({ order, driverLocation }) => {
         {/* Recenter Button */}
         <button
           onClick={handleRecenter}
-          className="self-end sm:self-auto px-3.5 py-3 rounded-2xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-slate-200 dark:border-slate-800 shadow-lg text-xs font-bold text-slate-700 dark:text-slate-200 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors flex items-center gap-1.5"
+          className="self-end sm:self-auto px-3.5 py-3 rounded-2xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-slate-200 dark:border-slate-800 shadow-lg text-xs font-bold text-slate-700 dark:text-slate-200 hover:text-[var(--primary)] transition-colors flex items-center gap-1.5"
           title="Center entire delivery route"
         >
-          <FiNavigation className="w-3.5 h-3.5 text-emerald-500" />
+          <FiNavigation className="w-3.5 h-3.5 text-[var(--primary)]" />
           <span>Fit Route</span>
         </button>
       </div>

@@ -548,14 +548,14 @@ const UsersPage = () => {
                 <div>
                   <div className="flex items-start justify-between gap-3 mb-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 font-bold text-sm flex items-center justify-center shrink-0">
+                      <div className="w-10 h-10 rounded-xl bg-[var(--primary)]/10 text-[var(--primary)] font-bold text-sm flex items-center justify-center shrink-0">
                         <FiShield className="w-5 h-5" />
                       </div>
                       <div>
                         <h3 className="font-semibold text-sm text-slate-900 dark:text-white">
                           {user.name}
                         </h3>
-                        <span className="text-2xs font-semibold text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/50 px-2 py-0.2 rounded-full inline-block mt-0.5">
+                        <span className="text-2xs font-semibold text-[var(--primary)] bg-[var(--primary)]/10 border border-[var(--primary)]/20 px-2 py-0.2 rounded-full inline-block mt-0.5">
                           Administrator
                         </span>
                       </div>

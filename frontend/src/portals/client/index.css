@@ -15,8 +15,8 @@
     --app-input-bg: #ffffff;
     --app-input-border: #c5d0da;
     --app-muted-text: #5e6b78;
-    --app-accent: #22c55e;
-    --app-accent-strong: #16a34a;
+    --app-accent: #e11d48;
+    --app-accent-strong: #be123c;
 }
 
 html.dark {
@@ -30,8 +30,8 @@ html.dark {
     --app-input-bg: #0b1220;
     --app-input-border: #334155;
     --app-muted-text: #94a3b8;
-    --app-accent: #4ade80;
-    --app-accent-strong: #22c55e;
+    --app-accent: #f43f5e;
+    --app-accent-strong: #fb7185;
 }
 
 * {

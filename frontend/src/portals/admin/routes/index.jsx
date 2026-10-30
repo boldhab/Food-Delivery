@@ -23,9 +23,9 @@ const PageLoader = () => (
   <div className="flex items-center justify-center min-h-[60vh] w-full">
     <div className="flex flex-col items-center gap-3">
       <div className="relative">
-        <div className="w-12 h-12 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin" />
+        <div className="w-12 h-12 border-4 border-[var(--primary)]/20 border-t-[var(--primary)] rounded-full animate-spin" />
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse" />
+          <div className="w-2.5 h-2.5 bg-[var(--primary)] rounded-full animate-pulse" />
         </div>
       </div>
       <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">

@@ -499,14 +499,14 @@ const DeliveryDetailPage = () => {
                       <div
                         className={`max-w-[85%] rounded-2xl px-3.5 py-2 text-xs shadow-xs ${
                           isDriver
-                            ? "bg-emerald-600 text-white rounded-br-xs"
+                            ? "bg-[var(--primary)] text-white rounded-br-xs"
                             : "bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-bl-xs border border-slate-200 dark:border-slate-700/60"
                         }`}
                       >
                         <p className="break-words leading-relaxed">{entry.message}</p>
                         <div
                           className={`text-2xs mt-1 text-right tabular-nums ${
-                            isDriver ? "text-emerald-100" : "text-muted-foreground"
+                            isDriver ? "text-rose-100" : "text-muted-foreground"
                           }`}
                         >
                           {entry.createdAt
@@ -534,12 +534,12 @@ const DeliveryDetailPage = () => {
                 value={messageText}
                 onChange={(e) => setMessageText(e.target.value)}
                 placeholder="Message customer..."
-                className="flex-1 px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 transition-all"
+                className="flex-1 px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/40 focus:border-[var(--primary)] transition-all"
               />
               <button
                 type="submit"
                 disabled={sendingMessage || !messageText.trim()}
-                className="w-9 h-9 flex items-center justify-center bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-semibold rounded-xl shadow-xs transition-all disabled:opacity-40 shrink-0 cursor-pointer"
+                className="w-9 h-9 flex items-center justify-center bg-[var(--primary)] hover:opacity-90 text-white font-semibold rounded-xl shadow-xs transition-all disabled:opacity-40 shrink-0 cursor-pointer"
               >
                 <FiSend className="w-4 h-4 text-white" />
               </button>

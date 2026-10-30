@@ -34,7 +34,7 @@ const OrderItemCard = ({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ delay: index * 0.05 }}
-            className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden hover:border-green-200 dark:hover:border-green-800 transition-all duration-200"
+            className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden hover:border-[var(--primary)]/30 transition-all duration-200"
         >
             {/* Order Header */}
             <div className="p-6">
@@ -63,7 +63,7 @@ const OrderItemCard = ({
                     {/* Right side - Status & actions */}
                     <div className="flex flex-wrap items-center gap-4">
                         <div className="text-right">
-                            <div className="text-2xl font-bold text-green-500">
+                            <div className="text-2xl font-bold text-[var(--primary)]">
                                 ${Number(order.totalAmount || 0).toFixed(2)}
                             </div>
                             <div className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium ${statusConfig.bg} ${statusConfig.text}`}>
@@ -85,7 +85,7 @@ const OrderItemCard = ({
                             {order.orderStatus === 'out_for_delivery' && (
                                 <button
                                     onClick={() => onTrackOrder(order._id || order.id)}
-                                    className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors text-sm font-medium"
+                                    className="px-4 py-2 bg-[var(--primary)] text-white rounded-lg hover:opacity-90 transition-colors text-sm font-medium"
                                 >
                                     Track Order
                                 </button>
@@ -94,7 +94,7 @@ const OrderItemCard = ({
                             {order.orderStatus === 'delivered' && (
                                 <button
                                     onClick={() => onReorder(order)}
-                                    className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors text-sm font-medium"
+                                    className="px-4 py-2 bg-[var(--primary)] text-white rounded-lg hover:opacity-90 transition-colors text-sm font-medium"
                                 >
                                     Reorder
                                 </button>
@@ -102,7 +102,7 @@ const OrderItemCard = ({
 
                             <button
                                 onClick={() => onToggleDetails(order._id)}
-                                className="p-2 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-green-500 transition-colors"
+                                className="p-2 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-[var(--primary)] transition-colors"
                                 title={isExpanded ? "Collapse details" : "Expand details"}
                             >
                                 {isExpanded ? (
@@ -154,7 +154,7 @@ const OrderItemCard = ({
                                                         Qty: {item.quantity} × ${Number(item.price || 0).toFixed(2)}
                                                     </div>
                                                 </div>
-                                                <div className="font-semibold text-green-500">
+                                                <div className="font-semibold text-[var(--primary)]">
                                                     ${(Number(item.quantity || 1) * Number(item.price || 0)).toFixed(2)}
                                                 </div>
                                             </div>
@@ -215,7 +215,7 @@ const OrderItemCard = ({
                                             <div className="border-t border-slate-200 dark:border-slate-700 pt-2 mt-2">
                                                 <div className="flex justify-between font-semibold">
                                                     <span className="text-slate-900 dark:text-white">Total</span>
-                                                    <span className="text-green-500">
+                                                    <span className="text-[var(--primary)]">
                                                         ${Number(order.totalAmount || 0).toFixed(2)}
                                                     </span>
                                                 </div>
@@ -225,13 +225,13 @@ const OrderItemCard = ({
 
                                     {/* Support Actions */}
                                     <div className="flex gap-2">
-                                        <button className="flex-1 p-3 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-green-500 transition-colors flex items-center justify-center gap-2 text-slate-600 dark:text-slate-400 text-sm">
+                                        <button className="flex-1 p-3 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-[var(--primary)] transition-colors flex items-center justify-center gap-2 text-slate-600 dark:text-slate-400 text-sm">
                                             <FiHelpCircle className="w-4 h-4" />
                                             <span>Get Help</span>
                                         </button>
                                         <button 
                                             onClick={() => window.print()}
-                                            className="flex-1 p-3 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-green-500 transition-colors flex items-center justify-center gap-2 text-slate-600 dark:text-slate-400 text-sm"
+                                            className="flex-1 p-3 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-[var(--primary)] transition-colors flex items-center justify-center gap-2 text-slate-600 dark:text-slate-400 text-sm"
                                         >
                                             <FiPrinter className="w-4 h-4" />
                                             <span>Print Receipt</span>

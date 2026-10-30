@@ -4,6 +4,7 @@
   "description": "Server for Food Delivery App",
   "main": "src/server.js",
   "scripts": {
+    "dev": "nodemon src/server.js",
     "start": "node src/server.js",
     "test": "jest --testPathIgnorePatterns=integration --runInBand",
     "test:unit": "jest --testPathIgnorePatterns=integration --runInBand",

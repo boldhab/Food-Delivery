@@ -80,7 +80,7 @@ const MyDeliveriesPage = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
-            <FiTruck className="text-emerald-500 dark:text-emerald-400" />
+            <FiTruck className="text-[var(--primary)]" />
             Active Delivery Trips
           </h1>
           <p className="text-xs text-muted-foreground">Manage orders assigned to your shift</p>
@@ -90,7 +90,7 @@ const MyDeliveriesPage = () => {
           disabled={loading || refreshing}
           className="p-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors shadow-xs"
         >
-          <FiRefreshCw className={`w-4 h-4 ${refreshing || loading ? "animate-spin text-emerald-500 dark:text-emerald-400" : ""}`} />
+          <FiRefreshCw className={`w-4 h-4 ${refreshing || loading ? "animate-spin text-[var(--primary)]" : ""}`} />
         </button>
       </div>
 
@@ -102,7 +102,7 @@ const MyDeliveriesPage = () => {
             onClick={() => setFilter(tab.key)}
             className={`px-3.5 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all ${
               filter === tab.key
-                ? "bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20"
+                ? "bg-[var(--primary)] text-white shadow-md shadow-[var(--primary)]/20"
                 : "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
             }`}
           >
@@ -128,7 +128,7 @@ const MyDeliveriesPage = () => {
       {!loading && orders.length === 0 && (
         <div className="text-center py-16 px-4 bg-white/80 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800/60 rounded-3xl space-y-3 shadow-xs">
           <div className="w-14 h-14 mx-auto rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 dark:text-slate-500">
-            <FiPackage className="w-7 h-7 text-emerald-500/60" />
+            <FiPackage className="w-7 h-7 text-[var(--primary)]/60" />
           </div>
           <h2 className="text-base font-semibold text-foreground">No active trips assigned</h2>
           <p className="text-sm text-muted-foreground max-w-xs mx-auto">
@@ -136,7 +136,7 @@ const MyDeliveriesPage = () => {
           </p>
           <button
             onClick={() => navigate("/driver/available")}
-            className="mt-2 inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold text-xs uppercase tracking-wider rounded-xl transition-all shadow-lg shadow-emerald-500/20 cursor-pointer"
+            className="mt-2 inline-flex items-center gap-2 px-5 py-2.5 bg-[var(--primary)] hover:opacity-90 text-white font-semibold text-xs uppercase tracking-wider rounded-xl transition-all shadow-lg shadow-[var(--primary)]/20 cursor-pointer"
           >
             View Available Orders
           </button>
@@ -159,7 +159,7 @@ const MyDeliveriesPage = () => {
             <div
               key={orderId}
               onClick={() => navigate(`/driver/deliveries/${orderId}`)}
-              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-emerald-500/50 rounded-3xl p-5 transition-all shadow-xs hover:shadow-md dark:shadow-lg hover:shadow-emerald-500/5 cursor-pointer relative group flex flex-col justify-between"
+              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-[var(--primary)]/50 rounded-3xl p-5 transition-all shadow-xs hover:shadow-md dark:shadow-lg hover:shadow-[var(--primary)]/5 cursor-pointer relative group flex flex-col justify-between"
             >
               <div>
                 {/* Header: Order #, Status badge, and Payout */}
@@ -187,7 +187,7 @@ const MyDeliveriesPage = () => {
                 {/* Destination Details */}
                 <div className="p-3 bg-slate-50 dark:bg-slate-950/60 rounded-2xl border border-slate-200 dark:border-slate-800/80 mb-3 space-y-1.5">
                   <div className="flex items-start gap-2 text-xs">
-                    <FiMapPin className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                    <FiMapPin className="w-3.5 h-3.5 text-[var(--primary)] shrink-0 mt-0.5" />
                     <div className="min-w-0 flex-1">
                       <p className="font-medium text-slate-800 dark:text-slate-200 truncate">{dropAddress}</p>
                       <p className="text-xs text-muted-foreground">{dropCity || "Destination area"}</p>
@@ -205,7 +205,7 @@ const MyDeliveriesPage = () => {
 
               {/* Action Button */}
               <div className="flex items-center justify-between text-xs font-semibold pt-2 border-t border-slate-100 dark:border-slate-800/60">
-                <span className="text-emerald-600 dark:text-emerald-400 group-hover:underline flex items-center gap-1">
+                <span className="text-[var(--primary)] group-hover:underline flex items-center gap-1">
                   <FiNavigation className="w-3.5 h-3.5" />
                   Open Live Trip Console
                 </span>

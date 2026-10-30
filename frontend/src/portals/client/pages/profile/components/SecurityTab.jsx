@@ -45,7 +45,7 @@ const SecurityTab = ({
                                     border transition-colors duration-200
                                     ${errors.currentPassword 
                                         ? 'border-red-500 focus:ring-red-200' 
-                                        : 'border-slate-200 dark:border-slate-700 focus:border-green-500'
+                                        : 'border-slate-200 dark:border-slate-700 focus:border-[var(--primary)]'
                                     }
                                     dark:bg-slate-800 dark:text-white
                                 `}
@@ -79,7 +79,7 @@ const SecurityTab = ({
                                     border transition-colors duration-200
                                     ${errors.newPassword 
                                         ? 'border-red-500 focus:ring-red-200' 
-                                        : 'border-slate-200 dark:border-slate-700 focus:border-green-500'
+                                        : 'border-slate-200 dark:border-slate-700 focus:border-[var(--primary)]'
                                     }
                                     dark:bg-slate-800 dark:text-white
                                 `}
@@ -116,7 +116,7 @@ const SecurityTab = ({
                                     border transition-colors duration-200
                                     ${errors.confirmPassword 
                                         ? 'border-red-500 focus:ring-red-200' 
-                                        : 'border-slate-200 dark:border-slate-700 focus:border-green-500'
+                                        : 'border-slate-200 dark:border-slate-700 focus:border-[var(--primary)]'
                                     }
                                     dark:bg-slate-800 dark:text-white
                                 `}
@@ -132,7 +132,7 @@ const SecurityTab = ({
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full px-6 py-3 bg-green-500 hover:bg-green-600
+                            className="w-full px-6 py-3 bg-[var(--primary)] hover:opacity-90
                                      text-white font-medium rounded-xl
                                      disabled:opacity-50 disabled:cursor-not-allowed
                                      transition-colors duration-200

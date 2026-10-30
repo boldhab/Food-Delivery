@@ -30,14 +30,14 @@ const PaymentMethodsTab = () => {
                                 <p className="text-sm text-slate-500">Expires 12/24</p>
                             </div>
                         </div>
-                        <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
+                        <span className="text-xs bg-[var(--primary)]/10 text-[var(--primary)] px-2 py-1 rounded-full">
                             Default
                         </span>
                     </div>
                     
                     <button className="w-full p-4 border-2 border-dashed border-slate-200 dark:border-slate-700
-                                     rounded-xl text-slate-500 hover:border-green-500
-                                     hover:text-green-500 transition-colors">
+                                     rounded-xl text-slate-500 hover:border-[var(--primary)]
+                                     hover:text-[var(--primary)] transition-colors">
                         + Add Payment Method
                     </button>
                 </div>

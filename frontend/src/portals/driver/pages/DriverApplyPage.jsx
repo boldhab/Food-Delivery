@@ -293,7 +293,7 @@ const DriverApplyPage = () => {
           <Link to="/" className="flex items-center gap-2.5 shrink-0 group">
             <img src="/LOGO.png" alt="Food Hub Courier" className="h-8 w-auto object-contain transition-transform group-hover:scale-105" />
             <span className="font-bold text-base tracking-tight">
-              Food Hub <span className="text-teal-600 dark:text-teal-400 font-normal">Courier</span>
+              Food Hub <span className="text-[var(--primary)] font-normal">Courier</span>
             </span>
           </Link>
 
@@ -304,7 +304,7 @@ const DriverApplyPage = () => {
               onClick={() => setActiveTab('apply')}
               className={`px-3 py-1.5 rounded-lg text-xs transition-all cursor-pointer ${
                 activeTab === 'apply'
-                  ? 'bg-teal-500/10 text-teal-600 dark:text-teal-400 font-bold border border-teal-500/20'
+                  ? 'bg-[var(--primary)]/10 text-[var(--primary)] font-bold border border-[var(--primary)]/20'
                   : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)] font-medium'
               }`}
             >
@@ -316,7 +316,7 @@ const DriverApplyPage = () => {
               onClick={() => setActiveTab('track')}
               className={`px-3 py-1.5 rounded-lg text-xs transition-all cursor-pointer ${
                 activeTab === 'track'
-                  ? 'bg-teal-500/10 text-teal-600 dark:text-teal-400 font-bold border border-teal-500/20'
+                  ? 'bg-[var(--primary)]/10 text-[var(--primary)] font-bold border border-[var(--primary)]/20'
                   : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)] font-medium'
               }`}
             >
@@ -328,7 +328,7 @@ const DriverApplyPage = () => {
               onClick={() => setActiveTab('about')}
               className={`px-3 py-1.5 rounded-lg text-xs transition-all cursor-pointer ${
                 activeTab === 'about'
-                  ? 'bg-teal-500/10 text-teal-600 dark:text-teal-400 font-bold border border-teal-500/20'
+                  ? 'bg-[var(--primary)]/10 text-[var(--primary)] font-bold border border-[var(--primary)]/20'
                   : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)] font-medium'
               }`}
             >
@@ -380,7 +380,7 @@ const DriverApplyPage = () => {
               {/* SECTION 1: PERSONAL INFORMATION */}
               <div className="space-y-4">
                 <div className="flex items-center gap-2 pb-2.5 border-b border-[var(--border)]">
-                  <span className="w-6 h-6 rounded-full bg-teal-600 text-white text-xs font-bold flex items-center justify-center">
+                  <span className="w-6 h-6 rounded-full bg-[var(--primary)] text-white text-xs font-bold flex items-center justify-center">
                     1
                   </span>
                   <h2 className="text-xs font-bold uppercase tracking-wider text-[var(--foreground)]">
@@ -396,7 +396,7 @@ const DriverApplyPage = () => {
                       placeholder="Abebe Kebede"
                       value={form.name}
                       onChange={(e) => setForm({ ...form, name: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--foreground)] outline-none focus:border-teal-500"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--foreground)] outline-none focus:border-[var(--primary)]"
                     />
                     {formErrors.name && <p className="text-xs text-red-500 mt-1">{formErrors.name}</p>}
                   </div>
@@ -408,7 +408,7 @@ const DriverApplyPage = () => {
                       placeholder="abebe@example.com"
                       value={form.email}
                       onChange={(e) => setForm({ ...form, email: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--foreground)] outline-none focus:border-teal-500"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--foreground)] outline-none focus:border-[var(--primary)]"
                     />
                     {formErrors.email && <p className="text-xs text-red-500 mt-1">{formErrors.email}</p>}
                   </div>
@@ -420,7 +420,7 @@ const DriverApplyPage = () => {
                       placeholder="+251 91 123 4567"
                       value={form.phone}
                       onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--foreground)] outline-none focus:border-teal-500"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--foreground)] outline-none focus:border-[var(--primary)]"
                     />
                     {formErrors.phone && <p className="text-xs text-red-500 mt-1">{formErrors.phone}</p>}
                   </div>
@@ -434,7 +434,7 @@ const DriverApplyPage = () => {
                       placeholder="At least 6 characters"
                       value={form.password}
                       onChange={(e) => setForm({ ...form, password: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--foreground)] outline-none focus:border-teal-500"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--foreground)] outline-none focus:border-[var(--primary)]"
                     />
                     {formErrors.password && <p className="text-xs text-red-500 mt-1">{formErrors.password}</p>}
                   </div>
@@ -446,7 +446,7 @@ const DriverApplyPage = () => {
                       placeholder="Re-enter password"
                       value={form.confirmPassword}
                       onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--foreground)] outline-none focus:border-teal-500"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--foreground)] outline-none focus:border-[var(--primary)]"
                     />
                     {formErrors.confirmPassword && <p className="text-xs text-red-500 mt-1">{formErrors.confirmPassword}</p>}
                   </div>
@@ -456,7 +456,7 @@ const DriverApplyPage = () => {
               {/* SECTION 2: VEHICLE & CITY */}
               <div className="space-y-4">
                 <div className="flex items-center gap-2 pb-2.5 border-b border-[var(--border)]">
-                  <span className="w-6 h-6 rounded-full bg-teal-600 text-white text-xs font-bold flex items-center justify-center">
+                  <span className="w-6 h-6 rounded-full bg-[var(--primary)] text-white text-xs font-bold flex items-center justify-center">
                     2
                   </span>
                   <h2 className="text-xs font-bold uppercase tracking-wider text-[var(--foreground)]">
@@ -474,7 +474,7 @@ const DriverApplyPage = () => {
                         onClick={() => setForm({ ...form, vehicleType: v.id })}
                         className={`p-3 rounded-xl border text-center transition-all cursor-pointer ${
                           form.vehicleType === v.id
-                            ? 'border-teal-500 bg-teal-500/10 text-teal-600 dark:text-teal-400 font-bold'
+                            ? 'border-[var(--primary)] bg-[var(--primary)]/10 text-[var(--primary)] font-bold'
                             : 'border-[var(--border)] hover:bg-[var(--muted)]'
                         }`}
                       >
@@ -493,7 +493,7 @@ const DriverApplyPage = () => {
                       placeholder="e.g. Addis Ababa"
                       value={form.city}
                       onChange={(e) => setForm({ ...form, city: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--foreground)] outline-none focus:border-teal-500"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--foreground)] outline-none focus:border-[var(--primary)]"
                     />
                     {formErrors.city && <p className="text-xs text-red-500 mt-1">{formErrors.city}</p>}
                   </div>
@@ -506,7 +506,7 @@ const DriverApplyPage = () => {
                         placeholder="e.g. AA-3-A1245"
                         value={form.plateNumber}
                         onChange={(e) => setForm({ ...form, plateNumber: e.target.value.toUpperCase() })}
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--foreground)] font-mono uppercase outline-none focus:border-teal-500"
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--foreground)] font-mono uppercase outline-none focus:border-[var(--primary)]"
                       />
                       {formErrors.plateNumber && <p className="text-xs text-red-500 mt-1">{formErrors.plateNumber}</p>}
                     </div>
@@ -517,7 +517,7 @@ const DriverApplyPage = () => {
                         type="text"
                         value={form.state}
                         onChange={(e) => setForm({ ...form, state: e.target.value })}
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--foreground)] outline-none focus:border-teal-500"
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--foreground)] outline-none focus:border-[var(--primary)]"
                       />
                     </div>
                   )}
@@ -527,7 +527,7 @@ const DriverApplyPage = () => {
               {/* SECTION 3: ID & REVIEW */}
               <div className="space-y-4">
                 <div className="flex items-center gap-2 pb-2.5 border-b border-[var(--border)]">
-                  <span className="w-6 h-6 rounded-full bg-teal-600 text-white text-xs font-bold flex items-center justify-center">
+                  <span className="w-6 h-6 rounded-full bg-[var(--primary)] text-white text-xs font-bold flex items-center justify-center">
                     3
                   </span>
                   <h2 className="text-xs font-semibold uppercase tracking-wider text-[var(--foreground)]">
@@ -542,7 +542,7 @@ const DriverApplyPage = () => {
                     placeholder="e.g. ET-DRV-987654"
                     value={form.licenseNumber}
                     onChange={(e) => setForm({ ...form, licenseNumber: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--foreground)] font-mono outline-none focus:border-teal-500"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--foreground)] font-mono outline-none focus:border-[var(--primary)]"
                   />
                   {formErrors.licenseNumber && <p className="text-xs text-red-500 mt-1">{formErrors.licenseNumber}</p>}
                 </div>
@@ -553,7 +553,7 @@ const DriverApplyPage = () => {
                       type="checkbox"
                       checked={agreed}
                       onChange={(e) => setAgreed(e.target.checked)}
-                      className="mt-0.5 accent-teal-600 rounded"
+                      className="mt-0.5 accent-[var(--primary)] rounded"
                     />
                     <span className="text-[var(--muted-foreground)] leading-relaxed">
                       I authorize Food Hub to verify my driving record and background check, and I accept the Courier Terms of Service.
@@ -568,7 +568,7 @@ const DriverApplyPage = () => {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full py-3 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold uppercase tracking-wider transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-xs cursor-pointer"
+                  className="w-full py-3 rounded-xl bg-[var(--primary)] hover:opacity-90 text-white text-xs font-bold uppercase tracking-wider transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-xs cursor-pointer"
                 >
                   {submitting ? (
                     <>
@@ -609,12 +609,12 @@ const DriverApplyPage = () => {
                     placeholder="e.g. FH-DRV-849201 or your email"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--background)] text-xs font-mono outline-none focus:border-teal-500"
+                    className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--background)] text-xs font-mono outline-none focus:border-[var(--primary)]"
                   />
                 </div>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold transition-all cursor-pointer"
+                  className="px-5 py-2.5 rounded-xl bg-[var(--primary)] hover:opacity-90 text-white text-xs font-bold transition-all cursor-pointer"
                 >
                   Lookup
                 </button>
@@ -653,7 +653,7 @@ const DriverApplyPage = () => {
               <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-xs space-y-6">
                 <div className="flex items-start justify-between gap-4 pb-4 border-b border-[var(--border)]">
                   <div>
-                    <span className="text-2xs font-mono bg-teal-500/10 text-teal-600 dark:text-teal-400 font-bold px-2 py-0.5 rounded">
+                    <span className="text-2xs font-mono bg-[var(--primary)]/10 text-[var(--primary)] font-bold px-2 py-0.5 rounded">
                       REF: {searchedApp.refId}
                     </span>
                     <h3 className="text-base font-bold mt-1.5">{searchedApp.name}</h3>
@@ -684,7 +684,7 @@ const DriverApplyPage = () => {
                           st.done
                             ? 'bg-emerald-500 text-white'
                             : st.current
-                            ? 'bg-teal-600 text-white ring-4 ring-teal-500/20'
+                            ? 'bg-[var(--primary)] text-white ring-4 ring-[var(--primary)]/20'
                             : 'bg-[var(--muted)] text-[var(--muted-foreground)]'
                         }`}
                       >
@@ -712,7 +712,7 @@ const DriverApplyPage = () => {
                     </span>
                     <Link
                       to="/driver/login"
-                      className="px-4 py-2 rounded-lg bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold transition-all inline-flex items-center gap-1.5"
+                      className="px-4 py-2 rounded-lg bg-[var(--primary)] hover:opacity-90 text-white text-xs font-bold transition-all inline-flex items-center gap-1.5"
                     >
                       <span>Sign In to Driver App</span>
                       <FiArrowRight className="w-3.5 h-3.5" />
@@ -788,7 +788,7 @@ const DriverApplyPage = () => {
               <div className="pt-2">
                 <button
                   onClick={() => setActiveTab('apply')}
-                  className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold transition-all cursor-pointer"
+                  className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[var(--primary)] hover:opacity-90 text-white text-xs font-bold transition-all cursor-pointer"
                 >
                   Start Your Application Now
                 </button>

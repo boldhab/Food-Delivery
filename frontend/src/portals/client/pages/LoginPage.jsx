@@ -217,7 +217,7 @@ const LoginPage = () => {
                         <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[var(--muted-foreground)]">
                           Quick Demo Credentials
                         </span>
-                        <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                        <span className="text-[10px] font-mono text-[var(--primary)] flex items-center gap-1">
                           <FiShield className="w-3 h-3" />
                           <span>Pre-seeded</span>
                         </span>
@@ -227,9 +227,9 @@ const LoginPage = () => {
                         <button
                             type="button"
                             onClick={() => handleQuickFill('user@foodiehub.com', 'User@123456')}
-                            className="p-2.5 text-xs rounded-xl border border-[var(--border)] bg-[var(--muted)]/40 hover:bg-[var(--card)] hover:border-emerald-500/60 transition-all duration-200 flex flex-col items-center gap-0.5 cursor-pointer text-left group"
+                            className="p-2.5 text-xs rounded-xl border border-[var(--border)] bg-[var(--muted)]/40 hover:bg-[var(--card)] hover:border-[var(--primary)]/60 transition-all duration-200 flex flex-col items-center gap-0.5 cursor-pointer text-left group"
                         >
-                            <span className="font-bold text-emerald-600 dark:text-emerald-400 text-xs">
+                            <span className="font-bold text-[var(--primary)] text-xs">
                               🛒 Customer
                             </span>
                             <span className="text-[10px] font-mono text-[var(--muted-foreground)] group-hover:text-[var(--foreground)]">
@@ -253,9 +253,9 @@ const LoginPage = () => {
                         <button
                             type="button"
                             onClick={() => handleQuickFill('driver@foodiehub.com', 'Driver@123456')}
-                            className="p-2.5 text-xs rounded-xl border border-[var(--border)] bg-[var(--muted)]/40 hover:bg-[var(--card)] hover:border-teal-500/60 transition-all duration-200 flex flex-col items-center gap-0.5 cursor-pointer text-left group"
+                            className="p-2.5 text-xs rounded-xl border border-[var(--border)] bg-[var(--muted)]/40 hover:bg-[var(--card)] hover:border-[var(--primary)]/60 transition-all duration-200 flex flex-col items-center gap-0.5 cursor-pointer text-left group"
                         >
-                            <span className="font-bold text-teal-600 dark:text-teal-400 text-xs">
+                            <span className="font-bold text-[var(--primary)] text-xs">
                               🛵 Driver
                             </span>
                             <span className="text-[10px] font-mono text-[var(--muted-foreground)] group-hover:text-[var(--foreground)]">

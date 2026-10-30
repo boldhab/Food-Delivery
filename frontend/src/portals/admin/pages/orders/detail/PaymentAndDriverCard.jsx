@@ -64,7 +64,7 @@ const PaymentAndDriverCard = ({
         {order.driver ? (
           <div className="space-y-3">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 font-bold">
+              <div className="w-10 h-10 rounded-full bg-[var(--primary)]/10 flex items-center justify-center text-[var(--primary)] font-bold">
                 {order.driver.name?.charAt(0) || 'D'}
               </div>
               <div>

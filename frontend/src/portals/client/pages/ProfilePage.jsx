@@ -206,7 +206,7 @@ const ProfilePage = () => {
     return (
         <div className="min-h-screen bg-white dark:bg-slate-950">
             {/* Header */}
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-slate-900 dark:to-slate-800 border-b border-slate-200 dark:border-slate-800">
+            <div className="bg-gradient-to-br from-rose-50/50 to-orange-50/40 dark:from-slate-900 dark:to-slate-800 border-b border-slate-200 dark:border-slate-800">
                 <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 py-8">
                     <h1 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-2">
                         My Profile

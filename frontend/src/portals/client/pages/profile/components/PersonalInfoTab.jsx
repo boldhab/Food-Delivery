@@ -41,10 +41,9 @@ const PersonalInfoTab = ({
                         <button
                             onClick={() => setIsEditing(true)}
                             className="flex items-center gap-2 px-4 py-2
-                                     text-green-500 hover:text-green-600
-                                     border border-green-200 dark:border-green-800
-                                     rounded-lg hover:bg-green-50 
-                                     dark:hover:bg-green-900/20
+                                     text-[var(--primary)] hover:opacity-90
+                                     border border-[var(--primary)]/30
+                                     rounded-lg hover:bg-[var(--primary)]/10
                                      transition-colors duration-200"
                         >
                             <FiEdit2 className="w-4 h-4" />
@@ -73,7 +72,7 @@ const PersonalInfoTab = ({
                                     border transition-colors duration-200
                                     ${errors.name 
                                         ? 'border-red-500 focus:ring-red-200' 
-                                        : 'border-slate-200 dark:border-slate-700 focus:border-green-500'
+                                        : 'border-slate-200 dark:border-slate-700 focus:border-[var(--primary)]'
                                     }
                                     ${!isEditing && 'bg-slate-50 dark:bg-slate-900 cursor-not-allowed'}
                                     dark:bg-slate-800 dark:text-white
@@ -102,7 +101,7 @@ const PersonalInfoTab = ({
                                     border transition-colors duration-200
                                     ${errors.email 
                                         ? 'border-red-500 focus:ring-red-200' 
-                                        : 'border-slate-200 dark:border-slate-700 focus:border-green-500'
+                                        : 'border-slate-200 dark:border-slate-700 focus:border-[var(--primary)]'
                                     }
                                     ${!isEditing && 'bg-slate-50 dark:bg-slate-900 cursor-not-allowed'}
                                     dark:bg-slate-800 dark:text-white
@@ -131,7 +130,7 @@ const PersonalInfoTab = ({
                                     border transition-colors duration-200
                                     ${errors.phone 
                                         ? 'border-red-500 focus:ring-red-200' 
-                                        : 'border-slate-200 dark:border-slate-700 focus:border-green-500'
+                                        : 'border-slate-200 dark:border-slate-700 focus:border-[var(--primary)]'
                                     }
                                     ${!isEditing && 'bg-slate-50 dark:bg-slate-900 cursor-not-allowed'}
                                     dark:bg-slate-800 dark:text-white
@@ -167,7 +166,7 @@ const PersonalInfoTab = ({
                                                  border border-slate-200 dark:border-slate-700
                                                  disabled:bg-slate-50 dark:disabled:bg-slate-900
                                                  dark:bg-slate-800 dark:text-white
-                                                 focus:border-green-500 transition-colors"
+                                                 focus:border-[var(--primary)] transition-colors"
                                     />
                                 </div>
                             </div>
@@ -189,7 +188,7 @@ const PersonalInfoTab = ({
                                                  border border-slate-200 dark:border-slate-700
                                                  disabled:bg-slate-50 dark:disabled:bg-slate-900
                                                  dark:bg-slate-800 dark:text-white
-                                                 focus:border-green-500 transition-colors"
+                                                 focus:border-[var(--primary)] transition-colors"
                                     />
                                 </div>
                             </div>
@@ -211,7 +210,7 @@ const PersonalInfoTab = ({
                                                  border border-slate-200 dark:border-slate-700
                                                  disabled:bg-slate-50 dark:disabled:bg-slate-900
                                                  dark:bg-slate-800 dark:text-white
-                                                 focus:border-green-500 transition-colors"
+                                                 focus:border-[var(--primary)] transition-colors"
                                     />
                                 </div>
                             </div>
@@ -233,7 +232,7 @@ const PersonalInfoTab = ({
                                                  border border-slate-200 dark:border-slate-700
                                                  disabled:bg-slate-50 dark:disabled:bg-slate-900
                                                  dark:bg-slate-800 dark:text-white
-                                                 focus:border-green-500 transition-colors"
+                                                 focus:border-[var(--primary)] transition-colors"
                                     />
                                 </div>
                             </div>
@@ -246,7 +245,7 @@ const PersonalInfoTab = ({
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="flex-1 px-6 py-3 bg-green-500 hover:bg-green-600
+                                className="flex-1 px-6 py-3 bg-[var(--primary)] hover:opacity-90
                                          text-white font-medium rounded-xl
                                          disabled:opacity-50 disabled:cursor-not-allowed
                                          transition-colors duration-200

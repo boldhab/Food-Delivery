@@ -18,10 +18,10 @@ const OrderEmptyState = ({ onBrowseMenu }) => {
             </p>
             <button
                 onClick={onBrowseMenu}
-                className="px-6 py-3 bg-green-500 hover:bg-green-600
+                className="px-6 py-3 bg-[var(--primary)] hover:opacity-90
                          text-white font-medium rounded-xl
                          transition-colors duration-200
-                         shadow-lg shadow-green-500/25"
+                         shadow-lg shadow-[var(--primary)]/25"
             >
                 Browse Menu
             </button>

@@ -160,7 +160,7 @@ const FoodDetailPage = () => {
                     </p>
                     <Link
                         to="/menu"
-                        className="inline-flex items-center gap-2 px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl font-medium transition-colors"
+                        className="inline-flex items-center gap-2 px-6 py-3 bg-[var(--primary)] hover:opacity-90 text-white rounded-xl font-medium transition-opacity"
                     >
                         <FiArrowLeft className="w-5 h-5" />
                         Back to Menu
@@ -179,7 +179,7 @@ const FoodDetailPage = () => {
                 {/* Back Button */}
                 <button
                     onClick={() => navigate(-1)}
-                    className="inline-flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-green-500 dark:hover:text-green-400 mb-6 transition-colors"
+                    className="inline-flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-[var(--primary)] mb-6 transition-colors"
                 >
                     <FiArrowLeft className="w-4 h-4" />
                     <span>Back</span>
@@ -201,7 +201,7 @@ const FoodDetailPage = () => {
                             />
                             {food.category && (
                                 <span className="absolute top-4 left-4 px-3 py-1 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md rounded-full text-xs font-semibold text-slate-900 dark:text-white flex items-center gap-1 shadow-sm">
-                                    <FiTag className="w-3 h-3 text-green-500" />
+                                    <FiTag className="w-3 h-3 text-[var(--primary)]" />
                                     {food.category}
                                 </span>
                             )}
@@ -226,7 +226,7 @@ const FoodDetailPage = () => {
                                     <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white">
                                         {food.name}
                                     </h1>
-                                    <span className="text-3xl font-extrabold text-green-500">
+                                    <span className="text-3xl font-extrabold text-[var(--primary)]">
                                         {price.toFixed(2)} ETB
                                     </span>
                                 </div>
@@ -287,7 +287,7 @@ const FoodDetailPage = () => {
                                         type="button"
                                         onClick={handleAddToCart}
                                         disabled={addingToCart}
-                                        className="flex-1 py-4 px-6 bg-green-500 hover:bg-green-600 active:scale-[0.99] text-white font-semibold rounded-2xl shadow-lg shadow-green-500/25 flex items-center justify-center gap-3 transition-all disabled:opacity-50"
+                                        className="flex-1 py-4 px-6 bg-[var(--primary)] hover:opacity-90 active:scale-[0.99] text-white font-semibold rounded-2xl shadow-lg shadow-[var(--primary)]/25 flex items-center justify-center gap-3 transition-all disabled:opacity-50"
                                     >
                                         <FiShoppingCart className="w-5 h-5" />
                                         <span>
@@ -343,12 +343,12 @@ const FoodDetailPage = () => {
                                 onChange={(e) => setNewComment(e.target.value)}
                                 placeholder="What did you think of this dish? Taste, portion, flavor..."
                                 rows={3}
-                                className="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:border-green-500 mb-3"
+                                className="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:border-[var(--primary)] mb-3"
                             />
                             <button
                                 type="submit"
                                 disabled={submittingReview}
-                                className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-xl text-sm font-medium transition-colors disabled:opacity-50"
+                                className="px-4 py-2 bg-[var(--primary)] hover:opacity-90 text-white rounded-xl text-sm font-medium transition-opacity disabled:opacity-50"
                             >
                                 {submittingReview ? 'Submitting...' : 'Post Review'}
                             </button>
@@ -356,7 +356,7 @@ const FoodDetailPage = () => {
                     ) : (
                         <div className="mb-8 p-4 bg-slate-50 dark:bg-slate-800/40 rounded-xl text-center text-sm text-slate-500">
                             Please{' '}
-                            <Link to="/login" className="text-green-500 underline font-medium">
+                            <Link to="/login" className="text-[var(--primary)] underline font-medium">
                                 log in
                             </Link>{' '}
                             to leave a review for this dish.
